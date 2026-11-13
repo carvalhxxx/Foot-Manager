@@ -42,6 +42,20 @@ public static class PosicaoExtensoes
     /// <summary>Todas as posições, em ordem fixa (do gol para o ataque).</summary>
     public static IReadOnlyList<Posicao> Todas { get; } = Enum.GetValues<Posicao>();
 
+    private static readonly string[] Siglas =
+        ["GOL", "ZAG", "LD", "LE", "ALD", "ALE", "VOL", "MC", "MD", "ME", "MO", "PD", "PE", "SA", "ATA"];
+
+    /// <summary>Sigla curta e estável da posição, usada no formato de dados e na tela (ex.: "LD", "ATA").</summary>
+    public static string Sigla(this Posicao posicao) => Siglas[(int)posicao];
+
+    /// <summary>Converte uma sigla (ignorando maiúsculas/minúsculas) na posição correspondente.</summary>
+    public static bool TentarDaSigla(string? sigla, out Posicao posicao)
+    {
+        var indice = Array.FindIndex(Siglas, s => string.Equals(s, sigla?.Trim(), StringComparison.OrdinalIgnoreCase));
+        posicao = indice >= 0 ? (Posicao)indice : default;
+        return indice >= 0;
+    }
+
     public static Setor Setor(this Posicao posicao) => posicao switch
     {
         Posicao.Goleiro => Jogadores.Setor.Gol,
