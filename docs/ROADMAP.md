@@ -13,7 +13,7 @@ Cada entrega termina com testes passando, commit claro e este arquivo atualizado
   - mesma seed gera o mesmo mundo;
   - o JSON faz ida e volta (carregar → salvar → carregar) sem perda.
 - **Etapas:**
-  1. entidades do domínio + fórmula da força geral (aguardando aprovação da tabela de pesos);
+  1. ~~entidades do domínio + fórmula da força geral~~ ✔ (15 posições, D-015 e D-016);
   2. formato JSON + `docs/FORMATO_DADOS.md`;
   3. gerador do mundo inicial.
 

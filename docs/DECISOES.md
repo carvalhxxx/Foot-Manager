@@ -51,7 +51,7 @@ Formato curto: contexto → decisão → consequência. Quando houver decisões 
 - **Motivo:** o jogo carrega o mundo inteiro em memória, simula e grava. Não há consultas complexas nem uso para change tracking. Dapper + scripts SQL numerados (`PRAGMA user_version`) é mais leve e mais amigável ao trimming/AOT para o mobile.
 
 ### D-012 · Moral por jogador (2026-11-13, era P-003)
-- **Motivo:** o documento cita a moral do time e a moral individual. Proposta: a moral é por jogador, e a moral do time é a média dos titulares.
+- **Motivo:** o documento cita a moral do time e a moral individual. Decisão: a moral é por jogador, e a moral do time é a média dos titulares.
 
 ### D-013 · Regras da liga no MVP (2026-11-13, era P-004)
 - **Decisão:** 4 sobem e 4 descem entre as Séries A e B; duas janelas de transferência (pré-temporada e meio do campeonato).
@@ -59,3 +59,11 @@ Formato curto: contexto → decisão → consequência. Quando houver decisões 
 ### D-014 · Refinos do motor ficam para a Fase 2 (2026-11-13, era P-005)
 - **Contexto:** discutido na fase de planejamento.
 - **Decisão:** o motor do MVP segue o pipeline do documento (4 setores, mando de campo configurável). Ficam para a Fase 2: modelo de zonas (corredores central/lados), estilos de jogo, mando decomposto (torcida, gramado), clima e adaptação. O motor já nasce com um objeto `CondicoesPartida` para receber esses fatores sem mudar a API.
+
+### D-015 · Posições e força geral (2026-11-13)
+- **Decisão:** 15 posições (GOL, ZAG, LD, LE, ALD, ALE, VOL, MC, MD, ME, MO, PD, PE, SA, ATA). Os dois lados de uma função usam os mesmos pesos. Força geral = média ponderada dos atributos pela posição (pesos inteiros somando 100), convertida de 1-20 para 1-99 por `1 + (m − 1) × 98/19`, em aritmética inteira. Tabela de pesos em `src/Jogo.Dominio/Jogadores/CalculadoraForca.cs`.
+- **Consequência:** a força exibida é a da posição principal. Cada jogador tem até 2 posições secundárias, com rendimento de 100%. A penalidade de improviso fica com o motor (E4). Mudar os pesos quebra testes de regressão de propósito.
+
+### D-016 · Modelo das entidades (2026-11-13)
+- **Decisão:** entidades são classes com invariantes validadas no construtor e alteradas só por métodos (`AjustarMoral`, `AssinarContrato`...). Valores (`Atributos`, `Contrato`, `Estadio`) são records imutáveis. Todo jogador guarda os 10 atributos (os 8 de linha + Reflexos e Posicionamento), e a tela mostra só os 8 relevantes para a posição. Clubes e divisões usam identificadores de texto (`porto-alegre-fc`) e jogadores usam id numérico. Dinheiro é `decimal` em reais.
+- **Consequência:** improvisar um jogador fora da posição já cai naturalmente pelos pesos, sem regra especial. Estado mutável é aceitável porque o determinismo vem do gerador com seed e da ordem fixa de processamento.
