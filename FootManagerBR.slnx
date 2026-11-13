@@ -1,10 +1,10 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/Jogo.App/Jogo.App.csproj" />
     <Project Path="src/Jogo.Dados/Jogo.Dados.csproj" />
     <Project Path="src/Jogo.Dominio/Jogo.Dominio.csproj" />
     <Project Path="src/Jogo.Motor/Jogo.Motor.csproj" />
     <Project Path="src/Jogo.Simulacao/Jogo.Simulacao.csproj" />
+    <Project Path="src/Jogo.Wasm/Jogo.Wasm.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Jogo.Arquitetura.Testes/Jogo.Arquitetura.Testes.csproj" />

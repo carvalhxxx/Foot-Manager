@@ -1,10 +1,10 @@
 # Foot Manager BR (nome provisório)
 
-Manager de futebol brasileiro para PC, inspirado na simplicidade e no loop de "só mais uma rodada" de Brasfoot/Elifoot, com algumas mecânicas do Football Manager **muito simplificadas**.
+Manager de futebol brasileiro **no navegador**, inspirado na simplicidade e no loop de "só mais uma rodada" de Brasfoot/Elifoot, com algumas mecânicas do Football Manager **muito simplificadas**.
 
 **Regra de ouro do design:** cada mecânica precisa caber em uma tela e ser entendida em 10 segundos. Se exigir tutorial, entra simplificada ou não entra.
 
-Prioridade: lançar rápido no Windows, com arquitetura pronta para mobile depois.
+Prioridade: lançar rápido na web (desktop e celular), sem servidor: tudo roda no navegador do jogador.
 
 ## Aviso legal (obrigatório)
 - Não usar os nomes "Brasfoot" ou "Elifoot", nem escudos, sons, dados ou código desses jogos.
@@ -12,32 +12,43 @@ Prioridade: lançar rápido no Windows, com arquitetura pronta para mobile depoi
 - Clubes e jogadores **fictícios** por padrão. Cidades brasileiras reais podem ser usadas; nomes de clubes reais, não.
 
 ## Stack
-- .NET 10 (LTS), C# `latest`. SDK fixado em `global.json`.
-- UI: Avalonia 12 + CommunityToolkit.Mvvm.
-- Testes: xUnit v3 rodando no Microsoft.Testing.Platform. Testes de arquitetura com Mono.Cecil.
-- Banco: SQLite, um arquivo `.db` por save (ainda não implementado; ver `docs/DECISOES.md`).
-- CI: GitHub Actions (`.github/workflows/ci.yml`), Windows + Linux.
+- **Núcleo do jogo:** C# / .NET 10 (LTS), SDK fixado em `global.json`. Domínio, gerador, motor e simulação.
+- **Ponte:** `src/Jogo.Wasm` compila o núcleo para WebAssembly e expõe funções ao JavaScript com `[JSExport]`, trocando JSON.
+- **Interface:** React 19 + TypeScript + Vite em `web/`. Lint com oxlint, testes com Vitest + Testing Library.
+- Testes C#: xUnit v3 no Microsoft.Testing.Platform; testes de arquitetura com Mono.Cecil.
+- Saves: no navegador (ver `docs/DECISOES.md`, P-006). Ainda não implementado.
+- CI/CD: GitHub Actions (`.github/workflows/ci.yml`). Núcleo testado em Linux e Windows; site publicado no GitHub Pages a cada push na `main`.
 
 ## Comandos
 ```bash
+# Núcleo C#
 dotnet build FootManagerBR.slnx                 # build (warnings viram erro)
-dotnet test --solution FootManagerBR.slnx        # todos os testes
-dotnet run --project src/Jogo.App                # abre o jogo
+dotnet test --solution FootManagerBR.slnx        # testes do núcleo
 dotnet run --project tools/Jogo.Calibracao       # calibração do motor
 dotnet run --project tools/Jogo.GeradorDados     # regera dados/definicoes (seed 2027)
+
+# Site (rodar dentro de web/)
+npm install                                      # primeira vez
+npm run nucleo                                   # publica o núcleo C# em web/public/nucleo (rodar após mudar C#)
+npm run dev                                      # servidor de desenvolvimento
+npm run lint && npm test && npm run build        # o que o CI roda
 ```
 
 ## Estrutura
 ```
 src/Jogo.Dominio     Entidades e regras puras. Sem dependências.
 src/Jogo.Motor       Motor de partida. Puro, determinístico com seed. → Dominio
-src/Jogo.Simulacao   Rodadas, calendário, IA, mercado, fim de temporada. → Dominio, Motor
-src/Jogo.Dados       SQLite e importação das definições JSON. → Dominio
-src/Jogo.App         Avalonia (Views + ViewModels). → todos
-tools/Jogo.Calibracao  CLI que simula milhares de partidas e confere as metas.
+src/Jogo.Simulacao   Rodadas, calendário, IA, mercado, fim de temporada, geração do mundo. → Dominio, Motor
+src/Jogo.Dados       Leitura/gravação das definições JSON (de pasta ou da memória). → Dominio
+src/Jogo.Wasm        Ponte WebAssembly ↔ JavaScript ([JSExport], JSON). → Dominio, Simulacao, Dados
+web/                 Interface React + TypeScript (Vite).
+  src/nucleo/        Carregamento do runtime .NET e contrato com o núcleo (contrato.ts espelha ContratoJson.cs).
+  src/telas/         Uma tela por arquivo.
+  src/textos.ts      Todos os textos da interface.
+tools/Jogo.Calibracao    CLI que simula milhares de partidas e confere as metas.
 tools/Jogo.GeradorDados  Gera o mundo inicial (40 clubes fictícios) em dados/definicoes.
 tests/               Um projeto de testes por camada + Jogo.Arquitetura.Testes.
-dados/definicoes/    Ligas, clubes e jogadores em JSON (formato aberto).
+dados/definicoes/    Ligas, clubes e jogadores em JSON (formato aberto). Entram no site em tempo de build.
 docs/                ROADMAP.md (kanban), DECISOES.md, FORMATO_DADOS.md.
 ```
 
@@ -46,15 +57,17 @@ docs/                ROADMAP.md (kanban), DECISOES.md, FORMATO_DADOS.md.
 - **Todo sorteio** usa `IGeradorAleatorio` (em `Jogo.Dominio.Aleatoriedade`), injetado com seed. Mesma seed + mesmo estado = mesmo resultado.
 - Datas do jogo vêm do estado do jogo (calendário), nunca do relógio do computador.
 - Cada camada só referencia as camadas abaixo dela (ver tabela acima).
+- **Regras do jogo moram no C#.** A interface só exibe e envia comandos; nada de cálculo de jogo em TypeScript.
+- Fronteira C# ↔ JS: só JSON; nenhuma exceção atravessa (erros viram `{ ok: false, erros }`). Mudou `ContratoJson.cs`? Atualize `web/src/nucleo/contrato.ts`.
 - Sem over-engineering: nada de microserviços, CQRS, event sourcing ou contêiner de DI no MVP.
 
 ## Convenções de código
-- Código, comentários, testes e textos do jogo em **português**. Termos técnicos consagrados ficam em inglês (`ViewModel`, `View`, `Command`).
-- Namespaces com escopo de arquivo; `sealed` por padrão em classes que não foram feitas para herança.
-- Pacotes: versões só em `Directory.Packages.props`, nunca no `.csproj`.
-- Textos de UI só em `src/Jogo.App/Recursos/Textos.resx` (classe gerada `Jogo.App.Recursos.Textos`). Nada de texto fixo em XAML ou C#.
-- ViewModels em `ViewModels/XxxViewModel.cs`, Views em `Views/XxxView.axaml`: o `ViewLocator` liga os dois pelo nome.
-- Testes: `Metodo_Cenario_ResultadoEsperado`, padrão Arrange/Act/Assert. Sorteios em testes sempre com seed fixa.
+- Código, comentários, testes e textos do jogo em **português**, em C# e em TypeScript. Termos técnicos consagrados ficam em inglês.
+- C#: namespaces com escopo de arquivo; `sealed` por padrão. Pacotes: versões só em `Directory.Packages.props`.
+- TypeScript: componentes de função, sem `any`. Textos só em `web/src/textos.ts`: nada de texto fixo nos componentes.
+- Estilo: CSS próprio com variáveis de tema em `web/src/index.css` (claro/escuro via `data-tema`). Sem biblioteca de componentes por enquanto.
+- Testes C#: `Metodo_Cenario_ResultadoEsperado`, padrão Arrange/Act/Assert. Sorteios em testes sempre com seed fixa.
+- Testes web: o núcleo é injetado (ex.: `App iniciar={...}`), então os testes de UI não precisam do WebAssembly.
 - Ordem determinística: não depender da ordem de iteração de `Dictionary`/`HashSet` dentro da simulação; ordene explicitamente.
 
 ## Forma de trabalho

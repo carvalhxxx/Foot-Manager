@@ -9,40 +9,40 @@ using Jogo.Dominio.Jogadores;
 namespace Jogo.Dados.Definicoes;
 
 /// <summary>
-/// Lê uma pasta de definições (jogo base ou patch) e monta o <see cref="Mundo"/>.
+/// Lê definições (jogo base ou patch) de uma <see cref="IFonteDefinicoes"/> e monta o <see cref="Mundo"/>.
 /// Em vez de parar no primeiro problema, junta todos e lança <see cref="DefinicoesInvalidasException"/>.
 /// </summary>
 public static partial class LeitorDefinicoes
 {
-    public static DefinicoesCarregadas Carregar(string pasta)
+    /// <summary>Lê de uma pasta no disco.</summary>
+    public static DefinicoesCarregadas Carregar(string pasta) => Carregar(new FontePasta(pasta));
+
+    /// <summary>Lê de qualquer fonte (disco, memória no navegador, patch enviado pelo jogador).</summary>
+    public static DefinicoesCarregadas Carregar(IFonteDefinicoes fonte)
     {
-        if (!Directory.Exists(pasta))
-        {
-            throw new DirectoryNotFoundException($"Pasta de definições não encontrada: {pasta}");
-        }
+        ArgumentNullException.ThrowIfNull(fonte);
 
         var erros = new List<ErroDefinicao>();
 
-        var manifestoJson = Ler(pasta, FormatoDefinicoes.ArquivoManifesto, FormatoDefinicoes.Contexto.ManifestoJson, j => j.VersaoFormato, erros);
+        var manifestoJson = Ler(fonte, FormatoDefinicoes.ArquivoManifesto, FormatoDefinicoes.Contexto.ManifestoJson, j => j.VersaoFormato, erros);
         var manifesto = ConverterManifesto(manifestoJson, new Contexto(FormatoDefinicoes.ArquivoManifesto, erros), out var temporada);
 
-        var divisoesJson = Ler(pasta, FormatoDefinicoes.ArquivoDivisoes, FormatoDefinicoes.Contexto.DivisoesJson, j => j.VersaoFormato, erros);
+        var divisoesJson = Ler(fonte, FormatoDefinicoes.ArquivoDivisoes, FormatoDefinicoes.Contexto.DivisoesJson, j => j.VersaoFormato, erros);
         var divisoes = ConverterDivisoes(divisoesJson, new Contexto(FormatoDefinicoes.ArquivoDivisoes, erros));
 
         var clubes = new List<Clube>();
-        var pastaClubes = Path.Combine(pasta, FormatoDefinicoes.PastaClubes);
-        if (!Directory.Exists(pastaClubes))
+        if (!fonte.TemPastaDeClubes)
         {
             erros.Add(new(FormatoDefinicoes.PastaClubes + "/", "", "Pasta de clubes não encontrada."));
         }
         else
         {
             // Ordem alfabética para o resultado não depender do sistema de arquivos.
-            foreach (var caminho in Directory.GetFiles(pastaClubes, "*.json").Order(StringComparer.Ordinal))
+            foreach (var relativo in fonte.ArquivosDeClubes().Order(StringComparer.Ordinal))
             {
-                var relativo = $"{FormatoDefinicoes.PastaClubes}/{Path.GetFileName(caminho)}";
-                var json = Ler(pasta, relativo, FormatoDefinicoes.Contexto.ClubeJson, j => j.VersaoFormato, erros);
-                var clube = ConverterClube(json, Path.GetFileNameWithoutExtension(caminho), new Contexto(relativo, erros));
+                var json = Ler(fonte, relativo, FormatoDefinicoes.Contexto.ClubeJson, j => j.VersaoFormato, erros);
+                var nomeDoArquivo = relativo[(relativo.LastIndexOf('/') + 1)..^".json".Length];
+                var clube = ConverterClube(json, nomeDoArquivo, new Contexto(relativo, erros));
                 if (clube is not null)
                 {
                     clubes.Add(clube);
@@ -69,11 +69,11 @@ public static partial class LeitorDefinicoes
         return new DefinicoesCarregadas(manifesto!, new Mundo(temporada!.Value, divisoes, clubes));
     }
 
-    private static T? Ler<T>(string pasta, string relativo, JsonTypeInfo<T> tipo, Func<T, int?> versao, List<ErroDefinicao> erros)
+    private static T? Ler<T>(IFonteDefinicoes fonte, string relativo, JsonTypeInfo<T> tipo, Func<T, int?> versao, List<ErroDefinicao> erros)
         where T : class
     {
-        var caminho = Path.Combine(pasta, relativo);
-        if (!File.Exists(caminho))
+        var texto = fonte.LerTexto(relativo);
+        if (texto is null)
         {
             erros.Add(new(relativo, "", "Arquivo não encontrado."));
             return null;
@@ -82,7 +82,7 @@ public static partial class LeitorDefinicoes
         T? conteudo;
         try
         {
-            conteudo = JsonSerializer.Deserialize(File.ReadAllText(caminho), tipo);
+            conteudo = JsonSerializer.Deserialize(texto, tipo);
         }
         catch (JsonException ex)
         {

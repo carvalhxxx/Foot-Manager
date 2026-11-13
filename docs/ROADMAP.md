@@ -24,8 +24,8 @@ _(nada)_
 - **Objetivo:** calendário de pontos corridos (38 rodadas), rodada completa, tabela, fim de temporada com acesso/rebaixamento, tudo via CLI, sem UI.
 - **Aceite:** uma temporada inteira simulada pela CLI; tabela com os critérios de desempate; o time mais forte vence com frequência alta, mas não absoluta.
 
-### E6 · UI mínima · G
-- **Objetivo:** telas Início, Elenco, Tática, Partida (resultado + eventos), Classificação e botão grande "Avançar rodada" com atalho de teclado.
+### E6 · UI mínima (web) · G
+- **Objetivo:** telas Início, Elenco, Tática, Partida (resultado + eventos), Classificação e botão grande "Avançar rodada" com atalho de teclado, em React, funcionando no desktop e no celular.
 - **Aceite:** é possível jogar uma temporada inteira pela interface.
 
 ### E7 · Partida ao vivo · M
@@ -36,8 +36,8 @@ _(nada)_
 - **Objetivo:** comprar, vender e dispensar (com a IA também negociando), janelas de transferência, contratos e renovação, bilheteria com preço do ingresso, patrocínio, TV, premiação e salários.
 - **Aceite:** uma temporada simulada fecha o caixa de forma coerente para todos os clubes.
 
-### E9 · Save/load + instalador Windows · M
-- **Objetivo:** vários saves (um `.db` SQLite por save, no perfil do usuário) e build instalável para Windows.
+### E9 · Save/load no navegador · M
+- **Objetivo:** vários saves guardados no navegador (IndexedDB), com exportar/importar arquivo (P-006). Site instalável como PWA.
 - **Aceite:** salvar no meio da temporada, fechar e carregar continua exatamente igual (incluindo o estado do gerador aleatório).
 
 ## Fase 2 (depois do lançamento do MVP)
@@ -53,6 +53,12 @@ _(nada)_
 Mobile, saves na nuvem, ligas online entre amigos, modelo freemium/assinatura.
 
 ## Feito
+
+### E2b · Migração para a web · M
+- Interface trocada de Avalonia (desktop) para React + TypeScript + Vite (`web/`), com tema claro/escuro e layout para celular.
+- Núcleo C# rodando no navegador via WebAssembly (`src/Jogo.Wasm`, `[JSExport]` + JSON); tela Início já mostra o mundo carregado pelo C#.
+- Leitor de definições independente de disco (`IFonteDefinicoes`).
+- CI: job do site (núcleo + lint + testes + build) e deploy no GitHub Pages. Decisão D-019.
 
 ### E3 · Domínio + formato de dados + seed · G
 - Entidades (15 posições, atributos, força geral 1-99, Jogador, Contrato, Clube, Estádio, Divisão, Mundo) com invariantes validadas.

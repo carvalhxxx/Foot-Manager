@@ -31,7 +31,7 @@ Formato curto: contexto → decisão → consequência. Quando houver decisões 
 - **Decisão:** um projeto de testes por camada, mais `Jogo.Arquitetura.Testes`. Runner MTP configurado em `global.json`.
 - **Consequência:** projetos de teste ainda vazios usam `--ignore-exit-code 8` temporariamente, para não reprovar por "zero testes".
 
-### D-007 · UI: Avalonia 12, MVVM simples (2026-11-13)
+### D-007 · UI: Avalonia 12, MVVM simples (2026-11-13) · **substituída pela D-019**
 - **Decisão:** Avalonia 12 + CommunityToolkit.Mvvm com compiled bindings. Navegação por `PaginaAtual` na janela principal; `ViewLocator` por convenção de nomes. Dependências montadas à mão em `App.axaml.cs`, sem contêiner de DI por enquanto. Textos em `Recursos/Textos.resx` com classe fortemente tipada gerada no build.
 - **Consequência:** pouca cerimônia. Um contêiner de DI só entra quando o número de serviços justificar.
 
@@ -43,11 +43,11 @@ Formato curto: contexto → decisão → consequência. Quando houver decisões 
 - **Decisão:** o código é distribuído sob MIT.
 - **Consequência:** qualquer pessoa pode reutilizar o código, inclusive comercialmente, desde que mantenha o aviso de copyright. Isso continua impedindo copiar código GPL (OpenFoot Manager, Bygfoot) para cá, porque a GPL exigiria trocar a licença do projeto inteiro.
 
-### D-010 · Adiar o SQLite para depois do motor e da temporada (2026-11-13, era P-001)
+### D-010 · Adiar o SQLite para depois do motor e da temporada (2026-11-13, era P-001) · **em revisão (P-006)**
 - **Motivo:** o domínio vai mudar muito durante a calibração. Até lá, o mundo roda em memória, carregado do JSON, e o schema nasce já estável.
 - **Impacto:** a entrega 3 passa a ser "Domínio + JSON + gerador de seed"; o SQLite vai para a entrega de save/load.
 
-### D-011 · Dapper em vez de EF Core (2026-11-13, era P-002)
+### D-011 · Dapper em vez de EF Core (2026-11-13, era P-002) · **em revisão (P-006)**
 - **Motivo:** o jogo carrega o mundo inteiro em memória, simula e grava. Não há consultas complexas nem uso para change tracking. Dapper + scripts SQL numerados (`PRAGMA user_version`) é mais leve e mais amigável ao trimming/AOT para o mobile.
 
 ### D-012 · Moral por jogador (2026-11-13, era P-003)
@@ -75,3 +75,15 @@ Formato curto: contexto → decisão → consequência. Quando houver decisões 
 ### D-018 · Gerador do mundo inicial (2026-11-13)
 - **Decisão:** o gerador de jogadores e do mundo fica em `Jogo.Simulacao/Geracao` (puro, com seed), porque também vai gerar as revelações da base no fim de temporada. O catálogo dos 40 clubes fictícios fica em `CatalogoBase`, com nomes inventados a partir de apelidos de cidades, rios e regiões, para não coincidir com clubes reais. Cada clube usa um gerador aleatório próprio (seed XOR hash FNV-1a do id), então mudar um clube não altera os outros. Porte (grande/médio/pequeno) define força do elenco, torcida, reputação, caixa e estádio. Grandes têm 2 craques (+15 de força) e médios da Série A, 0 ou 1.
 - **Consequência:** `dados/definicoes` é gerado por `tools/Jogo.GeradorDados` com a seed 2027, e um teste falha se os arquivos commitados não baterem com o gerador. Ao mudar o gerador, é preciso rodar a ferramenta e commitar os dados. Quando a base passar a ser ajustada à mão, esse teste deve ser removido.
+
+### D-019 · Jogo no navegador: React + TypeScript com núcleo C# em WebAssembly (2026-11-14)
+- **Contexto:** um jogo desktop seria pouco chamativo; no navegador o jogo fica a um link de distância, roda no celular e não exige instalação.
+- **Decisão:** a interface passa a ser React + TypeScript (Vite) em `web/`. O núcleo C# (domínio, gerador, motor, simulação) continua igual e roda **dentro do navegador** via WebAssembly (`src/Jogo.Wasm`, `Microsoft.NET.Sdk.WebAssembly`, `[JSExport]`), trocando JSON com a interface. Sem servidor: hospedagem estática no GitHub Pages, publicada pelo CI. O projeto Avalonia (`Jogo.App`) foi removido.
+- **Consequência:** regras do jogo ficam só no C# (testadas com xUnit); o TypeScript só exibe e envia comandos. O primeiro acesso baixa o runtime do .NET (alguns MB, depois em cache). As definições do jogo base entram no site em tempo de build. O leitor de definições passou a aceitar qualquer fonte (`IFonteDefinicoes`: pasta ou memória), o que também prepara patches enviados pelo jogador.
+
+## Propostas (aguardando confirmação)
+
+### P-006 · Saves no navegador em vez de SQLite
+- **Contexto:** com o jogo no navegador, um arquivo SQLite por save (D-010/D-011) deixa de ser o caminho natural.
+- **Proposta:** o save é o estado do jogo serializado em JSON (compactado), guardado no IndexedDB do navegador, com opção de **exportar/importar arquivo** para backup ou para jogar em outro aparelho. Sem SQLite e sem Dapper.
+- **Impacto:** a E9 vira "save/load no navegador + exportação"; sincronização na nuvem continua na Fase 3.

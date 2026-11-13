@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+  <!--
+    Ponte entre o núcleo do jogo (C#) e a interface web (React + TypeScript).
+    Compila para WebAssembly e expõe uma API pequena via [JSExport], trocando dados em JSON.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RootNamespace>Jogo.Wasm</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Jogo.Dominio\Jogo.Dominio.csproj" />
+    <ProjectReference Include="..\Jogo.Simulacao\Jogo.Simulacao.csproj" />
+    <ProjectReference Include="..\Jogo.Dados\Jogo.Dados.csproj" />
+  </ItemGroup>
+</Project>

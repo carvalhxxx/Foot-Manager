@@ -1,0 +1,260 @@
+/* Tema: variáveis de cor. Claro por padrão; escuro via [data-tema='escuro'] (ver src/tema.ts). */
+:root {
+  --fundo: #f4f6f3;
+  --superficie: #ffffff;
+  --superficie-2: #eef2ec;
+  --texto: #18211b;
+  --texto-suave: #5b665e;
+  --borda: #dbe2d8;
+  --destaque: #1f8a4c;
+  --destaque-texto: #ffffff;
+  --perigo: #b42318;
+  --sombra: 0 1px 2px rgb(16 24 18 / 6%), 0 4px 16px rgb(16 24 18 / 6%);
+
+  color-scheme: light;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+:root[data-tema='escuro'] {
+  --fundo: #0f1411;
+  --superficie: #171e19;
+  --superficie-2: #1e2721;
+  --texto: #e6ede7;
+  --texto-suave: #97a39a;
+  --borda: #2a352d;
+  --destaque: #3fbf73;
+  --destaque-texto: #0b1a10;
+  --perigo: #f97066;
+  --sombra: 0 1px 2px rgb(0 0 0 / 40%);
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+}
+
+h1,
+h2 {
+  margin: 0;
+  line-height: 1.2;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+/* Casca: menu lateral + conteúdo. No celular o menu vira barra no topo. */
+.casca {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 100vh;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 20px 16px;
+  background: var(--superficie);
+  border-right: 1px solid var(--borda);
+}
+
+.menu nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.menu-item,
+.menu-tema {
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--texto);
+}
+
+.menu-item:hover,
+.menu-tema:hover {
+  background: var(--superficie-2);
+}
+
+.menu-item.ativo {
+  background: var(--destaque);
+  color: var(--destaque-texto);
+  font-weight: 600;
+}
+
+.menu-tema {
+  border-color: var(--borda);
+  color: var(--texto-suave);
+}
+
+.conteudo {
+  padding: 32px;
+  max-width: 1200px;
+  width: 100%;
+}
+
+.cabecalho p,
+.aviso {
+  color: var(--texto-suave);
+  margin: 8px 0 0;
+}
+
+/* Números de destaque */
+.numeros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.numero-destaque {
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: var(--sombra);
+}
+
+.numero-destaque dt {
+  color: var(--texto-suave);
+  font-size: 0.85rem;
+}
+
+.numero-destaque dd {
+  margin: 4px 0 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Divisões */
+.divisoes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 16px;
+}
+
+.cartao {
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: var(--sombra);
+}
+
+.cartao h2 {
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.tabela th {
+  text-align: left;
+  color: var(--texto-suave);
+  font-weight: 600;
+  font-size: 0.8rem;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--borda);
+}
+
+.tabela td {
+  padding: 7px 8px;
+  border-bottom: 1px solid var(--borda);
+}
+
+.tabela tr:last-child td {
+  border-bottom: none;
+}
+
+.tabela .numero {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.secundario {
+  color: var(--texto-suave);
+}
+
+.escudo {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 3px solid;
+  margin-right: 8px;
+  vertical-align: -1px;
+}
+
+/* Erro */
+.erro h1 {
+  color: var(--perigo);
+  font-size: 1.3rem;
+}
+
+.erro ul {
+  padding-left: 20px;
+}
+
+.botao {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  background: var(--destaque);
+  color: var(--destaque-texto);
+  font-weight: 600;
+}
+
+@media (max-width: 720px) {
+  .casca {
+    grid-template-columns: 1fr;
+  }
+
+  .menu {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    border-right: none;
+    border-bottom: 1px solid var(--borda);
+  }
+
+  .menu nav {
+    flex-direction: row;
+  }
+
+  .conteudo {
+    padding: 20px 16px;
+  }
+
+  .divisoes {
+    grid-template-columns: 1fr;
+  }
+}

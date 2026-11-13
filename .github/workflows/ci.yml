@@ -18,13 +18,13 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
-  build-e-testes:
-    name: Build e testes (${{ matrix.os }})
+  nucleo:
+    name: Núcleo C# (${{ matrix.os }})
     strategy:
       fail-fast: false
       matrix:
-        # Windows é a plataforma principal; Linux garante que o código continua multiplataforma.
-        os: [windows-latest, ubuntu-latest]
+        # Linux é onde o CI publica o site; Windows garante que o desenvolvimento local continua funcionando.
+        os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -45,3 +45,63 @@ jobs:
 
       - name: Calibração do motor
         run: dotnet run --project tools/Jogo.Calibracao -c Release --no-build
+
+  web:
+    name: Site (React + núcleo em WebAssembly)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Publicar núcleo C# em WebAssembly
+        run: npm run nucleo
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Testes
+        run: npm test
+
+      - name: Build
+        run: npm run build
+        env:
+          # O GitHub Pages serve o site em /<nome-do-repositório>/.
+          BASE_PATH: /${{ github.event.repository.name }}/
+
+      - name: Guardar site para o deploy
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/dist
+
+  deploy:
+    name: Publicar no GitHub Pages
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [nucleo, web]
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4
