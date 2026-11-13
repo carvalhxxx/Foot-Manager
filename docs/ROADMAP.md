@@ -5,10 +5,6 @@ Cada entrega termina com testes passando, commit claro e este arquivo atualizado
 
 ## Em andamento
 
-_(nada)_
-
-## Refinando
-
 ### E3 · Domínio + formato de dados + seed · G
 - **Objetivo:** entidades principais (Jogador com 8 atributos + ocultos, Clube, Contrato, Estádio, Liga), formato JSON documentado e gerador dos 40 clubes fictícios.
 - **Aceite:**
@@ -16,7 +12,14 @@ _(nada)_
   - o gerador cria Série A e B com 20 clubes cada, elencos de 25-30 jogadores e distribuição de força coerente (grandes, médios, pequenos);
   - mesma seed gera o mesmo mundo;
   - o JSON faz ida e volta (carregar → salvar → carregar) sem perda.
-- **Depende de:** confirmar P-001 (SQLite adiado) e P-003 (moral por jogador).
+- **Etapas:**
+  1. entidades do domínio + fórmula da força geral (aguardando aprovação da tabela de pesos);
+  2. formato JSON + `docs/FORMATO_DADOS.md`;
+  3. gerador do mundo inicial.
+
+## Refinando
+
+_(nada)_
 
 ## Backlog (MVP · Fase 1)
 

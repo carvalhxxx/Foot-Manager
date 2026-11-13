@@ -1,6 +1,6 @@
 # Registro de decisões
 
-Formato curto: contexto → decisão → consequência. Decisões **propostas** ainda precisam de confirmação antes da entrega em que passam a valer.
+Formato curto: contexto → decisão → consequência. Quando houver decisões **propostas**, elas ficam numa seção própria até serem confirmadas.
 
 ## Aceitas
 
@@ -43,21 +43,19 @@ Formato curto: contexto → decisão → consequência. Decisões **propostas** 
 - **Decisão:** o código é distribuído sob MIT.
 - **Consequência:** qualquer pessoa pode reutilizar o código, inclusive comercialmente, desde que mantenha o aviso de copyright. Isso continua impedindo copiar código GPL (OpenFoot Manager, Bygfoot) para cá, porque a GPL exigiria trocar a licença do projeto inteiro.
 
-## Propostas (aguardando confirmação)
-
-### P-001 · Adiar o SQLite para depois do motor e da temporada
+### D-010 · Adiar o SQLite para depois do motor e da temporada (2026-11-13, era P-001)
 - **Motivo:** o domínio vai mudar muito durante a calibração. Até lá, o mundo roda em memória, carregado do JSON, e o schema nasce já estável.
 - **Impacto:** a entrega 3 passa a ser "Domínio + JSON + gerador de seed"; o SQLite vai para a entrega de save/load.
 
-### P-002 · Dapper em vez de EF Core
+### D-011 · Dapper em vez de EF Core (2026-11-13, era P-002)
 - **Motivo:** o jogo carrega o mundo inteiro em memória, simula e grava. Não há consultas complexas nem uso para change tracking. Dapper + scripts SQL numerados (`PRAGMA user_version`) é mais leve e mais amigável ao trimming/AOT para o mobile.
 
-### P-003 · Moral por jogador
+### D-012 · Moral por jogador (2026-11-13, era P-003)
 - **Motivo:** o documento cita a moral do time e a moral individual. Proposta: a moral é por jogador, e a moral do time é a média dos titulares.
 
-### P-004 · Regras da liga no MVP
-- **Proposta:** 4 sobem e 4 descem entre as Séries A e B; duas janelas de transferência (pré-temporada e meio do campeonato).
+### D-013 · Regras da liga no MVP (2026-11-13, era P-004)
+- **Decisão:** 4 sobem e 4 descem entre as Séries A e B; duas janelas de transferência (pré-temporada e meio do campeonato).
 
-### P-005 · Refinos do motor ficam para a Fase 2
+### D-014 · Refinos do motor ficam para a Fase 2 (2026-11-13, era P-005)
 - **Contexto:** discutido na fase de planejamento.
-- **Proposta:** o motor do MVP segue o pipeline do documento (4 setores, mando de campo configurável). Ficam para a Fase 2: modelo de zonas (corredores central/lados), estilos de jogo, mando decomposto (torcida, gramado), clima e adaptação. O motor já nasce com um objeto `CondicoesPartida` para receber esses fatores sem mudar a API.
+- **Decisão:** o motor do MVP segue o pipeline do documento (4 setores, mando de campo configurável). Ficam para a Fase 2: modelo de zonas (corredores central/lados), estilos de jogo, mando decomposto (torcida, gramado), clima e adaptação. O motor já nasce com um objeto `CondicoesPartida` para receber esses fatores sem mudar a API.
