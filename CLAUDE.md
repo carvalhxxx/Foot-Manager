@@ -24,6 +24,7 @@ dotnet build FootManagerBR.slnx                 # build (warnings viram erro)
 dotnet test --solution FootManagerBR.slnx        # todos os testes
 dotnet run --project src/Jogo.App                # abre o jogo
 dotnet run --project tools/Jogo.Calibracao       # calibração do motor
+dotnet run --project tools/Jogo.GeradorDados     # regera dados/definicoes (seed 2027)
 ```
 
 ## Estrutura
@@ -34,6 +35,7 @@ src/Jogo.Simulacao   Rodadas, calendário, IA, mercado, fim de temporada. → Do
 src/Jogo.Dados       SQLite e importação das definições JSON. → Dominio
 src/Jogo.App         Avalonia (Views + ViewModels). → todos
 tools/Jogo.Calibracao  CLI que simula milhares de partidas e confere as metas.
+tools/Jogo.GeradorDados  Gera o mundo inicial (40 clubes fictícios) em dados/definicoes.
 tests/               Um projeto de testes por camada + Jogo.Arquitetura.Testes.
 dados/definicoes/    Ligas, clubes e jogadores em JSON (formato aberto).
 docs/                ROADMAP.md (kanban), DECISOES.md, FORMATO_DADOS.md.
@@ -59,4 +61,5 @@ docs/                ROADMAP.md (kanban), DECISOES.md, FORMATO_DADOS.md.
 - **Uma entrega por vez**, com testes passando, commit claro e `docs/ROADMAP.md` atualizado.
 - Decisões relevantes vão para `docs/DECISOES.md` (curto: contexto, decisão, consequência).
 - Se algo estiver ambíguo ou conflitante, **perguntar antes de implementar**.
+- `dados/definicoes` é **gerado**: não edite à mão. Mudou o gerador? Rode `tools/Jogo.GeradorDados` e commite os arquivos (há um teste que confere).
 - Projetos de teste ainda vazios usam `--ignore-exit-code 8` no `.csproj` (marcado como TEMPORÁRIO). Remova a linha ao escrever o primeiro teste do projeto.

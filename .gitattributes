@@ -8,3 +8,6 @@
 *.ico    binary
 *.png    binary
 *.db     binary
+
+# Definições geradas: sempre LF, para bater byte a byte com o gerador em qualquer sistema.
+dados/**/*.json text eol=lf

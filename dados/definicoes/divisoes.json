@@ -1,0 +1,63 @@
+{
+  "versaoFormato": 1,
+  "divisoes": [
+    {
+      "id": "serie-a",
+      "nome": "Série A",
+      "nivel": 1,
+      "vagasAcesso": 0,
+      "vagasRebaixamento": 4,
+      "clubes": [
+        "imperial-paulista",
+        "guanabara",
+        "atletico-carioca",
+        "alterosa",
+        "pampa",
+        "soteropolitano",
+        "bandeirantes",
+        "litoral-santista",
+        "capibaribe",
+        "pinheirais",
+        "iracema",
+        "cerrado",
+        "ilha-da-magia",
+        "manauara",
+        "pantanal",
+        "marajoara",
+        "planalto-central",
+        "mantiqueira",
+        "vale-do-paraiba",
+        "capixaba"
+      ]
+    },
+    {
+      "id": "serie-b",
+      "nome": "Série B",
+      "nivel": 2,
+      "vagasAcesso": 4,
+      "vagasRebaixamento": 0,
+      "clubes": [
+        "serra-gaucha",
+        "triangulo-mineiro",
+        "pe-vermelho",
+        "california-paulista",
+        "icarai",
+        "princesa-do-sertao",
+        "dunas",
+        "jangadeiro",
+        "borborema",
+        "poti",
+        "ludovicense",
+        "atalaia",
+        "lagoa-dos-patos",
+        "sorocabano",
+        "babitonga",
+        "vale-do-itajai",
+        "madeira-mamore",
+        "equinocio",
+        "jalapao",
+        "cidade-morena"
+      ]
+    }
+  ]
+}

@@ -1,5 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <ProjectReference Include="..\..\src\Jogo.Dados\Jogo.Dados.csproj" />
+    <!-- Para conferir que dados/definicoes está igual ao que o gerador produz. -->
+    <ProjectReference Include="..\..\src\Jogo.Simulacao\Jogo.Simulacao.csproj" />
   </ItemGroup>
 </Project>

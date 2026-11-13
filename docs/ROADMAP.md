@@ -5,17 +5,7 @@ Cada entrega termina com testes passando, commit claro e este arquivo atualizado
 
 ## Em andamento
 
-### E3 · Domínio + formato de dados + seed · G
-- **Objetivo:** entidades principais (Jogador com 8 atributos + ocultos, Clube, Contrato, Estádio, Liga), formato JSON documentado e gerador dos 40 clubes fictícios.
-- **Aceite:**
-  - `docs/FORMATO_DADOS.md` descreve o formato;
-  - o gerador cria Série A e B com 20 clubes cada, elencos de 25-30 jogadores e distribuição de força coerente (grandes, médios, pequenos);
-  - mesma seed gera o mesmo mundo;
-  - o JSON faz ida e volta (carregar → salvar → carregar) sem perda.
-- **Etapas:**
-  1. ~~entidades do domínio + fórmula da força geral~~ ✔ (15 posições, D-015 e D-016);
-  2. ~~formato JSON + `docs/FORMATO_DADOS.md`~~ ✔ (D-017);
-  3. gerador do mundo inicial.
+_(nada)_
 
 ## Refinando
 
@@ -63,6 +53,12 @@ _(nada)_
 Mobile, saves na nuvem, ligas online entre amigos, modelo freemium/assinatura.
 
 ## Feito
+
+### E3 · Domínio + formato de dados + seed · G
+- Entidades (15 posições, atributos, força geral 1-99, Jogador, Contrato, Clube, Estádio, Divisão, Mundo) com invariantes validadas.
+- Formato JSON aberto (`docs/FORMATO_DADOS.md`): um arquivo por clube, erros de patch em português com arquivo + campo, todos juntos; gravação estável byte a byte.
+- Gerador determinístico com 40 clubes fictícios (6 grandes, 20 médios, 14 pequenos) e elencos de 25-30 jogadores; base em `dados/definicoes` gerada por `tools/Jogo.GeradorDados` (seed 2027).
+- Decisões D-015 a D-018.
 
 ### E1 · Plano · P
 Estrutura da solution, stack e roadmap definidos.
