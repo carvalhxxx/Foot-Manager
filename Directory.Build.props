@@ -1,0 +1,22 @@
+<Project>
+  <!-- Configuração comum a todos os projetos da solution. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- Qualidade: nenhum warning passa despercebido. -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+
+    <Deterministic>true</Deterministic>
+    <NeutralLanguage>pt-BR</NeutralLanguage>
+    <SatelliteResourceLanguages>pt-BR</SatelliteResourceLanguages>
+
+    <Product>Foot Manager BR</Product>
+    <Company>Foot Manager BR</Company>
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+</Project>

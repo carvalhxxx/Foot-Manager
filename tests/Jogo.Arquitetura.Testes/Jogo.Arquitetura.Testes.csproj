@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Garante as regras de camadas e de determinismo descritas em docs/DECISOES.md. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Jogo.Dominio\Jogo.Dominio.csproj" />
+    <ProjectReference Include="..\..\src\Jogo.Motor\Jogo.Motor.csproj" />
+    <ProjectReference Include="..\..\src\Jogo.Simulacao\Jogo.Simulacao.csproj" />
+    <ProjectReference Include="..\..\src\Jogo.Dados\Jogo.Dados.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Mono.Cecil" />
+  </ItemGroup>
+</Project>

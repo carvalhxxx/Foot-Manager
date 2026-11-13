@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  build-e-testes:
+    name: Build e testes (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        # Windows é a plataforma principal; Linux garante que o código continua multiplataforma.
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Restaurar
+        run: dotnet restore FootManagerBR.slnx
+
+      - name: Build (Release, warnings = erro)
+        run: dotnet build FootManagerBR.slnx -c Release --no-restore
+
+      - name: Testes
+        run: dotnet test --solution FootManagerBR.slnx -c Release --no-build
+
+      - name: Calibração do motor
+        run: dotnet run --project tools/Jogo.Calibracao -c Release --no-build

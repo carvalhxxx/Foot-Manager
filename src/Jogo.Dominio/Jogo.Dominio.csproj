@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Entidades e regras puras do jogo. Não depende de nenhum outro projeto. -->
+  <ItemGroup>
+    <!-- Projeto puro: sem I/O nem rede. Ver docs/DECISOES.md (D-003). -->
+    <Using Remove="System.IO" />
+    <Using Remove="System.Net.Http" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Jogo.Dominio.Testes" />
+  </ItemGroup>
+</Project>

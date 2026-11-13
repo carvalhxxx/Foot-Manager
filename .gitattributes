@@ -1,0 +1,10 @@
+# Normaliza finais de linha no repositório.
+* text=auto
+*.cs     text diff=csharp
+*.axaml  text
+*.json   text
+*.md     text
+*.sh     text eol=lf
+*.ico    binary
+*.png    binary
+*.db     binary

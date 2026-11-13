@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Loop do mundo: rodadas, calendário, IA dos clubes, mercado, fim de temporada. -->
+  <ItemGroup>
+    <!-- Projeto puro: sem I/O nem rede. Ver docs/DECISOES.md (D-003). -->
+    <Using Remove="System.IO" />
+    <Using Remove="System.Net.Http" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Jogo.Dominio\Jogo.Dominio.csproj" />
+    <ProjectReference Include="..\Jogo.Motor\Jogo.Motor.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Jogo.Simulacao.Testes" />
+  </ItemGroup>
+</Project>

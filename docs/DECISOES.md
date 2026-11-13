@@ -1,0 +1,63 @@
+# Registro de decisões
+
+Formato curto: contexto → decisão → consequência. Decisões **propostas** ainda precisam de confirmação antes da entrega em que passam a valer.
+
+## Aceitas
+
+### D-001 · .NET 10 LTS (2026-11-13)
+- **Contexto:** o projeto pede a LTS mais recente. Em novembro de 2026, a LTS é o .NET 10; o .NET 11 é STS.
+- **Decisão:** `net10.0`, SDK fixado em `global.json` (`10.0.100`, `rollForward: latestFeature`).
+- **Consequência:** suporte até novembro de 2028. Migrar para o .NET 12 (próxima LTS) quando ele sair.
+
+### D-002 · Estrutura de build centralizada (2026-11-13)
+- **Decisão:** solution no formato `.slnx`; `Directory.Build.props` com nullable, `TreatWarningsAsErrors` e analisadores; versões de pacotes centralizadas em `Directory.Packages.props`.
+- **Consequência:** nenhum warning entra no código. Atualizar um pacote é mudar uma linha.
+
+### D-003 · Camadas puras (2026-11-13)
+- **Contexto:** o motor e a simulação precisam ser reproduzíveis (replay, testes, multiplayer futuro).
+- **Decisão:** Dominio, Motor e Simulacao não fazem I/O, não leem o relógio e não têm aleatoriedade própria. Um teste (`Jogo.Arquitetura.Testes`) lê o IL compilado com Mono.Cecil e falha se encontrar `System.IO`, `System.Net`, `DateTime.Now`, `Guid.NewGuid`, `System.Random` etc.
+- **Consequência:** a regra não depende de revisão manual. Para adicionar exceções, é preciso mudar o teste explicitamente.
+
+### D-004 · Dependências entre camadas (2026-11-13)
+- **Decisão:** Motor → Dominio; Simulacao → Dominio, Motor; Dados → Dominio; App → todos. Os projetos puros só podem depender da biblioteca padrão.
+- **Consequência:** verificado pelo mesmo projeto de testes de arquitetura.
+
+### D-005 · Gerador aleatório próprio (2026-11-13)
+- **Contexto:** o documento pede um `IRandom` com seed. O algoritmo de `System.Random` não tem garantia de estabilidade entre versões do .NET, o que quebraria saves e replays antigos.
+- **Decisão:** `IGeradorAleatorio` (o "IRandom" do documento), implementado com xoshiro256** semeado por SplitMix64, sorteio inteiro sem viés (método de Lemire) e estado capturável (`EstadoGerador`).
+- **Consequência:** um teste "golden" trava a sequência de uma seed fixa. Mudar o algoritmo exige nova decisão aqui.
+
+### D-006 · Testes com xUnit v3 + Microsoft.Testing.Platform (2026-11-13)
+- **Decisão:** um projeto de testes por camada, mais `Jogo.Arquitetura.Testes`. Runner MTP configurado em `global.json`.
+- **Consequência:** projetos de teste ainda vazios usam `--ignore-exit-code 8` temporariamente, para não reprovar por "zero testes".
+
+### D-007 · UI: Avalonia 12, MVVM simples (2026-11-13)
+- **Decisão:** Avalonia 12 + CommunityToolkit.Mvvm com compiled bindings. Navegação por `PaginaAtual` na janela principal; `ViewLocator` por convenção de nomes. Dependências montadas à mão em `App.axaml.cs`, sem contêiner de DI por enquanto. Textos em `Recursos/Textos.resx` com classe fortemente tipada gerada no build.
+- **Consequência:** pouca cerimônia. Um contêiner de DI só entra quando o número de serviços justificar.
+
+### D-008 · Idioma do código (2026-11-13)
+- **Decisão:** código, comentários e testes em português. Termos técnicos consagrados ficam em inglês (ViewModel, View, Command).
+
+### D-009 · Licença MIT (2026-11-13)
+- **Contexto:** o repositório no GitHub foi criado com a licença MIT.
+- **Decisão:** o código é distribuído sob MIT.
+- **Consequência:** qualquer pessoa pode reutilizar o código, inclusive comercialmente, desde que mantenha o aviso de copyright. Isso continua impedindo copiar código GPL (OpenFoot Manager, Bygfoot) para cá, porque a GPL exigiria trocar a licença do projeto inteiro.
+
+## Propostas (aguardando confirmação)
+
+### P-001 · Adiar o SQLite para depois do motor e da temporada
+- **Motivo:** o domínio vai mudar muito durante a calibração. Até lá, o mundo roda em memória, carregado do JSON, e o schema nasce já estável.
+- **Impacto:** a entrega 3 passa a ser "Domínio + JSON + gerador de seed"; o SQLite vai para a entrega de save/load.
+
+### P-002 · Dapper em vez de EF Core
+- **Motivo:** o jogo carrega o mundo inteiro em memória, simula e grava. Não há consultas complexas nem uso para change tracking. Dapper + scripts SQL numerados (`PRAGMA user_version`) é mais leve e mais amigável ao trimming/AOT para o mobile.
+
+### P-003 · Moral por jogador
+- **Motivo:** o documento cita a moral do time e a moral individual. Proposta: a moral é por jogador, e a moral do time é a média dos titulares.
+
+### P-004 · Regras da liga no MVP
+- **Proposta:** 4 sobem e 4 descem entre as Séries A e B; duas janelas de transferência (pré-temporada e meio do campeonato).
+
+### P-005 · Refinos do motor ficam para a Fase 2
+- **Contexto:** discutido na fase de planejamento.
+- **Proposta:** o motor do MVP segue o pipeline do documento (4 setores, mando de campo configurável). Ficam para a Fase 2: modelo de zonas (corredores central/lados), estilos de jogo, mando decomposto (torcida, gramado), clima e adaptação. O motor já nasce com um objeto `CondicoesPartida` para receber esses fatores sem mudar a API.

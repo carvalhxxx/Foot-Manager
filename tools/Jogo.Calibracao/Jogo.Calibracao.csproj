@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- CLI de calibração: simula milhares de partidas/temporadas e confere as metas de equilíbrio. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Jogo.Dominio\Jogo.Dominio.csproj" />
+    <ProjectReference Include="..\..\src\Jogo.Motor\Jogo.Motor.csproj" />
+    <ProjectReference Include="..\..\src\Jogo.Simulacao\Jogo.Simulacao.csproj" />
+  </ItemGroup>
+</Project>

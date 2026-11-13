@@ -1,0 +1,19 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Jogo.App/Jogo.App.csproj" />
+    <Project Path="src/Jogo.Dados/Jogo.Dados.csproj" />
+    <Project Path="src/Jogo.Dominio/Jogo.Dominio.csproj" />
+    <Project Path="src/Jogo.Motor/Jogo.Motor.csproj" />
+    <Project Path="src/Jogo.Simulacao/Jogo.Simulacao.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Jogo.Arquitetura.Testes/Jogo.Arquitetura.Testes.csproj" />
+    <Project Path="tests/Jogo.Dados.Testes/Jogo.Dados.Testes.csproj" />
+    <Project Path="tests/Jogo.Dominio.Testes/Jogo.Dominio.Testes.csproj" />
+    <Project Path="tests/Jogo.Motor.Testes/Jogo.Motor.Testes.csproj" />
+    <Project Path="tests/Jogo.Simulacao.Testes/Jogo.Simulacao.Testes.csproj" />
+  </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/Jogo.Calibracao/Jogo.Calibracao.csproj" />
+  </Folder>
+</Solution>

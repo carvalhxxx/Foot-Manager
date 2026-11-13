@@ -1,0 +1,39 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Jogo.App.ViewModels"
+        xmlns:r="using:Jogo.App.Recursos"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="700"
+        x:Class="Jogo.App.Views.JanelaPrincipal"
+        x:DataType="vm:JanelaPrincipalViewModel"
+        Icon="/Assets/icone.ico"
+        Title="{x:Static r:Textos.NomeDoJogo}"
+        Width="1100" Height="700" MinWidth="800" MinHeight="560"
+        WindowStartupLocation="CenterScreen">
+
+    <DockPanel>
+        <!-- Menu lateral: cada tela do jogo ganha um botão aqui (tudo a 1-2 cliques). -->
+        <Border DockPanel.Dock="Left" Width="220" Padding="16"
+                Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Top" Text="{x:Static r:Textos.NomeDoJogo}"
+                           FontSize="20" FontWeight="Bold" Margin="0,0,0,24" />
+
+                <Button DockPanel.Dock="Bottom" HorizontalAlignment="Stretch"
+                        Content="{x:Static r:Textos.BotaoAlternarTema}"
+                        Command="{Binding AlternarTemaCommand}" />
+
+                <StackPanel Spacing="4">
+                    <Button HorizontalAlignment="Stretch"
+                            Content="{x:Static r:Textos.MenuInicio}"
+                            Command="{Binding IrParaInicioCommand}" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- Área de conteúdo: o ViewLocator escolhe a View da página atual. -->
+        <ContentControl Content="{Binding PaginaAtual}" />
+    </DockPanel>
+
+</Window>

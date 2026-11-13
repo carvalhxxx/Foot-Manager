@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- TEMPORÁRIO: projeto ainda sem testes. Remover quando o primeiro teste for escrito. -->
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --ignore-exit-code 8</TestingPlatformCommandLineArguments>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Jogo.Motor\Jogo.Motor.csproj" />
+  </ItemGroup>
+</Project>

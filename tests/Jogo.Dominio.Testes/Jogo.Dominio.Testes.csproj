@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Jogo.Dominio\Jogo.Dominio.csproj" />
+  </ItemGroup>
+</Project>

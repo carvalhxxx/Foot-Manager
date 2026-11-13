@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Persistência (SQLite) e importação das definições em JSON. Única camada com I/O de dados. -->
+  <ItemGroup>
+    <ProjectReference Include="..\Jogo.Dominio\Jogo.Dominio.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Jogo.Dados.Testes" />
+  </ItemGroup>
+</Project>
