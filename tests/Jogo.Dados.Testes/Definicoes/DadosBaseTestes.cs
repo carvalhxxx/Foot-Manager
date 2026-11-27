@@ -15,7 +15,7 @@ public class DadosBaseTestes
         var (manifesto, mundo) = LeitorDefinicoes.Carregar(PastaBase);
 
         Assert.Equal("Foot Manager BR · Brasileirão 2026", manifesto.Nome);
-        Assert.Equal(40, mundo.Clubes.Count);
+        Assert.Equal(60, mundo.Clubes.Count);
         Assert.Equal(2026, mundo.TemporadaAtual);
         Assert.Contains(mundo.Clubes, c => c.Nome == "Flamengo");
     }

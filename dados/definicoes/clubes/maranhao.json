@@ -1,0 +1,794 @@
+{
+  "versaoFormato": 1,
+  "id": "maranhao",
+  "nome": "Maranhão",
+  "sigla": "MAA",
+  "cidade": "São Luís",
+  "uf": "MA",
+  "cores": {
+    "primaria": "#0057B8",
+    "secundaria": "#E30613"
+  },
+  "estadio": {
+    "nome": "Castelão (MA)",
+    "capacidade": 40149
+  },
+  "torcida": 18,
+  "reputacao": 32,
+  "caixa": 2000000,
+  "elenco": [
+    {
+      "id": 1563,
+      "nome": "Cauê",
+      "idade": 22,
+      "posicao": "GOL",
+      "atributos": {
+        "finalizacao": 5,
+        "passe": 8,
+        "desarme": 3,
+        "drible": 2,
+        "velocidade": 8,
+        "resistencia": 3,
+        "decisao": 11,
+        "determinacao": 13,
+        "reflexos": 11,
+        "posicionamento": 13
+      },
+      "ocultos": {
+        "potencial": 64,
+        "propensaoLesao": 3,
+        "profissionalismo": 7
+      },
+      "salario": 11000,
+      "contratoAte": 2026
+    },
+    {
+      "id": 1564,
+      "nome": "Victor Guilherme",
+      "idade": 26,
+      "posicao": "GOL",
+      "atributos": {
+        "finalizacao": 1,
+        "passe": 8,
+        "desarme": 6,
+        "drible": 1,
+        "velocidade": 9,
+        "resistencia": 2,
+        "decisao": 9,
+        "determinacao": 8,
+        "reflexos": 14,
+        "posicionamento": 12
+      },
+      "ocultos": {
+        "potencial": 56,
+        "propensaoLesao": 6,
+        "profissionalismo": 2
+      },
+      "salario": 11000,
+      "contratoAte": 2028
+    },
+    {
+      "id": 1565,
+      "nome": "Jean",
+      "idade": 34,
+      "posicao": "GOL",
+      "atributos": {
+        "finalizacao": 4,
+        "passe": 12,
+        "desarme": 4,
+        "drible": 3,
+        "velocidade": 10,
+        "resistencia": 6,
+        "decisao": 10,
+        "determinacao": 11,
+        "reflexos": 11,
+        "posicionamento": 10
+      },
+      "ocultos": {
+        "potencial": 50,
+        "propensaoLesao": 7,
+        "profissionalismo": 9
+      },
+      "salario": 6000,
+      "contratoAte": 2026
+    },
+    {
+      "id": 1566,
+      "nome": "Júlio",
+      "idade": 32,
+      "posicao": "ZAG",
+      "posicoesSecundarias": [
+        "VOL"
+      ],
+      "atributos": {
+        "finalizacao": 7,
+        "passe": 13,
+        "desarme": 12,
+        "drible": 9,
+        "velocidade": 13,
+        "resistencia": 14,
+        "decisao": 12,
+        "determinacao": 10,
+        "reflexos": 4,
+        "posicionamento": 1
+      },
+      "ocultos": {
+        "potencial": 57,
+        "propensaoLesao": 13,
+        "profissionalismo": 10
+      },
+      "salario": 13500,
+      "contratoAte": 2026
+    },
+    {
+      "id": 1567,
+      "nome": "Tibúrcio",
+      "idade": 26,
+      "posicao": "ZAG",
+      "posicoesSecundarias": [
+        "VOL"
+      ],
+      "atributos": {
+        "finalizacao": 10,
+        "passe": 11,
+        "desarme": 13,
+        "drible": 10,
+        "velocidade": 10,
+        "resistencia": 12,
+        "decisao": 11,
+        "determinacao": 13,
+        "reflexos": 3,
+        "posicionamento": 4
+      },
+      "ocultos": {
+        "potencial": 57,
+        "propensaoLesao": 10,
+        "profissionalismo": 12
+      },
+      "salario": 13500,
+      "contratoAte": 2027
+    },
+    {
+      "id": 1568,
+      "nome": "Lucas Santos",
+      "idade": 29,
+      "posicao": "ZAG",
+      "posicoesSecundarias": [
+        "VOL"
+      ],
+      "atributos": {
+        "finalizacao": 10,
+        "passe": 12,
+        "desarme": 15,
+        "drible": 7,
+        "velocidade": 6,
+        "resistencia": 10,
+        "decisao": 12,
+        "determinacao": 7,
+        "reflexos": 4,
+        "posicionamento": 3
+      },
+      "ocultos": {
+        "potencial": 54,
+        "propensaoLesao": 8,
+        "profissionalismo": 11
+      },
+      "salario": 10000,
+      "contratoAte": 2028
+    },
+    {
+      "id": 1569,
+      "nome": "André Radija",
+      "idade": 31,
+      "posicao": "ZAG",
+      "atributos": {
+        "finalizacao": 7,
+        "passe": 12,
+        "desarme": 13,
+        "drible": 9,
+        "velocidade": 10,
+        "resistencia": 9,
+        "decisao": 11,
+        "determinacao": 8,
+        "reflexos": 3,
+        "posicionamento": 2
+      },
+      "ocultos": {
+        "potencial": 52,
+        "propensaoLesao": 7,
+        "profissionalismo": 1
+      },
+      "salario": 8000,
+      "contratoAte": 2028
+    },
+    {
+      "id": 1570,
+      "nome": "Luis Fernando",
+      "idade": 36,
+      "posicao": "LD",
+      "atributos": {
+        "finalizacao": 11,
+        "passe": 10,
+        "desarme": 15,
+        "drible": 9,
+        "velocidade": 12,
+        "resistencia": 13,
+        "decisao": 9,
+        "determinacao": 12,
+        "reflexos": 3,
+        "posicionamento": 4
+      },
+      "ocultos": {
+        "potencial": 57,
+        "propensaoLesao": 7,
+        "profissionalismo": 9
+      },
+      "salario": 13500,
+      "contratoAte": 2029
+    },
+    {
+      "id": 1571,
+      "nome": "Edson Fernando",
+      "idade": 26,
+      "posicao": "LD",
+      "posicoesSecundarias": [
+        "ALD"
+      ],
+      "atributos": {
+        "finalizacao": 6,
+        "passe": 11,
+        "desarme": 10,
+        "drible": 10,
+        "velocidade": 14,
+        "resistencia": 9,
+        "decisao": 11,
+        "determinacao": 9,
+        "reflexos": 3,
+        "posicionamento": 3
+      },
+      "ocultos": {
+        "potencial": 55,
+        "propensaoLesao": 12,
+        "profissionalismo": 16
+      },
+      "salario": 8000,
+      "contratoAte": 2027
+    },
+    {
+      "id": 1572,
+      "nome": "Keven",
+      "idade": 31,
+      "posicao": "LE",
+      "posicoesSecundarias": [
+        "ZAG",
+        "ME"
+      ],
+      "atributos": {
+        "finalizacao": 9,
+        "passe": 13,
+        "desarme": 10,
+        "drible": 13,
+        "velocidade": 13,
+        "resistencia": 12,
+        "decisao": 10,
+        "determinacao": 13,
+        "reflexos": 3,
+        "posicionamento": 3
+      },
+      "ocultos": {
+        "potencial": 57,
+        "propensaoLesao": 12,
+        "profissionalismo": 12
+      },
+      "salario": 13500,
+      "contratoAte": 2027
+    },
+    {
+      "id": 1573,
+      "nome": "Iran",
+      "idade": 30,
+      "posicao": "LE",
+      "posicoesSecundarias": [
+        "ME"
+      ],
+      "atributos": {
+        "finalizacao": 6,
+        "passe": 12,
+        "desarme": 12,
+        "drible": 9,
+        "velocidade": 13,
+        "resistencia": 12,
+        "decisao": 11,
+        "determinacao": 9,
+        "reflexos": 3,
+        "posicionamento": 4
+      },
+      "ocultos": {
+        "potencial": 55,
+        "propensaoLesao": 5,
+        "profissionalismo": 14
+      },
+      "salario": 11000,
+      "contratoAte": 2029
+    },
+    {
+      "id": 1574,
+      "nome": "Maurício",
+      "idade": 27,
+      "posicao": "VOL",
+      "posicoesSecundarias": [
+        "ZAG",
+        "MC"
+      ],
+      "atributos": {
+        "finalizacao": 8,
+        "passe": 10,
+        "desarme": 12,
+        "drible": 8,
+        "velocidade": 12,
+        "resistencia": 12,
+        "decisao": 9,
+        "determinacao": 12,
+        "reflexos": 4,
+        "posicionamento": 4
+      },
+      "ocultos": {
+        "potencial": 54,
+        "propensaoLesao": 3,
+        "profissionalismo": 7
+      },
+      "salario": 8000,
+      "contratoAte": 2026
+    },
+    {
+      "id": 1575,
+      "nome": "Railson",
+      "idade": 26,
+      "posicao": "VOL",
+      "atributos": {
+        "finalizacao": 9,
+        "passe": 14,
+        "desarme": 10,
+        "drible": 7,
+        "velocidade": 7,
+        "resistencia": 8,
+        "decisao": 10,
+        "determinacao": 13,
+        "reflexos": 2,
+        "posicionamento": 2
+      },
+      "ocultos": {
+        "potencial": 53,
+        "propensaoLesao": 10,
+        "profissionalismo": 4
+      },
+      "salario": 7000,
+      "contratoAte": 2026
+    },
+    {
+      "id": 1576,
+      "nome": "Willyam Maranhão",
+      "idade": 29,
+      "posicao": "MC",
+      "posicoesSecundarias": [
+        "VOL",
+        "MO"
+      ],
+      "atributos": {
+        "finalizacao": 8,
+        "passe": 11,
+        "desarme": 12,
+        "drible": 8,
+        "velocidade": 7,
+        "resistencia": 14,
+        "decisao": 14,
+        "determinacao": 9,
+        "reflexos": 4,
+        "posicionamento": 4
+      },
+      "ocultos": {
+        "potencial": 55,
+        "propensaoLesao": 2,
+        "profissionalismo": 10
+      },
+      "salario": 11000,
+      "contratoAte": 2029
+    },
+    {
+      "id": 1577,
+      "nome": "Jorge Rocha",
+      "idade": 28,
+      "posicao": "MC",
+      "atributos": {
+        "finalizacao": 11,
+        "passe": 11,
+        "desarme": 12,
+        "drible": 13,
+        "velocidade": 6,
+        "resistencia": 11,
+        "decisao": 10,
+        "determinacao": 11,
+        "reflexos": 1,
+        "posicionamento": 2
+      },
+      "ocultos": {
+        "potencial": 53,
+        "propensaoLesao": 8,
+        "profissionalismo": 11
+      },
+      "salario": 8500,
+      "contratoAte": 2026
+    },
+    {
+      "id": 1578,
+      "nome": "Rosivan",
+      "idade": 26,
+      "posicao": "MC",
+      "atributos": {
+        "finalizacao": 9,
+        "passe": 11,
+        "desarme": 9,
+        "drible": 8,
+        "velocidade": 10,
+        "resistencia": 9,
+        "decisao": 13,
+        "determinacao": 13,
+        "reflexos": 4,
+        "posicionamento": 1
+      },
+      "ocultos": {
+        "potencial": 53,
+        "propensaoLesao": 6,
+        "profissionalismo": 10
+      },
+      "salario": 7000,
+      "contratoAte": 2029
+    },
+    {
+      "id": 1579,
+      "nome": "Rodrigo",
+      "idade": 32,
+      "posicao": "MO",
+      "atributos": {
+        "finalizacao": 9,
+        "passe": 11,
+        "desarme": 7,
+        "drible": 13,
+        "velocidade": 9,
+        "resistencia": 8,
+        "decisao": 14,
+        "determinacao": 7,
+        "reflexos": 2,
+        "posicionamento": 4
+      },
+      "ocultos": {
+        "potencial": 53,
+        "propensaoLesao": 12,
+        "profissionalismo": 11
+      },
+      "salario": 8500,
+      "contratoAte": 2029
+    },
+    {
+      "id": 1580,
+      "nome": "Vagalume",
+      "idade": 27,
+      "posicao": "MD",
+      "atributos": {
+        "finalizacao": 11,
+        "passe": 10,
+        "desarme": 11,
+        "drible": 11,
+        "velocidade": 9,
+        "resistencia": 10,
+        "decisao": 9,
+        "determinacao": 12,
+        "reflexos": 1,
+        "posicionamento": 3
+      },
+      "ocultos": {
+        "potencial": 51,
+        "propensaoLesao": 9,
+        "profissionalismo": 13
+      },
+      "salario": 5500,
+      "contratoAte": 2026
+    },
+    {
+      "id": 1581,
+      "nome": "Vander",
+      "idade": 28,
+      "posicao": "ME",
+      "atributos": {
+        "finalizacao": 12,
+        "passe": 11,
+        "desarme": 12,
+        "drible": 12,
+        "velocidade": 11,
+        "resistencia": 12,
+        "decisao": 12,
+        "determinacao": 11,
+        "reflexos": 3,
+        "posicionamento": 4
+      },
+      "ocultos": {
+        "potencial": 55,
+        "propensaoLesao": 10,
+        "profissionalismo": 5
+      },
+      "salario": 11000,
+      "contratoAte": 2027
+    },
+    {
+      "id": 1582,
+      "nome": "Richarles",
+      "idade": 22,
+      "posicao": "ATA",
+      "posicoesSecundarias": [
+        "SA"
+      ],
+      "atributos": {
+        "finalizacao": 14,
+        "passe": 13,
+        "desarme": 7,
+        "drible": 12,
+        "velocidade": 9,
+        "resistencia": 12,
+        "decisao": 9,
+        "determinacao": 9,
+        "reflexos": 1,
+        "posicionamento": 3
+      },
+      "ocultos": {
+        "potencial": 59,
+        "propensaoLesao": 3,
+        "profissionalismo": 10
+      },
+      "salario": 11000,
+      "contratoAte": 2029
+    },
+    {
+      "id": 1583,
+      "nome": "Erverson",
+      "idade": 28,
+      "posicao": "ATA",
+      "atributos": {
+        "finalizacao": 13,
+        "passe": 10,
+        "desarme": 8,
+        "drible": 9,
+        "velocidade": 11,
+        "resistencia": 10,
+        "decisao": 10,
+        "determinacao": 12,
+        "reflexos": 2,
+        "posicionamento": 3
+      },
+      "ocultos": {
+        "potencial": 54,
+        "propensaoLesao": 11,
+        "profissionalismo": 11
+      },
+      "salario": 10000,
+      "contratoAte": 2026
+    },
+    {
+      "id": 1584,
+      "nome": "Ronald Makalysten",
+      "idade": 26,
+      "posicao": "ATA",
+      "atributos": {
+        "finalizacao": 12,
+        "passe": 12,
+        "desarme": 9,
+        "drible": 8,
+        "velocidade": 9,
+        "resistencia": 11,
+        "decisao": 8,
+        "determinacao": 13,
+        "reflexos": 1,
+        "posicionamento": 3
+      },
+      "ocultos": {
+        "potencial": 52,
+        "propensaoLesao": 5,
+        "profissionalismo": 6
+      },
+      "salario": 6000,
+      "contratoAte": 2029
+    },
+    {
+      "id": 1585,
+      "nome": "Lucão",
+      "idade": 26,
+      "posicao": "LE",
+      "posicoesSecundarias": [
+        "ZAG"
+      ],
+      "atributos": {
+        "finalizacao": 9,
+        "passe": 9,
+        "desarme": 9,
+        "drible": 12,
+        "velocidade": 13,
+        "resistencia": 13,
+        "decisao": 12,
+        "determinacao": 10,
+        "reflexos": 1,
+        "posicionamento": 2
+      },
+      "ocultos": {
+        "potencial": 56,
+        "propensaoLesao": 8,
+        "profissionalismo": 13
+      },
+      "salario": 8500,
+      "contratoAte": 2026
+    },
+    {
+      "id": 1586,
+      "nome": "Franklin",
+      "idade": 30,
+      "posicao": "ZAG",
+      "posicoesSecundarias": [
+        "VOL"
+      ],
+      "atributos": {
+        "finalizacao": 9,
+        "passe": 8,
+        "desarme": 13,
+        "drible": 10,
+        "velocidade": 10,
+        "resistencia": 12,
+        "decisao": 9,
+        "determinacao": 10,
+        "reflexos": 4,
+        "posicionamento": 4
+      },
+      "ocultos": {
+        "potencial": 52,
+        "propensaoLesao": 10,
+        "profissionalismo": 11
+      },
+      "salario": 8000,
+      "contratoAte": 2027
+    },
+    {
+      "id": 1587,
+      "nome": "Ball",
+      "idade": 28,
+      "posicao": "LD",
+      "posicoesSecundarias": [
+        "MD"
+      ],
+      "atributos": {
+        "finalizacao": 8,
+        "passe": 11,
+        "desarme": 10,
+        "drible": 12,
+        "velocidade": 13,
+        "resistencia": 8,
+        "decisao": 11,
+        "determinacao": 10,
+        "reflexos": 1,
+        "posicionamento": 1
+      },
+      "ocultos": {
+        "potencial": 51,
+        "propensaoLesao": 11,
+        "profissionalismo": 11
+      },
+      "salario": 7000,
+      "contratoAte": 2028
+    },
+    {
+      "id": 1588,
+      "nome": "Rodrigo Negueba",
+      "idade": 27,
+      "posicao": "ZAG",
+      "posicoesSecundarias": [
+        "VOL"
+      ],
+      "atributos": {
+        "finalizacao": 7,
+        "passe": 11,
+        "desarme": 12,
+        "drible": 8,
+        "velocidade": 12,
+        "resistencia": 12,
+        "decisao": 9,
+        "determinacao": 8,
+        "reflexos": 1,
+        "posicionamento": 4
+      },
+      "ocultos": {
+        "potencial": 53,
+        "propensaoLesao": 4,
+        "profissionalismo": 15
+      },
+      "salario": 7000,
+      "contratoAte": 2029
+    },
+    {
+      "id": 1589,
+      "nome": "Tiago Sampaio",
+      "idade": 27,
+      "posicao": "PD",
+      "atributos": {
+        "finalizacao": 9,
+        "passe": 8,
+        "desarme": 6,
+        "drible": 14,
+        "velocidade": 12,
+        "resistencia": 9,
+        "decisao": 12,
+        "determinacao": 8,
+        "reflexos": 2,
+        "posicionamento": 3
+      },
+      "ocultos": {
+        "potencial": 53,
+        "propensaoLesao": 9,
+        "profissionalismo": 5
+      },
+      "salario": 8500,
+      "contratoAte": 2027
+    },
+    {
+      "id": 1590,
+      "nome": "Renato Machado",
+      "idade": 27,
+      "posicao": "PE",
+      "posicoesSecundarias": [
+        "ME"
+      ],
+      "atributos": {
+        "finalizacao": 13,
+        "passe": 12,
+        "desarme": 8,
+        "drible": 10,
+        "velocidade": 11,
+        "resistencia": 8,
+        "decisao": 14,
+        "determinacao": 10,
+        "reflexos": 4,
+        "posicionamento": 2
+      },
+      "ocultos": {
+        "potencial": 57,
+        "propensaoLesao": 5,
+        "profissionalismo": 10
+      },
+      "salario": 10000,
+      "contratoAte": 2026
+    },
+    {
+      "id": 1591,
+      "nome": "Léo",
+      "idade": 31,
+      "posicao": "ATA",
+      "posicoesSecundarias": [
+        "SA"
+      ],
+      "atributos": {
+        "finalizacao": 12,
+        "passe": 9,
+        "desarme": 8,
+        "drible": 9,
+        "velocidade": 11,
+        "resistencia": 13,
+        "decisao": 13,
+        "determinacao": 9,
+        "reflexos": 3,
+        "posicionamento": 2
+      },
+      "ocultos": {
+        "potencial": 54,
+        "propensaoLesao": 10,
+        "profissionalismo": 5
+      },
+      "salario": 10000,
+      "contratoAte": 2029
+    }
+  ]
+}

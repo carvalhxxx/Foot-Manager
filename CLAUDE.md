@@ -56,7 +56,7 @@ web/                 Interface React + TypeScript (Vite).
   src/narracao.ts    Narração ao vivo: vários textos por tipo de lance (texto de interface, não regra de jogo).
   src/saves/         Armazenamento dos saves (IndexedDB; versão em memória para testes), salvar e baixar arquivo.
 tools/Jogo.Calibracao    CLI que simula milhares de partidas e temporadas e confere as metas.
-tools/Jogo.Simulador     CLI que simula temporadas completas (Séries A e B) sem interface.
+tools/Jogo.Simulador     CLI que simula temporadas completas (Séries A, B e C) sem interface.
 tools/Jogo.GeradorDados  Gera o mundo inicial (clubes e elencos reais de tools/Jogo.GeradorDados/reais/) em dados/definicoes.
 tests/               Um projeto de testes por camada + Jogo.Arquitetura.Testes.
 dados/definicoes/    Ligas, clubes e jogadores em JSON (formato aberto). Entram no site em tempo de build.

@@ -1,0 +1,379 @@
+# Elencos reais, Série C 2026. Fonte: ogol.com.br (temporada 2026, lido em 27/11/2026).
+# Formato: clube|nome|posição|idade|valor em euros (vazio = sem valor). Posição: GOL, DEF, MEI, ATA ou a exata.
+# Jogadores de até 20 anos sem valor de mercado foram deixados de fora (base).
+# Guarani, Ferroviária, Volta Redonda e Ypiranga: o ogol não abriu a página certa; elenco gerado até haver fonte.
+amazonas|João Lopes|GOL|30|100000
+amazonas|Victor Lube|GOL|32|
+amazonas|Renan|GOL|37|
+amazonas|Bruno Ramires|DEF|32|200000
+amazonas|Rafael Furlan|DEF|32|150000
+amazonas|Diego Ivo|DEF|37|250000
+amazonas|Cicinho|LD|37|
+amazonas|Joílson|DEF|35|
+amazonas|Marcondes|DEF|33|
+amazonas|Iury|DEF|34|
+amazonas|Ítalo Silva|DEF|35|
+amazonas|Iverton|DEF|25|
+amazonas|Kaio Luciano|DEF|21|
+amazonas|Fabiano|DEF|36|
+amazonas|Marcel Scalese|DEF|30|
+amazonas|Kayan|DEF|21|
+amazonas|Alyson|DEF|30|
+amazonas|Fabinho|MEI|30|300000
+amazonas|Jorge Jiménez|MEI|33|100000
+amazonas|Ronald|ATA|24|97000
+amazonas|Diego Torres|ATA|24|500000
+anapolis|Ravel Pelegrini|GOL|31|
+anapolis|Victor Hugo|GOL|26|
+anapolis|Paulo Henrique|GOL|32|
+anapolis|Carioca|DEF|26|
+anapolis|Marcos Espindola|DEF|26|
+anapolis|Rafael Costa|DEF|26|
+anapolis|Rubinho|DEF|23|
+anapolis|Vitinho|DEF|29|
+anapolis|Kaik Viçoza|DEF|22|
+anapolis|Igor Souza|DEF|30|
+anapolis|Helder|DEF|25|
+anapolis|Leonan|DEF|31|
+anapolis|Mayron|DEF|27|
+anapolis|Danilo Regio|DEF|23|
+anapolis|Vitor Marinho|DEF|25|
+anapolis|Robson Reis|DEF|26|
+anapolis|Nenê Bonilha|MEI|34|200000
+anapolis|Samuel|MEI|27|100000
+anapolis|Vitor Fonseca|MEI|21|
+anapolis|Cássio Gabriel|MEI|34|
+anapolis|Raí|MEI|22|
+anapolis|Giva|ATA|27|
+barra-sc|Matheus Kayser|GOL|31|100000
+barra-sc|Ewerton|GOL|28|500000
+barra-sc|Fabian Volpi|GOL|29|
+barra-sc|José Rivas|DEF|18|50000
+barra-sc|Guilherme Lazaroni|LE|34|100000
+barra-sc|João Vinícius|DEF|22|
+barra-sc|Jean Pierre|DEF|33|
+barra-sc|Éverton Alemão|DEF|33|
+barra-sc|Da Rocha|DEF|21|
+barra-sc|Vitão|DEF|31|
+barra-sc|Léo Duarte|DEF|27|
+barra-sc|Kayque Ryann|DEF|22|
+barra-sc|Vavá França|DEF|33|
+barra-sc|Augusto Potiguar|DEF|31|
+barra-sc|Fábio|DEF|25|
+barra-sc|Adriel|DEF|25|
+barra-sc|Marquinho|MEI|24|500000
+barra-sc|João Gaudêncio|MEI|23|
+barra-sc|Gustavo Pereira|MEI|21|
+barra-sc|Vinicius Popó|ATA|25|94000
+botafogo-pb|Edílson|GOL|23|
+botafogo-pb|Max Walef|GOL|33|
+botafogo-pb|Michael|GOL|31|
+botafogo-pb|Yan Souto|DEF|25|
+botafogo-pb|Igor Morais|DEF|28|
+botafogo-pb|Bull|DEF|26|
+botafogo-pb|Léo Pereira|DEF|28|
+botafogo-pb|Lucas Sena|DEF|25|
+botafogo-pb|Diogo Mateus|LD|33|
+botafogo-pb|Saimon|DEF|35|
+botafogo-pb|Júlio Vaz|DEF|29|
+botafogo-pb|Octávio|DEF|25|
+botafogo-pb|Dhônata|DEF|22|
+botafogo-pb|PK|DEF|32|
+botafogo-pb|Vitor Ricardo|DEF|26|
+botafogo-pb|Erick|DEF|23|
+botafogo-pb|Nenê|MO|45|100000
+botafogo-pb|Thallyson|MEI|30|
+botafogo-pb|Dudu Nardini|MEI|29|
+botafogo-pb|Lucas Cândido|MEI|32|
+botafogo-pb|Gabriel Tota|MEI|25|
+botafogo-pb|Jhonata Varela|MEI|26|
+botafogo-pb|Gustavo Balotelli|ATA|30|400000
+botafogo-pb|Henrique Dourado|ATA|37|200000
+brusque|Lucas Moura|GOL|22|100000
+brusque|Matheus Nogueira|GOL|40|
+brusque|Paulo Gianezini|GOL|35|
+brusque|Mateus Pivô|DEF|28|300000
+brusque|João Félix|DEF|24|400000
+brusque|Vinicius Preuss|DEF|21|
+brusque|Léo Ataíde|DEF|22|
+brusque|Jeferson|DEF|30|
+brusque|Ryan Santos|DEF|22|
+brusque|Davi Gabriel|DEF|29|
+brusque|Pedro Medeiros|DEF|24|
+brusque|João Maistro|DEF|26|
+brusque|Alisson Cassiano|DEF|32|
+brusque|Cipriano|DEF|24|
+brusque|Rafael Milhorim|DEF|27|
+brusque|Matías Salas|DEF|29|
+brusque|Pedro Martins|MEI|26|
+brusque|Bernardo|MEI|24|
+brusque|Alex Paulino|MEI|24|
+brusque|Gazão|MEI|24|
+brusque|Jonatan Lucca|MEI|32|
+brusque|Lucas de Sá|MEI|30|
+brusque|João Pedro|MEI|28|
+brusque|Biel Fonseca|MEI|24|
+brusque|Luizão|ATA|23|250000
+caxias|Léo Lang|GOL|28|97000
+caxias|Marcelo|GOL|26|
+caxias|Gustavo Busatto|GOL|36|
+caxias|Maurício Ribeiro|DEF|35|
+caxias|Vitinho|DEF|25|
+caxias|Windson|DEF|31|
+caxias|Roberto|DEF|35|
+caxias|Felipe Albuquerque|DEF|27|
+caxias|Ronei|DEF|28|
+caxias|Joílson|DEF|35|
+caxias|Thiago Ennes|DEF|30|
+caxias|Dija|DEF|23|
+caxias|Mancha|DEF|24|
+caxias|André Dantas|DEF|27|
+caxias|Andrés Robles|DEF|32|
+caxias|Ravanelli|MEI|29|250000
+caxias|Matheus Anjos|MEI|27|
+caxias|Marcelo Freitas|MEI|32|
+caxias|Grigor|MEI|25|
+caxias|Breno Santos|MEI|28|
+caxias|Dudu Vieira|MEI|32|
+caxias|Tomas Bastos|MEI|34|
+caxias|Wellington Reis|MEI|34|
+caxias|Yann Rolim|MEI|31|
+confianca|Matheus Emiliano|GOL|25|
+confianca|João Fernandes|GOL|22|
+confianca|Rafael Pascoal|GOL|36|
+confianca|Alisson|DEF|31|
+confianca|Ícaro|DEF|33|
+confianca|Eduardo Moura|DEF|33|
+confianca|Marcelo Nunes|DEF|27|
+confianca|Kelvyn|DEF|27|
+confianca|Enzo Rocha|DEF|21|
+confianca|Lucas Cunha|DEF|32|
+confianca|Mateus Ludke|DEF|25|
+confianca|Valdir Júnior|DEF|26|
+confianca|Weriton|DEF|34|
+confianca|Renilson|DEF|27|
+confianca|Madison|MEI|28|50000
+confianca|Gabriel Zeca|MEI|24|
+confianca|Guilherme Nunes|MEI|28|
+confianca|Lorran|MEI|30|
+confianca|PK|MEI|28|
+confianca|Gustavo Nicola|MEI|28|
+confianca|Wendel|MEI|29|
+confianca|Fabrício Oya|MEI|27|
+confianca|Bruno Silva|MEI|40|
+confianca|Jotta|ATA|23|400000
+confianca|Andrey Quintino|ATA|24|200000
+figueirense|Fabrício Santana|GOL|40|
+figueirense|Vavá|GOL|27|
+figueirense|Igo Gabriel|GOL|25|
+figueirense|Arthur Henrique|DEF|32|500000
+figueirense|Ezequiel|DEF|33|
+figueirense|Zé Luiz|DEF|21|
+figueirense|Léo Maia|DEF|23|
+figueirense|Leonan Santos|DEF|26|
+figueirense|Anderson Conceição|ZAG|37|
+figueirense|Vitor Ricardo|DEF|26|
+figueirense|Felipe Santiago|DEF|24|
+figueirense|Douglas Bacelar|DEF|36|
+figueirense|Jhonnathan|DEF|25|
+figueirense|Matheus Mascarenhas|DEF|28|
+figueirense|Lucas Dias|DEF|31|
+figueirense|Paulo César|DEF|27|
+figueirense|Jean Gabriel|MEI|23|300000
+figueirense|Renan Areias|MEI|28|
+figueirense|Breno|MEI|26|
+figueirense|Flávio|MEI|26|
+figueirense|Rafinha Potiguar|MEI|27|
+figueirense|Choco|MEI|25|
+figueirense|Raynan|MEI|25|
+figueirense|Kayke Moreno|ATA|38|150000
+floresta|Jeferson Souza|GOL|32|
+floresta|Dheimison|GOL|37|
+floresta|Tiepo|GOL|28|
+floresta|Léo|DEF|24|
+floresta|Diego Matos|DEF|29|
+floresta|Cedric|DEF|28|
+floresta|Eliandro|DEF|27|
+floresta|Eduardo|DEF|24|
+floresta|Afonso|DEF|32|
+floresta|João Victor|DEF|24|
+floresta|Valdo|DEF|34|
+floresta|Zulu|DEF|28|
+floresta|Islan|DEF|30|
+floresta|Marco Antônio|DEF|26|
+floresta|Caíque|DEF|28|
+floresta|Gabriel Martins|MEI|22|
+floresta|Arilson|MEI|23|
+floresta|Buga|MEI|25|
+floresta|Danrley|MEI|25|
+floresta|Jhony Douglas|MEI|29|
+floresta|Guilherme Borges|MEI|27|
+floresta|Nonato|MEI|30|
+floresta|Natan Costa|MEI|31|
+floresta|Garraty|MEI|28|
+floresta|Matheusinho|MEI|28|
+inter-de-limeira|Saulo|GOL|41|
+inter-de-limeira|Pedro Nagel|GOL|24|
+inter-de-limeira|Renan Bragança|GOL|29|
+inter-de-limeira|Vidal|DEF|30|
+inter-de-limeira|Yan Silva|DEF|30|
+inter-de-limeira|Lucas Santos|DEF|33|
+inter-de-limeira|Nassom|DEF|23|
+inter-de-limeira|Juan Tavares|DEF|24|
+inter-de-limeira|Léo Paraíso|DEF|26|
+inter-de-limeira|Gabriel Dias|DEF|32|
+inter-de-limeira|Robson|DEF|33|
+inter-de-limeira|Fagner Alemão|DEF|36|
+inter-de-limeira|João Victor|DEF|24|
+inter-de-limeira|Heitor Roca|DEF|28|
+inter-de-limeira|Breno Santos|DEF|30|
+inter-de-limeira|Frazan|DEF|30|
+inter-de-limeira|Mário Henrique|DEF|33|
+inter-de-limeira|Alef|MEI|31|300000
+inter-de-limeira|Claudinho|MEI|26|
+inter-de-limeira|Lucas Buchecha|MEI|26|
+inter-de-limeira|Marco Antônio|MEI|29|
+inter-de-limeira|Emerson Santos|MEI|34|
+inter-de-limeira|Ronaldo Henrique|MEI|32|
+inter-de-limeira|Gustavo Bochecha|MEI|30|
+inter-de-limeira|Luiz Guilherme|MEI|22|
+itabaiana|Geaze|GOL|32|
+itabaiana|Jefferson|GOL|33|
+itabaiana|Léo Souza|GOL|37|
+itabaiana|Gustavo Fagundes|DEF|25|
+itabaiana|Manoel|DEF|30|
+itabaiana|Lucão|DEF|28|
+itabaiana|Tito|DEF|29|
+itabaiana|Júlio Henrique|DEF|24|
+itabaiana|Isaque|DEF|25|
+itabaiana|Ligger|ZAG|38|
+itabaiana|Betão|DEF|35|
+itabaiana|Caio Felipe|DEF|27|
+itabaiana|Dequinha|DEF|28|
+itabaiana|Karl|MO|33|150000
+itabaiana|Ravanelli|MEI|29|250000
+itabaiana|Dyego|MEI|23|
+itabaiana|Tarcísio|MEI|34|
+itabaiana|Cleiton|MEI|28|
+itabaiana|Gustavo Crecci|MEI|31|
+itabaiana|Renatinho|MEI|34|
+itabaiana|Yago Henrique|MEI|31|
+itabaiana|Dione|MEI|33|
+itabaiana|Kayan|MEI|26|
+itabaiana|Lucas Bessa|MEI|27|
+ituano|Lucas Wingert|GOL|27|
+ituano|Saulo|GOL|31|
+ituano|Wesley Borges|GOL|24|
+ituano|Matheus Mancini|DEF|32|
+ituano|Lucas Mota|DEF|31|
+ituano|Leandro Sergipe|DEF|27|
+ituano|Thassio|DEF|26|
+ituano|Lucas Dias|DEF|21|
+ituano|Léo Coltro|DEF|27|
+ituano|Guilherme Dal Pian|DEF|27|
+ituano|Carlão|DEF|26|
+ituano|Tiaguinho|DEF|25|
+ituano|Marthã|MEI|29|350000
+ituano|Fernando Canesin|MO|34|500000
+ituano|Nelsinho|MEI|32|
+ituano|Victor Reis|MEI|22|
+ituano|Lipe Gadol|MEI|22|
+ituano|Guilherme Xavier|MEI|31|
+ituano|Felipe Muranga|MEI|25|
+ituano|Bruno Mezenga|ATA|38|300000
+maranhao|Jean|GOL|34|
+maranhao|Victor Guilherme|GOL|26|
+maranhao|Cauê|GOL|22|
+maranhao|Rodrigo Negueba|DEF|27|
+maranhao|Ball|DEF|28|
+maranhao|Lucão|DEF|26|
+maranhao|Lucas Santos|DEF|29|
+maranhao|André Radija|DEF|31|
+maranhao|Edson Fernando|DEF|26|
+maranhao|Iran|DEF|30|
+maranhao|Júlio|DEF|32|
+maranhao|Tibúrcio|DEF|26|
+maranhao|Luis Fernando|DEF|36|
+maranhao|Keven|DEF|31|
+maranhao|Franklin|DEF|30|
+maranhao|Railson|MEI|26|
+maranhao|Jorge Rocha|MEI|28|
+maranhao|Rodrigo|MEI|32|
+maranhao|Vagalume|MEI|27|
+maranhao|Vander|MEI|28|
+maranhao|Willyam Maranhão|MEI|29|
+maranhao|Maurício|MEI|27|
+maranhao|Rosivan|MEI|26|
+maranhao|Erverson|ATA|28|
+maranhao|Ronald Makalysten|ATA|26|
+maranhao|Richarles|ATA|22|
+maringa|Tony Batista|GOL|34|100000
+maringa|Gabriel Affonso|GOL|28|
+maringa|Romário|GOL|25|
+maringa|Gabriel Souza|DEF|23|
+maringa|Gabriel Travassos|DEF|25|
+maringa|Ronald Carvalho|DEF|26|
+maringa|Wendel Lomar|DEF|30|
+maringa|Keven|DEF|24|
+maringa|Felipe Cardoso|DEF|22|
+maringa|Jhow Alecxander|DEF|23|
+maringa|Wallace|DEF|22|
+maringa|Jesiel|DEF|32|
+maringa|Thiago Rosa|DEF|24|
+maringa|Rhuan|DEF|26|
+maringa|Danielzinho|MEI|24|
+maringa|Iago Santana|MEI|27|
+maringa|Lucas Bonifácio|MEI|25|
+maringa|Kelvi Gomes|MEI|24|
+maringa|Adeílson|MEI|28|
+maringa|Paulinho|MEI|28|
+maringa|Serginho|MEI|35|
+maringa|Nacho Neira|MEI|28|
+maringa|Edison Negueba|ATA|26|
+maringa|Júlio Rodrigues|ATA|25|
+maringa|Giovane Gomez|ATA|31|
+paysandu|Jean Drosny|GOL|32|
+paysandu|Gabriel Mesquita|GOL|28|
+paysandu|Marcão|GOL|23|
+paysandu|Gustavo Henrique|DEF|27|
+paysandu|Eduardo|DEF|25|
+paysandu|Renan Castro|DEF|31|
+paysandu|Lucas Rodrigues|DEF|24|
+paysandu|Pedro Carrerette|DEF|28|
+paysandu|Edílson|LD|31|
+paysandu|Bruno Bispo|DEF|30|
+paysandu|Castro|DEF|31|
+paysandu|Facundo Bonifazi|DEF|31|
+paysandu|Luciano Taboca|DEF|32|
+paysandu|JP Galvão|DEF|25|
+paysandu|Yeferson Quintana|DEF|30|
+paysandu|Luccão|DEF|23|
+paysandu|Tiago Índio|MEI|24|
+paysandu|Radsley|MEI|31|
+paysandu|Pablo Alcântara|MEI|23|
+santa-cruz|Thiago Coelho|GOL|31|
+santa-cruz|Rokenedy|GOL|24|
+santa-cruz|Felipe Alves|GOL|38|
+santa-cruz|William Alves|ZAG|39|500000
+santa-cruz|Eurico|DEF|32|200000
+santa-cruz|Pedro Costa|DEF|33|75000
+santa-cruz|Alex Ruan|DEF|33|
+santa-cruz|Matheus Vinícius|DEF|27|
+santa-cruz|Rodrigues|DEF|26|
+santa-cruz|Thiago Ennes|DEF|30|
+santa-cruz|Edson Miranda|DEF|27|
+santa-cruz|Jeferson Bahia|DEF|34|
+santa-cruz|Zé Mário|DEF|34|
+santa-cruz|Ianson|DEF|31|
+santa-cruz|Israel|DEF|32|
+santa-cruz|Pedro Favela|MEI|27|
+santa-cruz|Patrick Allan|MEI|31|
+santa-cruz|João Pedro|MEI|28|
+santa-cruz|Fabinho|MEI|40|
+santa-cruz|Arilson|MEI|32|
+santa-cruz|Andrey|MEI|28|
+santa-cruz|Léo Costa|MEI|31|
+santa-cruz|Silva|MEI|31|
+santa-cruz|Régis|MEI|33|
+santa-cruz|Matheus Melo|MEI|27|
+santa-cruz|Willian Júnior|MEI|27|

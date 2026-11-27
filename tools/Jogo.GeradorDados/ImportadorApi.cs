@@ -32,6 +32,14 @@ internal sealed class ImportadorApi(string chave, string pastaCache, bool renova
         ["athletic"] = ["Athletic Club", "Athletic"],
         ["america-mg"] = ["America Mineiro", "America-MG"],
         ["novorizontino"] = ["Novorizontino", "Gremio Novorizontino"],
+        ["botafogo-pb"] = ["Botafogo PB", "Botafogo-PB"],
+        ["barra-sc"] = ["Barra", "Barra FC", "Barra SC"],
+        ["inter-de-limeira"] = ["Inter De Limeira", "Internacional de Limeira"],
+        ["ypiranga"] = ["Ypiranga-RS", "Ypiranga RS", "Ypiranga"],
+        ["ferroviaria"] = ["Ferroviaria", "Ferroviária"],
+        ["maranhao"] = ["Maranhao", "Maranhão"],
+        ["santa-cruz"] = ["Santa Cruz", "Santa Cruz PE"],
+        ["guarani"] = ["Guarani", "Guarani Campinas"],
     };
 
     private readonly HttpClient _http = CriarCliente(chave);

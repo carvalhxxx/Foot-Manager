@@ -29,6 +29,9 @@ Mobile, saves na nuvem, ligas online entre amigos, modelo freemium/assinatura.
 
 ## Feito
 
+### Série C · P
+- 20 clubes reais da Série C 2026 com elencos do ogol (4 gerados por falta de fonte), turno e returno, 4 sobem para a B; a B passa a rebaixar 4 (D-039).
+
 ### Elencos atuais pela API-Football (só local) · P
 - Importador com cache e cruzamento com os dados pesquisados; modo `npm run dev:local` no site; nada da API vai para o repositório nem para o site publicado (D-038).
 

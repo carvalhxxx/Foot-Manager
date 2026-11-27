@@ -51,7 +51,7 @@ public class ApiJsonTestes
         var dados = Ok(api.CarregarDefinicoes(ArquivosDaBase));
 
         Assert.Equal(2026, dados["temporada"]!.GetValue<int>());
-        Assert.Equal(2, dados["divisoes"]!.AsArray().Count);
+        Assert.Equal(3, dados["divisoes"]!.AsArray().Count);
         Assert.Equal(20, dados["divisoes"]![0]!["clubes"]!.AsArray().Count);
     }
 
@@ -179,7 +179,7 @@ public class ApiJsonTestes
         var intervalo = Ok(api.AvancarAoVivo(200));
         Assert.Equal("intervalo", intervalo["pausa"]!.GetValue<string>());
         Assert.Equal(45, intervalo["minhaPartida"]!["minuto"]!.GetValue<int>());
-        Assert.Equal(2, intervalo["placares"]!.AsArray().Count);
+        Assert.Equal(3, intervalo["placares"]!.AsArray().Count);
 
         var minha = intervalo["minhaPartida"]!;
         var sai = minha["emCampo"]!.AsArray().First(j => j!["posicao"]!.GetValue<string>() != "GOL")!["id"]!.GetValue<int>();

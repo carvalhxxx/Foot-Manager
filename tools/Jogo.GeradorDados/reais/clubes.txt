@@ -41,3 +41,23 @@ avai|Avaí|AVA|Florianópolis|SC|#0057B8|#FFFFFF|Ressacada|17826|2|46|52
 londrina|Londrina|LON|Londrina|PR|#00A3E0|#FFFFFF|Estádio do Café|31000|2|35|46
 america-mg|América Mineiro|AME|Belo Horizonte|MG|#00843D|#111111|Arena Independência|23018|2|40|56
 ponte-preta|Ponte Preta|PON|Campinas|SP|#111111|#FFFFFF|Moisés Lucarelli|19728|2|40|48
+amazonas|Amazonas|AMA|Manaus|AM|#F5C400|#111111|Carlos Zamith|10000|3|22|40
+anapolis|Anápolis|ANA|Anápolis|GO|#E30613|#FFFFFF|Jonas Duarte|12875|3|15|34
+barra-sc|Barra|BRA|Balneário Camboriú|SC|#E30613|#FFFFFF|Arena Barra FC|5500|3|8|30
+botafogo-pb|Botafogo-PB|BPB|João Pessoa|PB|#111111|#FFFFFF|Almeidão|19000|3|35|40
+brusque|Brusque|BRU|Brusque|SC|#E30613|#F5C400|Arena Simon|5000|3|18|40
+caxias|Caxias|CAX|Caxias do Sul|RS|#7A1E3A|#FFFFFF|Centenário|22132|3|25|38
+confianca|Confiança|CON|Aracaju|SE|#0057B8|#FFFFFF|Batistão|15000|3|22|32
+ferroviaria|Ferroviária|FER|Araraquara|SP|#7A1E3A|#FFFFFF|Fonte Luminosa|20000|3|22|44
+figueirense|Figueirense|FIG|Florianópolis|SC|#111111|#FFFFFF|Orlando Scarpelli|19584|3|42|46
+floresta|Floresta|FLO|Fortaleza|CE|#00843D|#FFFFFF|Domingão|10500|3|8|30
+guarani|Guarani|GUA|Campinas|SP|#00843D|#FFFFFF|Brinco de Ouro|20580|3|45|48
+inter-de-limeira|Inter de Limeira|INL|Limeira|SP|#111111|#FFFFFF|Limeirão|18000|3|18|38
+itabaiana|Itabaiana|ITB|Itabaiana|SE|#0057B8|#FFFFFF|Etelvino Mendonça|10000|3|12|30
+ituano|Ituano|ITU|Itu|SP|#E30613|#111111|Novelli Júnior|15600|3|15|40
+maranhao|Maranhão|MAA|São Luís|MA|#0057B8|#E30613|Castelão (MA)|40149|3|18|32
+maringa|Maringá|MGA|Maringá|PR|#111111|#FFFFFF|Willie Davids|16226|3|18|38
+paysandu|Paysandu|PAY|Belém|PA|#4FA3DD|#FFFFFF|Curuzu|16200|3|62|50
+santa-cruz|Santa Cruz|STC|Recife|PE|#E30613|#111111|Arena de Pernambuco|45500|3|62|48
+volta-redonda|Volta Redonda|VRE|Volta Redonda|RJ|#F5C400|#111111|Raulino de Oliveira|18230|3|15|38
+ypiranga|Ypiranga|YPI|Erechim|RS|#00843D|#F5C400|Colosso da Lagoa|22000|3|12|34

@@ -35,7 +35,7 @@
       "nome": "Série B",
       "nivel": 2,
       "vagasAcesso": 4,
-      "vagasRebaixamento": 0,
+      "vagasRebaixamento": 4,
       "vagasDiretas": 2,
       "clubes": [
         "novorizontino",
@@ -58,6 +58,35 @@
         "londrina",
         "america-mg",
         "ponte-preta"
+      ]
+    },
+    {
+      "id": "serie-c",
+      "nome": "Série C",
+      "nivel": 3,
+      "vagasAcesso": 4,
+      "vagasRebaixamento": 0,
+      "clubes": [
+        "amazonas",
+        "anapolis",
+        "barra-sc",
+        "botafogo-pb",
+        "brusque",
+        "caxias",
+        "confianca",
+        "ferroviaria",
+        "figueirense",
+        "floresta",
+        "guarani",
+        "inter-de-limeira",
+        "itabaiana",
+        "ituano",
+        "maranhao",
+        "maringa",
+        "paysandu",
+        "santa-cruz",
+        "volta-redonda",
+        "ypiranga"
       ]
     }
   ]

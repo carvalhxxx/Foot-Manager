@@ -55,7 +55,8 @@ public static class GeradorDeMundoReal
                 vagasAcesso: g.Key == 1 ? 0 : GeradorDeMundo.VagasAcessoERebaixamento,
                 vagasRebaixamento: g.Key == ultima ? 0 : GeradorDeMundo.VagasAcessoERebaixamento,
                 // Série B 2026 (D-035): 2 sobem direto; 3º a 6º disputam as outras 2 vagas em playoff de ida e volta.
-                vagasDiretas: g.Key == 1 ? null : VagasDiretasNoAcesso);
+                // Série C (D-039): 4 sobem direto (formato simplificado, sem a fase de grupos real).
+                vagasDiretas: g.Key == 2 ? VagasDiretasNoAcesso : null);
         }).ToArray();
 
         return new Mundo(temporada, divisoes, lista);

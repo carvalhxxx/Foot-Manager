@@ -1,0 +1,818 @@
+{
+  "versaoFormato": 1,
+  "id": "brusque",
+  "nome": "Brusque",
+  "sigla": "BRU",
+  "cidade": "Brusque",
+  "uf": "SC",
+  "cores": {
+    "primaria": "#E30613",
+    "secundaria": "#F5C400"
+  },
+  "estadio": {
+    "nome": "Arena Simon",
+    "capacidade": 5000
+  },
+  "torcida": 18,
+  "reputacao": 40,
+  "caixa": 2000000,
+  "elenco": [
+    {
+      "id": 1279,
+      "nome": "Paulo Gianezini",
+      "idade": 35,
+      "posicao": "GOL",
+      "atributos": {
+        "finalizacao": 5,
+        "passe": 6,
+        "desarme": 6,
+        "drible": 4,
+        "velocidade": 8,
+        "resistencia": 6,
+        "decisao": 14,
+        "determinacao": 11,
+        "reflexos": 15,
+        "posicionamento": 9
+      },
+      "ocultos": {
+        "potencial": 57,
+        "propensaoLesao": 11,
+        "profissionalismo": 6
+      },
+      "salario": 13500,
+      "contratoAte": 2027
+    },
+    {
+      "id": 1280,
+      "nome": "Matheus Nogueira",
+      "idade": 40,
+      "posicao": "GOL",
+      "atributos": {
+        "finalizacao": 1,
+        "passe": 12,
+        "desarme": 3,
+        "drible": 3,
+        "velocidade": 11,
+        "resistencia": 3,
+        "decisao": 11,
+        "determinacao": 11,
+        "reflexos": 12,
+        "posicionamento": 10
+      },
+      "ocultos": {
+        "potencial": 53,
+        "propensaoLesao": 11,
+        "profissionalismo": 7
+      },
+      "salario": 8500,
+      "contratoAte": 2027
+    },
+    {
+      "id": 1281,
+      "nome": "Lucas Moura",
+      "idade": 22,
+      "posicao": "GOL",
+      "atributos": {
+        "finalizacao": 1,
+        "passe": 6,
+        "desarme": 2,
+        "drible": 2,
+        "velocidade": 8,
+        "resistencia": 3,
+        "decisao": 11,
+        "determinacao": 12,
+        "reflexos": 12,
+        "posicionamento": 10
+      },
+      "ocultos": {
+        "potencial": 59,
+        "propensaoLesao": 11,
+        "profissionalismo": 10
+      },
+      "salario": 7000,
+      "contratoAte": 2027
+    },
+    {
+      "id": 1282,
+      "nome": "Léo Ataíde",
+      "idade": 22,
+      "posicao": "ZAG",
+      "posicoesSecundarias": [
+        "VOL"
+      ],
+      "atributos": {
+        "finalizacao": 8,
+        "passe": 11,
+        "desarme": 13,
+        "drible": 13,
+        "velocidade": 12,
+        "resistencia": 12,
+        "decisao": 10,
+        "determinacao": 14,
+        "reflexos": 2,
+        "posicionamento": 4
+      },
+      "ocultos": {
+        "potencial": 61,
+        "propensaoLesao": 7,
+        "profissionalismo": 6
+      },
+      "salario": 17000,
+      "contratoAte": 2026
+    },
+    {
+      "id": 1283,
+      "nome": "Matías Salas",
+      "idade": 29,
+      "posicao": "ZAG",
+      "posicoesSecundarias": [
+        "VOL"
+      ],
+      "atributos": {
+        "finalizacao": 7,
+        "passe": 12,
+        "desarme": 13,
+        "drible": 12,
+        "velocidade": 11,
+        "resistencia": 11,
+        "decisao": 14,
+        "determinacao": 11,
+        "reflexos": 1,
+        "posicionamento": 3
+      },
+      "ocultos": {
+        "potencial": 59,
+        "propensaoLesao": 12,
+        "profissionalismo": 9
+      },
+      "salario": 17000,
+      "contratoAte": 2026
+    },
+    {
+      "id": 1284,
+      "nome": "João Maistro",
+      "idade": 26,
+      "posicao": "ZAG",
+      "posicoesSecundarias": [
+        "VOL"
+      ],
+      "atributos": {
+        "finalizacao": 8,
+        "passe": 13,
+        "desarme": 11,
+        "drible": 13,
+        "velocidade": 13,
+        "resistencia": 11,
+        "decisao": 11,
+        "determinacao": 12,
+        "reflexos": 3,
+        "posicionamento": 3
+      },
+      "ocultos": {
+        "potencial": 58,
+        "propensaoLesao": 14,
+        "profissionalismo": 7
+      },
+      "salario": 12500,
+      "contratoAte": 2029
+    },
+    {
+      "id": 1285,
+      "nome": "Pedro Medeiros",
+      "idade": 24,
+      "posicao": "ZAG",
+      "atributos": {
+        "finalizacao": 10,
+        "passe": 9,
+        "desarme": 15,
+        "drible": 7,
+        "velocidade": 11,
+        "resistencia": 10,
+        "decisao": 11,
+        "determinacao": 11,
+        "reflexos": 4,
+        "posicionamento": 3
+      },
+      "ocultos": {
+        "potencial": 58,
+        "propensaoLesao": 5,
+        "profissionalismo": 8
+      },
+      "salario": 13500,
+      "contratoAte": 2026
+    },
+    {
+      "id": 1286,
+      "nome": "João Félix",
+      "idade": 24,
+      "posicao": "LD",
+      "atributos": {
+        "finalizacao": 9,
+        "passe": 12,
+        "desarme": 13,
+        "drible": 10,
+        "velocidade": 12,
+        "resistencia": 13,
+        "decisao": 10,
+        "determinacao": 13,
+        "reflexos": 2,
+        "posicionamento": 4
+      },
+      "ocultos": {
+        "potencial": 61,
+        "propensaoLesao": 10,
+        "profissionalismo": 7
+      },
+      "salario": 15500,
+      "contratoAte": 2027
+    },
+    {
+      "id": 1287,
+      "nome": "Alisson Cassiano",
+      "idade": 32,
+      "posicao": "LD",
+      "posicoesSecundarias": [
+        "ALD"
+      ],
+      "atributos": {
+        "finalizacao": 7,
+        "passe": 11,
+        "desarme": 13,
+        "drible": 12,
+        "velocidade": 14,
+        "resistencia": 9,
+        "decisao": 9,
+        "determinacao": 10,
+        "reflexos": 4,
+        "posicionamento": 4
+      },
+      "ocultos": {
+        "potencial": 55,
+        "propensaoLesao": 8,
+        "profissionalismo": 7
+      },
+      "salario": 11000,
+      "contratoAte": 2027
+    },
+    {
+      "id": 1288,
+      "nome": "Cipriano",
+      "idade": 24,
+      "posicao": "LE",
+      "atributos": {
+        "finalizacao": 7,
+        "passe": 13,
+        "desarme": 11,
+        "drible": 12,
+        "velocidade": 13,
+        "resistencia": 12,
+        "decisao": 11,
+        "determinacao": 11,
+        "reflexos": 4,
+        "posicionamento": 4
+      },
+      "ocultos": {
+        "potencial": 57,
+        "propensaoLesao": 14,
+        "profissionalismo": 5
+      },
+      "salario": 13500,
+      "contratoAte": 2029
+    },
+    {
+      "id": 1289,
+      "nome": "Vinicius Preuss",
+      "idade": 21,
+      "posicao": "LE",
+      "posicoesSecundarias": [
+        "ME",
+        "ZAG"
+      ],
+      "atributos": {
+        "finalizacao": 10,
+        "passe": 11,
+        "desarme": 11,
+        "drible": 10,
+        "velocidade": 13,
+        "resistencia": 10,
+        "decisao": 11,
+        "determinacao": 10,
+        "reflexos": 1,
+        "posicionamento": 4
+      },
+      "ocultos": {
+        "potencial": 64,
+        "propensaoLesao": 7,
+        "profissionalismo": 17
+      },
+      "salario": 8500,
+      "contratoAte": 2027
+    },
+    {
+      "id": 1290,
+      "nome": "Pedro Martins",
+      "idade": 26,
+      "posicao": "VOL",
+      "atributos": {
+        "finalizacao": 11,
+        "passe": 12,
+        "desarme": 13,
+        "drible": 13,
+        "velocidade": 13,
+        "resistencia": 13,
+        "decisao": 12,
+        "determinacao": 10,
+        "reflexos": 3,
+        "posicionamento": 4
+      },
+      "ocultos": {
+        "potencial": 61,
+        "propensaoLesao": 9,
+        "profissionalismo": 17
+      },
+      "salario": 17000,
+      "contratoAte": 2026
+    },
+    {
+      "id": 1291,
+      "nome": "João Pedro",
+      "idade": 28,
+      "posicao": "VOL",
+      "atributos": {
+        "finalizacao": 11,
+        "passe": 14,
+        "desarme": 14,
+        "drible": 11,
+        "velocidade": 7,
+        "resistencia": 12,
+        "decisao": 10,
+        "determinacao": 9,
+        "reflexos": 1,
+        "posicionamento": 2
+      },
+      "ocultos": {
+        "potencial": 57,
+        "propensaoLesao": 13,
+        "profissionalismo": 10
+      },
+      "salario": 13500,
+      "contratoAte": 2029
+    },
+    {
+      "id": 1292,
+      "nome": "Bernardo",
+      "idade": 24,
+      "posicao": "MC",
+      "atributos": {
+        "finalizacao": 13,
+        "passe": 12,
+        "desarme": 10,
+        "drible": 10,
+        "velocidade": 10,
+        "resistencia": 13,
+        "decisao": 13,
+        "determinacao": 11,
+        "reflexos": 2,
+        "posicionamento": 4
+      },
+      "ocultos": {
+        "potencial": 59,
+        "propensaoLesao": 7,
+        "profissionalismo": 2
+      },
+      "salario": 13500,
+      "contratoAte": 2027
+    },
+    {
+      "id": 1293,
+      "nome": "Lucas de Sá",
+      "idade": 30,
+      "posicao": "MC",
+      "posicoesSecundarias": [
+        "MD",
+        "VOL"
+      ],
+      "atributos": {
+        "finalizacao": 9,
+        "passe": 13,
+        "desarme": 10,
+        "drible": 13,
+        "velocidade": 10,
+        "resistencia": 12,
+        "decisao": 10,
+        "determinacao": 9,
+        "reflexos": 2,
+        "posicionamento": 4
+      },
+      "ocultos": {
+        "potencial": 54,
+        "propensaoLesao": 10,
+        "profissionalismo": 12
+      },
+      "salario": 10000,
+      "contratoAte": 2027
+    },
+    {
+      "id": 1294,
+      "nome": "Biel Fonseca",
+      "idade": 24,
+      "posicao": "MC",
+      "posicoesSecundarias": [
+        "MD"
+      ],
+      "atributos": {
+        "finalizacao": 9,
+        "passe": 12,
+        "desarme": 9,
+        "drible": 12,
+        "velocidade": 7,
+        "resistencia": 11,
+        "decisao": 10,
+        "determinacao": 13,
+        "reflexos": 1,
+        "posicionamento": 1
+      },
+      "ocultos": {
+        "potencial": 56,
+        "propensaoLesao": 13,
+        "profissionalismo": 14
+      },
+      "salario": 8500,
+      "contratoAte": 2029
+    },
+    {
+      "id": 1295,
+      "nome": "Alex Paulino",
+      "idade": 24,
+      "posicao": "MO",
+      "posicoesSecundarias": [
+        "SA"
+      ],
+      "atributos": {
+        "finalizacao": 12,
+        "passe": 12,
+        "desarme": 10,
+        "drible": 11,
+        "velocidade": 10,
+        "resistencia": 4,
+        "decisao": 12,
+        "determinacao": 9,
+        "reflexos": 2,
+        "posicionamento": 1
+      },
+      "ocultos": {
+        "potencial": 56,
+        "propensaoLesao": 2,
+        "profissionalismo": 10
+      },
+      "salario": 8500,
+      "contratoAte": 2027
+    },
+    {
+      "id": 1296,
+      "nome": "Gazão",
+      "idade": 24,
+      "posicao": "MD",
+      "atributos": {
+        "finalizacao": 11,
+        "passe": 11,
+        "desarme": 12,
+        "drible": 11,
+        "velocidade": 14,
+        "resistencia": 9,
+        "decisao": 10,
+        "determinacao": 13,
+        "reflexos": 1,
+        "posicionamento": 1
+      },
+      "ocultos": {
+        "potencial": 54,
+        "propensaoLesao": 7,
+        "profissionalismo": 5
+      },
+      "salario": 10000,
+      "contratoAte": 2028
+    },
+    {
+      "id": 1297,
+      "nome": "Jonatan Lucca",
+      "idade": 32,
+      "posicao": "ME",
+      "posicoesSecundarias": [
+        "PE"
+      ],
+      "atributos": {
+        "finalizacao": 9,
+        "passe": 13,
+        "desarme": 11,
+        "drible": 14,
+        "velocidade": 10,
+        "resistencia": 11,
+        "decisao": 12,
+        "determinacao": 7,
+        "reflexos": 3,
+        "posicionamento": 4
+      },
+      "ocultos": {
+        "potencial": 54,
+        "propensaoLesao": 4,
+        "profissionalismo": 16
+      },
+      "salario": 10000,
+      "contratoAte": 2029
+    },
+    {
+      "id": 1298,
+      "nome": "Luizão",
+      "idade": 23,
+      "posicao": "ATA",
+      "posicoesSecundarias": [
+        "SA"
+      ],
+      "atributos": {
+        "finalizacao": 14,
+        "passe": 8,
+        "desarme": 7,
+        "drible": 12,
+        "velocidade": 11,
+        "resistencia": 11,
+        "decisao": 6,
+        "determinacao": 13,
+        "reflexos": 1,
+        "posicionamento": 1
+      },
+      "ocultos": {
+        "potencial": 59,
+        "propensaoLesao": 8,
+        "profissionalismo": 6
+      },
+      "salario": 11000,
+      "contratoAte": 2029
+    },
+    {
+      "id": 1299,
+      "nome": "Mateus Pivô",
+      "idade": 28,
+      "posicao": "ZAG",
+      "posicoesSecundarias": [
+        "VOL"
+      ],
+      "atributos": {
+        "finalizacao": 9,
+        "passe": 10,
+        "desarme": 12,
+        "drible": 11,
+        "velocidade": 12,
+        "resistencia": 13,
+        "decisao": 12,
+        "determinacao": 11,
+        "reflexos": 4,
+        "posicionamento": 4
+      },
+      "ocultos": {
+        "potencial": 56,
+        "propensaoLesao": 7,
+        "profissionalismo": 13
+      },
+      "salario": 12500,
+      "contratoAte": 2029
+    },
+    {
+      "id": 1300,
+      "nome": "Jeferson",
+      "idade": 30,
+      "posicao": "ZAG",
+      "atributos": {
+        "finalizacao": 9,
+        "passe": 10,
+        "desarme": 14,
+        "drible": 11,
+        "velocidade": 8,
+        "resistencia": 11,
+        "decisao": 7,
+        "determinacao": 13,
+        "reflexos": 2,
+        "posicionamento": 3
+      },
+      "ocultos": {
+        "potencial": 54,
+        "propensaoLesao": 7,
+        "profissionalismo": 4
+      },
+      "salario": 10000,
+      "contratoAte": 2028
+    },
+    {
+      "id": 1301,
+      "nome": "Rafael Milhorim",
+      "idade": 27,
+      "posicao": "ZAG",
+      "atributos": {
+        "finalizacao": 10,
+        "passe": 10,
+        "desarme": 15,
+        "drible": 9,
+        "velocidade": 6,
+        "resistencia": 11,
+        "decisao": 11,
+        "determinacao": 8,
+        "reflexos": 3,
+        "posicionamento": 3
+      },
+      "ocultos": {
+        "potencial": 56,
+        "propensaoLesao": 11,
+        "profissionalismo": 9
+      },
+      "salario": 10000,
+      "contratoAte": 2028
+    },
+    {
+      "id": 1302,
+      "nome": "Davi Gabriel",
+      "idade": 29,
+      "posicao": "LE",
+      "atributos": {
+        "finalizacao": 9,
+        "passe": 12,
+        "desarme": 14,
+        "drible": 9,
+        "velocidade": 11,
+        "resistencia": 10,
+        "decisao": 9,
+        "determinacao": 10,
+        "reflexos": 2,
+        "posicionamento": 3
+      },
+      "ocultos": {
+        "potencial": 53,
+        "propensaoLesao": 5,
+        "profissionalismo": 6
+      },
+      "salario": 8500,
+      "contratoAte": 2026
+    },
+    {
+      "id": 1303,
+      "nome": "Ryan Santos",
+      "idade": 22,
+      "posicao": "LD",
+      "atributos": {
+        "finalizacao": 9,
+        "passe": 12,
+        "desarme": 10,
+        "drible": 13,
+        "velocidade": 13,
+        "resistencia": 9,
+        "decisao": 10,
+        "determinacao": 10,
+        "reflexos": 2,
+        "posicionamento": 4
+      },
+      "ocultos": {
+        "potencial": 61,
+        "propensaoLesao": 7,
+        "profissionalismo": 9
+      },
+      "salario": 8500,
+      "contratoAte": 2029
+    },
+    {
+      "id": 1304,
+      "nome": "Antônio Bezerra",
+      "idade": 26,
+      "posicao": "PD",
+      "atributos": {
+        "finalizacao": 10,
+        "passe": 10,
+        "desarme": 10,
+        "drible": 14,
+        "velocidade": 9,
+        "resistencia": 11,
+        "decisao": 9,
+        "determinacao": 8,
+        "reflexos": 3,
+        "posicionamento": 2
+      },
+      "ocultos": {
+        "potencial": 53,
+        "propensaoLesao": 9,
+        "profissionalismo": 10
+      },
+      "salario": 7000,
+      "contratoAte": 2029
+    },
+    {
+      "id": 1305,
+      "nome": "Samuel Souza",
+      "idade": 23,
+      "posicao": "PE",
+      "posicoesSecundarias": [
+        "PD"
+      ],
+      "atributos": {
+        "finalizacao": 11,
+        "passe": 7,
+        "desarme": 6,
+        "drible": 12,
+        "velocidade": 10,
+        "resistencia": 10,
+        "decisao": 13,
+        "determinacao": 10,
+        "reflexos": 1,
+        "posicionamento": 1
+      },
+      "ocultos": {
+        "potencial": 51,
+        "propensaoLesao": 11,
+        "profissionalismo": 11
+      },
+      "salario": 6000,
+      "contratoAte": 2029
+    },
+    {
+      "id": 1306,
+      "nome": "Cláudio Martins",
+      "idade": 31,
+      "posicao": "ATA",
+      "posicoesSecundarias": [
+        "SA"
+      ],
+      "atributos": {
+        "finalizacao": 10,
+        "passe": 12,
+        "desarme": 11,
+        "drible": 14,
+        "velocidade": 12,
+        "resistencia": 12,
+        "decisao": 13,
+        "determinacao": 14,
+        "reflexos": 4,
+        "posicionamento": 3
+      },
+      "ocultos": {
+        "potencial": 57,
+        "propensaoLesao": 3,
+        "profissionalismo": 8
+      },
+      "salario": 13500,
+      "contratoAte": 2028
+    },
+    {
+      "id": 1307,
+      "nome": "Fabinho",
+      "idade": 28,
+      "posicao": "ATA",
+      "posicoesSecundarias": [
+        "SA"
+      ],
+      "atributos": {
+        "finalizacao": 12,
+        "passe": 8,
+        "desarme": 6,
+        "drible": 11,
+        "velocidade": 11,
+        "resistencia": 12,
+        "decisao": 13,
+        "determinacao": 10,
+        "reflexos": 3,
+        "posicionamento": 2
+      },
+      "ocultos": {
+        "potencial": 55,
+        "propensaoLesao": 4,
+        "profissionalismo": 8
+      },
+      "salario": 11000,
+      "contratoAte": 2028
+    },
+    {
+      "id": 1308,
+      "nome": "Biel",
+      "idade": 23,
+      "posicao": "ATA",
+      "posicoesSecundarias": [
+        "SA"
+      ],
+      "atributos": {
+        "finalizacao": 14,
+        "passe": 12,
+        "desarme": 9,
+        "drible": 12,
+        "velocidade": 11,
+        "resistencia": 12,
+        "decisao": 12,
+        "determinacao": 13,
+        "reflexos": 4,
+        "posicionamento": 2
+      },
+      "ocultos": {
+        "potencial": 67,
+        "propensaoLesao": 5,
+        "profissionalismo": 9
+      },
+      "salario": 21500,
+      "contratoAte": 2027
+    }
+  ]
+}
