@@ -188,6 +188,19 @@ function classificacao(divisaoId: string): Classificacao {
     ],
     artilharia: [{ jogador: 'Craque Silva', clubeSigla: 'PAM', gols: 1, jogos: 1 }],
     vagasDiretas: divisaoId === 'serie-a' ? 0 : 2,
+    zonas:
+      divisaoId === 'serie-a'
+        ? [
+            { tipo: 'Libertadores', de: 1, ate: 4 },
+            { tipo: 'LibertadoresQualificacao', de: 5, ate: 6 },
+            { tipo: 'SulAmericana', de: 7, ate: 12 },
+            { tipo: 'Rebaixamento', de: 17, ate: 20 },
+          ]
+        : [
+            { tipo: 'Acesso', de: 1, ate: 2 },
+            { tipo: 'Playoff', de: 3, ate: 6 },
+          ],
+    criteriosDeDesempate: ['Vitorias', 'Saldo', 'GolsPro', 'ConfrontoDireto', 'Vermelhos', 'Amarelos', 'Sorteio'],
     playoff:
       divisaoId === 'serie-a'
         ? []

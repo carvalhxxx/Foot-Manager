@@ -482,7 +482,9 @@ public sealed class ServicoDeJogo
                 return new ConfrontoPlayoffDto(p.MelhorPosicao, melhor.Nome, melhor.Sigla, p.PiorPosicao, pior.Nome, pior.Sigla,
                     p.Ida?.GolsVisitante, p.Ida?.GolsMandante, p.Volta?.GolsMandante, p.Volta?.GolsVisitante,
                     p.VencedorId is { } v ? c.Mundo.Clube(v).Nome : null);
-            })]);
+            })],
+            [.. ZonasDaTabela.De(competicao.Divisao).Select(z => new ZonaDto(z.Tipo.ToString(), z.De, z.Ate))],
+            ZonasDaTabela.CriteriosDeDesempate);
     });
 
     public Resposta<FimDeTemporadaDto> EncerrarTemporada() => ComCarreira(c =>

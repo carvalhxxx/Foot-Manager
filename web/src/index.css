@@ -1589,3 +1589,56 @@ select {
   display: grid;
   gap: 2px;
 }
+
+/* Faixas da tabela (Libertadores, Sul-Americana, acesso, playoff, rebaixamento). */
+.zona-Libertadores td:first-child { border-left-color: #1f8a4c; }
+.zona-LibertadoresQualificacao td:first-child { border-left-color: #5cc46a; }
+.zona-SulAmericana td:first-child { border-left-color: #1f4fbf; }
+.zona-Acesso td:first-child { border-left-color: #1f8a4c; }
+.zona-Playoff td:first-child { border-left-color: #2b7bd6; }
+.zona-Rebaixamento td:first-child { border-left-color: #b42318; }
+
+.legenda-lista {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.legenda-zona {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legenda-zona::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--texto-suave);
+}
+
+.legenda-zona.zona-Libertadores::before { background: #1f8a4c; }
+.legenda-zona.zona-LibertadoresQualificacao::before { background: #5cc46a; }
+.legenda-zona.zona-SulAmericana::before { background: #1f4fbf; }
+.legenda-zona.zona-Acesso::before { background: #1f8a4c; }
+.legenda-zona.zona-Playoff::before { background: #2b7bd6; }
+.legenda-zona.zona-Rebaixamento::before { background: #b42318; }
+
+.criterios {
+  margin: 4px 0 0;
+  padding-left: 1.25rem;
+}
+
+/* Com a coluna da partida ao lado, a classificação só cabe em duas colunas em telas bem largas. */
+@media (max-width: 1400px) {
+  .corpo-jogo .grade-classificacao {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.legenda-zona .secundario {
+  margin-left: 2px;
+}

@@ -387,6 +387,16 @@ export interface Classificacao {
   /** Vagas de acesso diretas; as demais saem do playoff. */
   vagasDiretas: number
   playoff: ConfrontoPlayoff[]
+  /** Faixas da tabela por posição (Libertadores, SulAmericana, Acesso, Playoff, Rebaixamento...). */
+  zonas: Zona[]
+  /** Chaves dos critérios de desempate, na ordem (o texto está em textos.ts). */
+  criteriosDeDesempate: string[]
+}
+
+export interface Zona {
+  tipo: string
+  de: number
+  ate: number
 }
 
 export interface ResumoDivisao {

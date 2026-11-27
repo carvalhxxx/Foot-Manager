@@ -235,7 +235,11 @@ public sealed record ConfrontoPlayoffDto(
 public sealed record ClassificacaoDto(
     string DivisaoId, string Nome, int VagasAcesso, int VagasRebaixamento,
     IReadOnlyList<LinhaTabelaDto> Linhas, IReadOnlyList<ArtilheiroDto> Artilharia,
-    int VagasDiretas, IReadOnlyList<ConfrontoPlayoffDto> Playoff);
+    int VagasDiretas, IReadOnlyList<ConfrontoPlayoffDto> Playoff,
+    IReadOnlyList<ZonaDto> Zonas, IReadOnlyList<string> CriteriosDeDesempate);
+
+/// <summary>Faixa da tabela (Libertadores, Sul-Americana, acesso, playoff, rebaixamento), por posição.</summary>
+public sealed record ZonaDto(string Tipo, int De, int Ate);
 
 public sealed record ResumoDivisaoDto(string Nome, string Campeao, IReadOnlyList<string> Promovidos, IReadOnlyList<string> Rebaixados, ArtilheiroDto? Artilheiro);
 

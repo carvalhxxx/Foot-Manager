@@ -10,25 +10,14 @@ interface Props {
   meuClubeId: string
 }
 
-function zona(posicao: number, total: number, c: ClassificacaoDto): string | undefined {
-  if (c.vagasAcesso === 0 && posicao === 1) {
-    return 'zona-campeao'
-  }
-  if (posicao <= c.vagasDiretas) {
-    return 'zona-acesso'
-  }
-  if (posicao <= c.vagasDiretas + 2 * (c.vagasAcesso - c.vagasDiretas)) {
-    return 'zona-playoff'
-  }
-  if (posicao > total - c.vagasRebaixamento) {
-    return 'zona-rebaixamento'
-  }
-  return undefined
+/** Classe de cor da faixa em que a posição está (as faixas vêm do núcleo). */
+function zona(posicao: number, c: ClassificacaoDto): string | undefined {
+  const z = c.zonas.find((x) => posicao >= x.de && posicao <= x.ate)
+  return z ? `zona-${z.tipo}` : undefined
 }
 
 export function Classificacao({ divisoes, selecionada, aoSelecionar, classificacao, meuClubeId }: Props) {
   const t = textos.classificacao
-  const total = classificacao.linhas.length
 
   return (
     <>
@@ -71,7 +60,7 @@ export function Classificacao({ divisoes, selecionada, aoSelecionar, classificac
               {classificacao.linhas.map((l) => (
                 <tr
                   key={l.clubeId}
-                  className={[zona(l.posicao, total, classificacao), l.clubeId === meuClubeId ? 'meu-clube' : '']
+                  className={[zona(l.posicao, classificacao), l.clubeId === meuClubeId ? 'meu-clube' : '']
                     .filter(Boolean)
                     .join(' ')}
                 >
@@ -95,21 +84,26 @@ export function Classificacao({ divisoes, selecionada, aoSelecionar, classificac
               ))}
             </tbody>
           </table>
-          <p className="legenda">
-            {classificacao.vagasAcesso === 0 ? (
-              <span className="legenda-item zona-campeao">{t.legendaCampeao}</span>
-            ) : classificacao.vagasDiretas < classificacao.vagasAcesso ? (
-              <>
-                <span className="legenda-item zona-acesso">{t.legendaAcessoDireto}</span>
-                <span className="legenda-item zona-playoff">{t.legendaPlayoff}</span>
-              </>
-            ) : (
-              <span className="legenda-item zona-acesso">{t.legendaAcesso}</span>
-            )}
-            {classificacao.vagasRebaixamento > 0 && (
-              <span className="legenda-item zona-rebaixamento">{t.legendaRebaixamento}</span>
-            )}
-          </p>
+        </section>
+
+        <section className="cartao regras-legenda" aria-label={t.regrasELegenda}>
+          <h2>{t.regrasELegenda}</h2>
+          <ul className="legenda-lista">
+            {classificacao.zonas.map((z) => (
+              <li key={z.tipo} className={`legenda-zona zona-${z.tipo}`}>
+                {t.zonas[z.tipo] ?? z.tipo} <span className="secundario">({t.faixa(z.de, z.ate)})</span>
+              </li>
+            ))}
+          </ul>
+          {classificacao.zonas.some((z) => z.tipo.startsWith('Libertadores') || z.tipo === 'SulAmericana') && (
+            <p className="secundario dica">{t.continentaisEmBreve}</p>
+          )}
+          <p>{t.desempate}</p>
+          <ol className="criterios">
+            {classificacao.criteriosDeDesempate.map((c) => (
+              <li key={c}>{t.criterios[c] ?? c}</li>
+            ))}
+          </ol>
         </section>
 
         {classificacao.vagasDiretas < classificacao.vagasAcesso && (

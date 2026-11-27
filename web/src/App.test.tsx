@@ -181,6 +181,23 @@ describe('App', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('Escale exatamente 11 titulares.')
   })
 
+  it('classificação da Série A mostra as vagas continentais e os critérios de desempate', async () => {
+    await entrarNoJogo()
+    await userEvent.click(screen.getByRole('button', { name: textos.menu.classificacao }))
+
+    const regras = screen.getByRole('region', { name: textos.classificacao.regrasELegenda })
+    const t = textos.classificacao
+    expect(within(regras).getAllByRole('listitem').map((li) => li.textContent)).toEqual([
+      `${t.zonas.Libertadores} (1º ao 4º)`,
+      `${t.zonas.LibertadoresQualificacao} (5º ao 6º)`,
+      `${t.zonas.SulAmericana} (7º ao 12º)`,
+      `${t.zonas.Rebaixamento} (17º ao 20º)`,
+      t.criterios.Vitorias, t.criterios.Saldo, t.criterios.GolsPro, t.criterios.ConfrontoDireto,
+      t.criterios.Vermelhos, t.criterios.Amarelos, t.criterios.Sorteio,
+    ])
+    expect(document.querySelector('tbody tr')).toHaveClass('zona-Libertadores')
+  })
+
   it('classificação da Série B mostra o playoff de acesso', async () => {
     await entrarNoJogo()
     await userEvent.click(screen.getByRole('button', { name: textos.menu.classificacao }))
@@ -189,7 +206,9 @@ describe('App', () => {
     const playoff = screen.getByRole('region', { name: textos.classificacao.playoff })
     expect(playoff).toHaveTextContent('3º Dunas FC × 6º Jangadeiro EC')
     expect(playoff).toHaveTextContent(textos.classificacao.classificado('Dunas FC'))
-    expect(document.querySelector('.legenda-item.zona-playoff')).toHaveTextContent(textos.classificacao.legendaPlayoff)
+    const regras = screen.getByRole('region', { name: textos.classificacao.regrasELegenda })
+    expect(regras).toHaveTextContent(`${textos.classificacao.zonas.Playoff} (3º ao 6º)`)
+    expect(regras).toHaveTextContent(textos.classificacao.criterios.Saldo)
   })
 
   it('classificação troca de divisão e destaca o clube do jogador', async () => {
