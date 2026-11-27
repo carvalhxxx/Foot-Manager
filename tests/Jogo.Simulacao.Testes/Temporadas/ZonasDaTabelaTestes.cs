@@ -15,8 +15,8 @@ public class ZonasDaTabelaTestes
         Assert.Equal(
             [
                 new ZonaTabela(TipoDeZona.Libertadores, 1, 4),
-                new ZonaTabela(TipoDeZona.LibertadoresQualificacao, 5, 6),
-                new ZonaTabela(TipoDeZona.SulAmericana, 7, 12),
+                new ZonaTabela(TipoDeZona.LibertadoresQualificacao, 5, 5),
+                new ZonaTabela(TipoDeZona.SulAmericana, 6, 11),
                 new ZonaTabela(TipoDeZona.Rebaixamento, 17, 20),
             ],
             ZonasDaTabela.De(serieA));

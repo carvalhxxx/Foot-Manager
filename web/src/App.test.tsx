@@ -189,8 +189,8 @@ describe('App', () => {
     const t = textos.classificacao
     expect(within(regras).getAllByRole('listitem').map((li) => li.textContent)).toEqual([
       `${t.zonas.Libertadores} (1º ao 4º)`,
-      `${t.zonas.LibertadoresQualificacao} (5º ao 6º)`,
-      `${t.zonas.SulAmericana} (7º ao 12º)`,
+      `${t.zonas.LibertadoresQualificacao} (5º)`,
+      `${t.zonas.SulAmericana} (6º ao 11º)`,
       `${t.zonas.Rebaixamento} (17º ao 20º)`,
       t.criterios.Vitorias, t.criterios.Saldo, t.criterios.GolsPro, t.criterios.ConfrontoDireto,
       t.criterios.Vermelhos, t.criterios.Amarelos, t.criterios.Sorteio,

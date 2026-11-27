@@ -192,8 +192,8 @@ function classificacao(divisaoId: string): Classificacao {
       divisaoId === 'serie-a'
         ? [
             { tipo: 'Libertadores', de: 1, ate: 4 },
-            { tipo: 'LibertadoresQualificacao', de: 5, ate: 6 },
-            { tipo: 'SulAmericana', de: 7, ate: 12 },
+            { tipo: 'LibertadoresQualificacao', de: 5, ate: 5 },
+            { tipo: 'SulAmericana', de: 6, ate: 11 },
             { tipo: 'Rebaixamento', de: 17, ate: 20 },
           ]
         : [

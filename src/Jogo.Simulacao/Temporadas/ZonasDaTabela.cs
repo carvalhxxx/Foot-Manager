@@ -18,14 +18,14 @@ public sealed record ZonaTabela(TipoDeZona Tipo, int De, int Ate);
 
 /// <summary>
 /// Faixas da tabela de cada divisão e os critérios de desempate (D-036). Na divisão de cima, as vagas
-/// continentais do Brasileirão: 1º a 4º Libertadores, 5º e 6º fase preliminar da Libertadores,
-/// 7º a 12º Sul-Americana. Por enquanto as vagas só aparecem na tabela; as competições
+/// continentais do Brasileirão 2026 (sem contar redistribuições): 1º a 4º fase de grupos da Libertadores,
+/// 5º fase preliminar, 6º a 11º Sul-Americana. As redistribuições ficam em <see cref="Jogo.Simulacao.Competicoes.VagasContinentais"/>. Por enquanto as vagas só aparecem na tabela; as competições
 /// continentais ainda não são disputadas.
 /// </summary>
 public static class ZonasDaTabela
 {
     public const int VagasLibertadores = 4;
-    public const int VagasLibertadoresQualificacao = 2;
+    public const int VagasLibertadoresQualificacao = 1;
     public const int VagasSulAmericana = 6;
 
     /// <summary>

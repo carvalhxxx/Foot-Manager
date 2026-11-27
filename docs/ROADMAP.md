@@ -13,6 +13,8 @@ _(nada)_
 
 ## Backlog (MVP · Fase 1)
 
+- **Competições continentais e Copa do Brasil** (aguardando aprovação do desenho): Libertadores, Sul-Americana e Copa do Brasil disputadas, usando `VagasContinentais` (D-037) para classificar os brasileiros a cada ano.
+
 ## Fase 2 (depois do lançamento do MVP)
 - **2.0 Calendário real:** datas, meses, jogos no meio de semana (pré-requisito do resto).
 - **2A Carreira:** diretoria (metas, confiança, demissão, propostas), notícias/jornal, prêmios da temporada, categorias de base.
@@ -26,6 +28,9 @@ _(nada)_
 Mobile, saves na nuvem, ligas online entre amigos, modelo freemium/assinatura.
 
 ## Feito
+
+### Vagas continentais no padrão 2026 · P
+- Tabela com 1º a 4º Libertadores (grupos), 5º preliminar e 6º a 11º Sul-Americana; motor de redistribuição das vagas (títulos continentais, Copa do Brasil, rebaixados) testado com os exemplos do regulamento (D-037).
 
 ### Regras e legenda da tabela · P
 - Faixas de Libertadores, fase preliminar, Sul-Americana, acesso, playoff e rebaixamento vindas do núcleo, e os critérios de desempate no quadro "Regras e legenda" (D-036).
