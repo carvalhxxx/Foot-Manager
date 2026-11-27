@@ -69,6 +69,10 @@ public sealed class ApiJson
         () => Json(_servico.DefinirPrecoIngresso(string.IsNullOrWhiteSpace(preco) ? null : decimal.Parse(preco, CultureInfo.InvariantCulture))),
         ContratoJson.Default.RespostaFinancasDto);
 
+    public string RenovarContrato(int jogadorId, int anos) => Json(_servico.RenovarContrato(jogadorId, anos));
+
+    public string Dispensar(int jogadorId) => Json(_servico.Dispensar(jogadorId));
+
     public string ExportarSave() => Json(_servico.ExportarSave());
 
     public string CarregarSave(string conteudo) => Json(_servico.CarregarSave(conteudo));

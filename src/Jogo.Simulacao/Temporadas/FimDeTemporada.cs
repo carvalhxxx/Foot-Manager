@@ -5,6 +5,7 @@ using Jogo.Dominio.Competicoes;
 using Jogo.Dominio.Jogadores;
 using Jogo.Simulacao.Financas;
 using Jogo.Simulacao.Geracao;
+using Jogo.Simulacao.Mercado;
 
 namespace Jogo.Simulacao.Temporadas;
 
@@ -36,7 +37,8 @@ public static class FimDeTemporada
     public const int ElencoMaximo = 30;
     public const int IdadeLimite = 39;
 
-    public static ResultadoTemporada Encerrar(Temporada temporada, Mundo mundo, ulong seed)
+    /// <param name="clubeDoJogador">Clube controlado pelo jogador: os contratos dele que vencem não são renovados pela IA.</param>
+    public static ResultadoTemporada Encerrar(Temporada temporada, Mundo mundo, ulong seed, string? clubeDoJogador = null)
     {
         ArgumentNullException.ThrowIfNull(temporada);
         ArgumentNullException.ThrowIfNull(mundo);
@@ -82,10 +84,30 @@ public static class FimDeTemporada
 
                 Evolucao.Aplicar(jogador, Evolucao.SortearVariacao(jogador, aleatorio), aleatorio);
                 jogador.Envelhecer();
-                RenovarSeVencer(jogador, temporada.Ano);
                 jogador.ComecarNovaTemporada();
             }
+        }
 
+        // Agentes livres envelhecem e se aposentam como os demais (antes de chegarem os novos).
+        foreach (var livre in mundo.AgentesLivres.ToArray())
+        {
+            if (Aposenta(livre, aleatorio))
+            {
+                mundo.RemoverAgenteLivre(livre.Id);
+                aposentados.Add(livre.Id);
+                continue;
+            }
+
+            Evolucao.Aplicar(livre, Evolucao.SortearVariacao(livre, aleatorio), aleatorio);
+            livre.Envelhecer();
+            livre.ComecarNovaTemporada();
+        }
+
+        Contratos.ResolverVencimentos(mundo, temporada.Ano, clubeDoJogador);
+        Contratos.LimitarAgentesLivres(mundo);
+
+        foreach (var clube in mundo.Clubes)
+        {
             revelacoes.AddRange(RevelarJovens(clube, aleatorio, temporada.Ano + 1, ref proximoId));
         }
 
@@ -144,15 +166,6 @@ public static class FimDeTemporada
     /// <summary>A partir dos 34 a chance cresce a cada ano; aos 39 todos param.</summary>
     private static bool Aposenta(Jogador jogador, IGeradorAleatorio aleatorio) =>
         jogador.Idade >= IdadeLimite || (jogador.Idade >= 34 && aleatorio.Chance((jogador.Idade - 33) * 0.18));
-
-    /// <summary>Até o mercado existir (E8), contratos vencidos são renovados por 2 anos com o mesmo salário.</summary>
-    private static void RenovarSeVencer(Jogador jogador, int ano)
-    {
-        if (jogador.Contrato is { } contrato && contrato.VenceAoFimDe(ano))
-        {
-            jogador.AssinarContrato(new Contrato(contrato.ClubeId, contrato.SalarioMensal, ano + 2));
-        }
-    }
 
     /// <summary>
     /// Revelações da base: 1 ou 2 jovens por ano (se houver espaço) e quantos forem precisos para o elenco

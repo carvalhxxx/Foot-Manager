@@ -68,7 +68,11 @@ public sealed record JogadorDto(
     int ContratoAte,
     int Jogos,
     int Gols,
-    AtributosDto Atributos);
+    AtributosDto Atributos,
+    decimal ValorDeMercado,
+    bool PodeRenovar,
+    decimal SalarioPedido,
+    decimal CustoDaDispensa);
 
 public sealed record FormacaoDto(string Nome, IReadOnlyList<string> Posicoes);
 

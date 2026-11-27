@@ -99,6 +99,10 @@ export interface Jogador {
   jogos: number
   gols: number
   atributos: Atributos
+  valorDeMercado: number
+  podeRenovar: boolean
+  salarioPedido: number
+  custoDaDispensa: number
 }
 
 export interface Formacao {

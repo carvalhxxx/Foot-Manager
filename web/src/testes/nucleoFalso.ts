@@ -70,6 +70,10 @@ function jogador(id: number, nome: string, posicao: string, extra: Partial<Jogad
     contratoAte: 2029,
     jogos: 0,
     gols: 0,
+    valorDeMercado: 2000000,
+    podeRenovar: false,
+    salarioPedido: 55000,
+    custoDaDispensa: 150000,
     atributos: {
       finalizacao: 10, passe: 10, desarme: 10, drible: 10, velocidade: 10,
       resistencia: 10, decisao: 10, determinacao: 10, reflexos: 2, posicionamento: 2,
@@ -81,7 +85,7 @@ function jogador(id: number, nome: string, posicao: string, extra: Partial<Jogad
 export const elenco: Jogador[] = [
   jogador(1, 'Zé Goleiro', 'GOL'),
   ...Array.from({ length: 10 }, (_, i) => jogador(2 + i, `Titular ${i + 1}`, 'MC')),
-  jogador(20, 'Craque Silva', 'ATA', { forca: 88, estrela: true }),
+  jogador(20, 'Craque Silva', 'ATA', { forca: 88, estrela: true, podeRenovar: true, contratoAte: 2027 }),
   jogador(21, 'Machucado Souza', 'ZAG', { disponivel: false, rodadasLesionado: 3 }),
 ]
 
@@ -262,6 +266,10 @@ export function criarNucleoFalso(opcoes: { totalRodadas?: number } = {}) {
     novaCarreira: vi.fn(() => ok(estado())),
     estado: vi.fn(() => ok(estado())),
     elenco: vi.fn(() => ok(elenco)),
+    renovarContrato: vi.fn((jogadorId: number, anos: number) =>
+      ok(elenco.map((j) => (j.id === jogadorId ? { ...j, podeRenovar: false, contratoAte: 2027 + anos, salario: j.salarioPedido } : j))),
+    ),
+    dispensar: vi.fn((jogadorId: number) => ok(elenco.filter((j) => j.id !== jogadorId))),
     tatica: vi.fn(() => ok(taticaAtual)),
     definirTatica: vi.fn((d) => {
       if (d.titulares.length !== 11) {

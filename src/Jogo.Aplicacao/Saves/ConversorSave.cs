@@ -45,6 +45,7 @@ public static class ConversorSave
                 VagasAcesso = d.VagasAcesso, VagasRebaixamento = d.VagasRebaixamento,
             })],
             Clubes = [.. mundo.Clubes.Select(ParaSave)],
+            AgentesLivres = [.. mundo.AgentesLivres.Select(ParaSave)],
             Temporada = new TemporadaSave
             {
                 RodadaAtual = temporada.RodadaAtual,
@@ -91,7 +92,8 @@ public static class ConversorSave
         {
             var clubes = save.Clubes.Select(ParaDominio).ToArray();
             var divisoes = save.Divisoes.Select(d => new Divisao(d.Id!, d.Nome!, d.Nivel, d.Clubes ?? [], d.VagasAcesso, d.VagasRebaixamento));
-            var mundo = new Mundo(save.Ano, divisoes, clubes);
+            var livres = (save.AgentesLivres ?? []).Select(j => ParaDominio(j, ""));
+            var mundo = new Mundo(save.Ano, divisoes, clubes, livres);
 
             var tatica = new TaticaDoJogador(
                 FormacoesPadrao.Todas.FirstOrDefault(f => f.Nome == save.Tatica.Formacao)

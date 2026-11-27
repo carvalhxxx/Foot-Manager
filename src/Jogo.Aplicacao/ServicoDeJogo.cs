@@ -6,6 +6,7 @@ using Jogo.Dominio.Clubes;
 using Jogo.Dominio.Jogadores;
 using Jogo.Motor;
 using Jogo.Simulacao;
+using Jogo.Simulacao.Mercado;
 using Jogo.Simulacao.Temporadas;
 
 namespace Jogo.Aplicacao;
@@ -102,8 +103,30 @@ public sealed class ServicoDeJogo
             .OrderBy(j => j.PosicaoPrincipal)
             .ThenByDescending(j => j.ForcaGeral)
             .ThenBy(j => j.Id)
-            .Select(j => ParaDto(j, numeros.GetValueOrDefault(j.Id)))];
+            .Select(j => ParaDto(j, numeros.GetValueOrDefault(j.Id), c.Mundo.TemporadaAtual))];
     });
+
+    /// <summary>Renova o contrato (1 a 4 anos) pelo salário pedido e devolve o elenco atualizado.</summary>
+    public Resposta<IReadOnlyList<JogadorDto>> RenovarContrato(int jogadorId, int anos)
+    {
+        var r = ComCarreira(c =>
+        {
+            c.RenovarContrato(jogadorId, anos);
+            return 0;
+        });
+        return r.Ok ? Elenco() : Resposta<IReadOnlyList<JogadorDto>>.Falha([.. r.Erros!]);
+    }
+
+    /// <summary>Dispensa o jogador (paga 3 salários) e devolve o elenco atualizado.</summary>
+    public Resposta<IReadOnlyList<JogadorDto>> Dispensar(int jogadorId)
+    {
+        var r = ComCarreira(c =>
+        {
+            c.Dispensar(jogadorId);
+            return 0;
+        });
+        return r.Ok ? Elenco() : Resposta<IReadOnlyList<JogadorDto>>.Falha([.. r.Erros!]);
+    }
 
     public Resposta<TaticaDto> Tatica() => ComCarreira(c => ParaDto(c));
 
@@ -422,7 +445,7 @@ public sealed class ServicoDeJogo
         c.Elenco.Count,
         c.Torcida);
 
-    private static JogadorDto ParaDto(Jogador j, (int Jogos, int Gols) numeros)
+    private static JogadorDto ParaDto(Jogador j, (int Jogos, int Gols) numeros, int temporadaAtual)
     {
         var a = j.Atributos;
         return new JogadorDto(
@@ -431,7 +454,11 @@ public sealed class ServicoDeJogo
             j.RodadasLesionado, j.RodadasSuspenso, j.AmarelosAcumulados,
             j.Contrato?.SalarioMensal ?? 0, j.Contrato?.TemporadaFinal ?? 0, numeros.Jogos, numeros.Gols,
             new AtributosDto(a.Finalizacao, a.Passe, a.Desarme, a.Drible, a.Velocidade, a.Resistencia, a.Decisao, a.Determinacao,
-                a.Reflexos, a.Posicionamento));
+                a.Reflexos, a.Posicionamento),
+            Valores.ValorDeMercado(j, temporadaAtual),
+            Contratos.PodeRenovar(j, temporadaAtual),
+            Valores.SalarioPedido(j),
+            Contratos.CustoDaDispensa(j));
     }
 
     private static TaticaDto ParaDto(Carreira c)

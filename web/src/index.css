@@ -1153,3 +1153,30 @@ select {
 .dica {
   font-size: 0.85rem;
 }
+
+/* Elenco: contrato do jogador ------------------------------------------- */
+.link-jogador {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+
+.link-jogador:hover {
+  color: var(--destaque);
+}
+
+.cartao-contrato {
+  margin-bottom: 1rem;
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}

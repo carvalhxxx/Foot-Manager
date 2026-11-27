@@ -24,6 +24,8 @@ export interface Nucleo {
   novaCarreira(clubeId: string, seed: string): Resposta<Estado>
   estado(): Resposta<Estado>
   elenco(): Resposta<Jogador[]>
+  renovarContrato(jogadorId: number, anos: number): Resposta<Jogador[]>
+  dispensar(jogadorId: number): Resposta<Jogador[]>
   tatica(): Resposta<Tatica>
   definirTatica(definicao: DefinicaoTatica): Resposta<Tatica>
   escalacaoAutomatica(): Resposta<Tatica>
@@ -63,6 +65,8 @@ interface ApiBruta {
   DecidirAoVivo(decisaoJson: string): string
   ConcluirAoVivo(): string
   Financas(): string
+  RenovarContrato(jogadorId: number, anos: number): string
+  Dispensar(jogadorId: number): string
   DefinirPrecoIngresso(preco: string): string
   ExportarSave(): string
   CarregarSave(conteudo: string): string
@@ -112,6 +116,8 @@ function embrulhar(api: ApiBruta): Nucleo {
     novaCarreira: (clubeId, seed) => ler(api.NovaCarreira(clubeId, seed)),
     estado: () => ler(api.Estado()),
     elenco: () => ler(api.Elenco()),
+    renovarContrato: (jogadorId, anos) => ler(api.RenovarContrato(jogadorId, anos)),
+    dispensar: (jogadorId) => ler(api.Dispensar(jogadorId)),
     tatica: () => ler(api.Tatica()),
     definirTatica: (definicao) => ler(api.DefinirTatica(JSON.stringify(definicao))),
     escalacaoAutomatica: () => ler(api.EscalacaoAutomatica()),

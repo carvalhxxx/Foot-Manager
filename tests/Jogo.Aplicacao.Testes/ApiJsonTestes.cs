@@ -218,6 +218,30 @@ public class ApiJsonTestes
     }
 
     [Fact]
+    public void Contratos_RenovarEDispensarPelaApi()
+    {
+        var api = ComCarreira();
+        var elenco = Ok(api.Elenco()).AsArray();
+        Assert.All(elenco, j => Assert.True(j!["valorDeMercado"]!.GetValue<decimal>() > 0));
+
+        var renovavel = elenco.FirstOrDefault(j => j!["podeRenovar"]!.GetValue<bool>());
+        if (renovavel is not null)
+        {
+            var id = renovavel["id"]!.GetValue<int>();
+            var depois = Ok(api.RenovarContrato(id, 2)).AsArray().First(j => j!["id"]!.GetValue<int>() == id)!;
+            Assert.False(depois["podeRenovar"]!.GetValue<bool>());
+        }
+
+        var naoRenovavel = elenco.First(j => !j!["podeRenovar"]!.GetValue<bool>())!["id"]!.GetValue<int>();
+        Assert.Contains("último ano", Falha(api.RenovarContrato(naoRenovavel, 2)), StringComparison.Ordinal);
+
+        var dispensado = elenco[0]!["id"]!.GetValue<int>();
+        var restante = Ok(api.Dispensar(dispensado)).AsArray();
+        Assert.Equal(elenco.Count - 1, restante.Count);
+        Assert.Contains("não é do seu elenco", Falha(api.Dispensar(dispensado)), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void Save_DuranteJogoAoVivo_FalhaComMensagem()
     {
         var api = ComCarreira();

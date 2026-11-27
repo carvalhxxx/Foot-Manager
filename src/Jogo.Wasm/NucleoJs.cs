@@ -73,6 +73,12 @@ public static partial class NucleoJs
     internal static string DefinirPrecoIngresso(string preco) => Api.DefinirPrecoIngresso(preco);
 
     [JSExport]
+    internal static string RenovarContrato(int jogadorId, int anos) => Api.RenovarContrato(jogadorId, anos);
+
+    [JSExport]
+    internal static string Dispensar(int jogadorId) => Api.Dispensar(jogadorId);
+
+    [JSExport]
     internal static string ExportarSave() => Api.ExportarSave();
 
     [JSExport]

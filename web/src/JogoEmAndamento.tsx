@@ -59,6 +59,7 @@ export function JogoEmAndamento({ nucleo, mundo, botaoTema, slotId, armazenament
   const [fim, setFim] = useState<FimDto | undefined>()
   const [errosTatica, setErrosTatica] = useState<string[]>([])
   const [errosFinancas, setErrosFinancas] = useState<string[]>([])
+  const [errosElenco, setErrosElenco] = useState<string[]>([])
   const [divisaoVista, setDivisaoVista] = useState<string | undefined>()
   const [save, setSave] = useState<SituacaoSave | undefined>()
 
@@ -160,7 +161,28 @@ export function JogoEmAndamento({ nucleo, mundo, botaoTema, slotId, armazenament
       case 'inicio':
         return <Inicio estado={estado} />
       case 'elenco':
-        return <Elenco jogadores={dados(nucleo.elenco())} />
+        return (
+          <Elenco
+            jogadores={dados(nucleo.elenco())}
+            erros={errosElenco}
+            aoRenovar={(id, anos) => {
+              const r = nucleo.renovarContrato(id, anos)
+              setErrosElenco(r.ok ? [] : descreverErros(r.erros))
+              if (r.ok) {
+                salvar()
+              }
+              atualizar()
+            }}
+            aoDispensar={(id) => {
+              const r = nucleo.dispensar(id)
+              setErrosElenco(r.ok ? [] : descreverErros(r.erros))
+              if (r.ok) {
+                salvar()
+              }
+              atualizar()
+            }}
+          />
+        )
       case 'tatica':
         return (
           <Tatica

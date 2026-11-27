@@ -95,6 +95,20 @@ public class SaveTestes
     }
 
     [Fact]
+    public void Carregar_MantemAgentesLivres()
+    {
+        var carreira = new Carreira(NovoMundo(), "cerrado", 5);
+        var dispensado = carreira.Clube.Elenco[0];
+        carreira.Dispensar(dispensado.Id);
+
+        var carregada = ConversorSave.Carregar(ConversorSave.Salvar(carreira));
+
+        var livre = Assert.Single(carregada.Mundo.AgentesLivres);
+        Assert.Equal((dispensado.Id, dispensado.Nome, dispensado.ForcaGeral), (livre.Id, livre.Nome, livre.ForcaGeral));
+        Assert.Null(livre.Contrato);
+    }
+
+    [Fact]
     public void Save_FicaPequeno()
     {
         var carreira = new Carreira(NovoMundo(), "pampa", 3);

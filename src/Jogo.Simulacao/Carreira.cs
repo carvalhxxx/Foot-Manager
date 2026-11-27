@@ -116,6 +116,36 @@ public sealed class Carreira
         Tatica = tatica;
     }
 
+    /// <summary>Renova o contrato de um jogador do elenco pelo salário que ele pede.</summary>
+    public void RenovarContrato(int jogadorId, int anos)
+    {
+        ExigirForaDoAoVivo();
+        Mercado.Contratos.Renovar(Clube, JogadorDoElenco(jogadorId), Mundo.TemporadaAtual, anos);
+    }
+
+    /// <summary>Dispensa um jogador (paga a rescisão) e refaz a escalação se ele estava nela.</summary>
+    public void Dispensar(int jogadorId)
+    {
+        ExigirForaDoAoVivo();
+        Mercado.Contratos.Dispensar(Mundo, Clube, JogadorDoElenco(jogadorId));
+        if (Tatica.Titulares.Contains(jogadorId) || Tatica.Reservas.Contains(jogadorId))
+        {
+            UsarEscalacaoAutomatica();
+        }
+    }
+
+    private Jogador JogadorDoElenco(int jogadorId) =>
+        Clube.Elenco.FirstOrDefault(j => j.Id == jogadorId)
+            ?? throw new KeyNotFoundException("Esse jogador não é do seu elenco.");
+
+    private void ExigirForaDoAoVivo()
+    {
+        if (AoVivo is not null)
+        {
+            throw new InvalidOperationException("Espere a rodada ao vivo terminar.");
+        }
+    }
+
     /// <summary>Deixa a IA escolher formação e jogadores (o "auxiliar técnico").</summary>
     public void UsarEscalacaoAutomatica()
     {
@@ -273,7 +303,7 @@ public sealed class Carreira
     /// <summary>Fecha a temporada (acesso, evolução, base...) e começa a próxima.</summary>
     public ResultadoTemporada EncerrarTemporada()
     {
-        var resultado = FimDeTemporada.Encerrar(Temporada, Mundo, SementeDoAno(Temporada.Ano));
+        var resultado = FimDeTemporada.Encerrar(Temporada, Mundo, SementeDoAno(Temporada.Ano), Clube.Id);
         Temporada = NovaTemporada();
         UltimaRodada = null;
 

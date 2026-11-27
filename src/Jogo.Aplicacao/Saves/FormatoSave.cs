@@ -22,6 +22,9 @@ internal sealed class SaveJson
     public List<ClubeSave>? Clubes { get; set; }
     public TemporadaSave? Temporada { get; set; }
     public TaticaSave? Tatica { get; set; }
+
+    /// <summary>Jogadores sem clube (versão 2 em diante; ausente = nenhum).</summary>
+    public List<JogadorSave>? AgentesLivres { get; set; }
 }
 
 internal sealed class DivisaoSave

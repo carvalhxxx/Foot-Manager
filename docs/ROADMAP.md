@@ -11,7 +11,7 @@ Cada entrega termina com testes passando, commit claro e este arquivo atualizado
 - **Aceite:** uma temporada simulada fecha o caixa de forma coerente para todos os clubes.
 - **Etapas:**
   1. ~~8a · Finanças~~ ✔ bilheteria com preço do ingresso, TV, patrocínio, salários por rodada, premiação, tela Finanças, calibração (D-027);
-  2. 8b · Contratos: valor de mercado, renovação, dispensa, agentes livres;
+  2. ~~8b · Contratos~~ ✔ valor de mercado, renovação no Elenco (1 a 4 anos), dispensa com rescisão, agentes livres, IA renovando e liberando (D-028);
   3. 8c · Mercado: janelas, comprar e vender, IA negociando.
 
 ## Refinando

@@ -10,8 +10,9 @@ namespace Jogo.Dominio;
 public sealed class Mundo
 {
     private readonly Dictionary<string, Clube> _clubesPorId;
+    private readonly List<Jogadores.Jogador> _agentesLivres = [];
 
-    public Mundo(int temporadaAtual, IEnumerable<Divisao> divisoes, IEnumerable<Clube> clubes)
+    public Mundo(int temporadaAtual, IEnumerable<Divisao> divisoes, IEnumerable<Clube> clubes, IEnumerable<Jogadores.Jogador>? agentesLivres = null)
     {
         ArgumentNullException.ThrowIfNull(divisoes);
         ArgumentNullException.ThrowIfNull(clubes);
@@ -29,7 +30,32 @@ public sealed class Mundo
         Divisoes = listaDivisoes;
         Clubes = listaClubes;
         _clubesPorId = listaClubes.ToDictionary(c => c.Id, StringComparer.Ordinal);
+        foreach (var jogador in agentesLivres ?? [])
+        {
+            AdicionarAgenteLivre(jogador);
+        }
     }
+
+    /// <summary>Jogadores sem clube, que podem ser contratados de graça (só o salário).</summary>
+    public IReadOnlyList<Jogadores.Jogador> AgentesLivres => _agentesLivres;
+
+    public void AdicionarAgenteLivre(Jogadores.Jogador jogador)
+    {
+        ArgumentNullException.ThrowIfNull(jogador);
+        if (jogador.Contrato is not null)
+        {
+            throw new InvalidOperationException($"{jogador.Nome} ainda tem contrato.");
+        }
+
+        if (_agentesLivres.Exists(j => j.Id == jogador.Id))
+        {
+            throw new InvalidOperationException($"O jogador {jogador.Id} já é agente livre.");
+        }
+
+        _agentesLivres.Add(jogador);
+    }
+
+    public bool RemoverAgenteLivre(int jogadorId) => _agentesLivres.RemoveAll(j => j.Id == jogadorId) > 0;
 
     public int TemporadaAtual { get; private set; }
 
@@ -51,7 +77,7 @@ public sealed class Mundo
     }
 
     /// <summary>Maior id de jogador em uso (para criar jogadores novos sem colisão).</summary>
-    public int MaiorIdDeJogador => Clubes.SelectMany(c => c.Elenco).Select(j => j.Id).DefaultIfEmpty(0).Max();
+    public int MaiorIdDeJogador => Clubes.SelectMany(c => c.Elenco).Concat(_agentesLivres).Select(j => j.Id).DefaultIfEmpty(0).Max();
 
     /// <summary>Clubes na ordem em que foram definidos.</summary>
     public IReadOnlyList<Clube> Clubes { get; }
