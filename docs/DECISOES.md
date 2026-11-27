@@ -43,11 +43,11 @@ Formato curto: contexto → decisão → consequência. Quando houver decisões 
 - **Decisão:** o código é distribuído sob MIT.
 - **Consequência:** qualquer pessoa pode reutilizar o código, inclusive comercialmente, desde que mantenha o aviso de copyright. Isso continua impedindo copiar código GPL (OpenFoot Manager, Bygfoot) para cá, porque a GPL exigiria trocar a licença do projeto inteiro.
 
-### D-010 · Adiar o SQLite para depois do motor e da temporada (2026-11-13, era P-001) · **em revisão (P-006)**
+### D-010 · Adiar o SQLite para depois do motor e da temporada (2026-11-13, era P-001) · **substituída pela D-026**
 - **Motivo:** o domínio vai mudar muito durante a calibração. Até lá, o mundo roda em memória, carregado do JSON, e o schema nasce já estável.
 - **Impacto:** a entrega 3 passa a ser "Domínio + JSON + gerador de seed"; o SQLite vai para a entrega de save/load.
 
-### D-011 · Dapper em vez de EF Core (2026-11-13, era P-002) · **em revisão (P-006)**
+### D-011 · Dapper em vez de EF Core (2026-11-13, era P-002) · **substituída pela D-026**
 - **Motivo:** o jogo carrega o mundo inteiro em memória, simula e grava. Não há consultas complexas nem uso para change tracking. Dapper + scripts SQL numerados (`PRAGMA user_version`) é mais leve e mais amigável ao trimming/AOT para o mobile.
 
 ### D-012 · Moral por jogador (2026-11-13, era P-003)
@@ -109,9 +109,6 @@ Formato curto: contexto → decisão → consequência. Quando houver decisões 
 - **Decisão:** a `Temporada` joga a rodada em três passos (`IniciarRodada`, `RodadaEmAndamento.AvancarMinuto`, `ConcluirRodada`); o modo rápido é só "avançar até o fim". Na rodada ao vivo, o time do jogador fica sem treinador automático e as decisões passam por `Carreira` (substituição, mentalidade, formação com reposicionamento pelo `Escalador.Distribuir`). A API devolve sempre a foto completa do jogo, e o C# indica quando pausar (intervalo, lesão ou expulsão do time do jogador, fim). A narração é texto de interface: fica em `web/src/narracao.ts`, com vários modelos por tipo de lance, escolhidos por um hash do lance (o mesmo lance sempre tem a mesma frase).
 - **Consequência:** cada jogo usa o seu gerador, então o ritmo não muda resultados: o modo rápido continua idêntico ao anterior. Na tela, uma trava síncrona impede que um minuto extra passe depois de uma pausa na velocidade 10×. Abrir a rodada leva cerca de 0,5 s (a IA escalando os 40 clubes); cada minuto é instantâneo.
 
-## Propostas (aguardando confirmação)
-
-### P-006 · Saves no navegador em vez de SQLite
-- **Contexto:** com o jogo no navegador, um arquivo SQLite por save (D-010/D-011) deixa de ser o caminho natural.
-- **Proposta:** o save é o estado do jogo serializado em JSON (compactado), guardado no IndexedDB do navegador, com opção de **exportar/importar arquivo** para backup ou para jogar em outro aparelho. Sem SQLite e sem Dapper.
-- **Impacto:** a E9 vira "save/load no navegador + exportação"; sincronização na nuvem continua na Fase 3.
+### D-026 · Saves no navegador (2026-11-27, era P-006)
+- **Decisão:** sem SQLite nem Dapper. O save é a carreira serializada em JSON pelo C# (`ConversorSave`), guardada no IndexedDB do navegador (resumos e conteúdos em "tabelas" separadas) e exportável como arquivo. Guarda o mundo inteiro (o save não depende das definições do jogo base nem de patches), as rodadas disputadas de forma compacta (placar, cartões, quem jogou, quem marcou) e os lances completos só do jogo do jogador na última rodada. O calendário não é salvo: é recalculado pela seed. Salvamento automático depois de cada rodada; não dá para salvar no meio de um jogo ao vivo (fechar a página no meio volta ao fim da rodada anterior). PWA com service worker "rede primeiro".
+- **Consequência:** a garantia "salvar e carregar = jogar direto" é testada comparando o save final byte a byte. Mudanças futuras no formato aumentam `VersaoFormato`; saves de versão mais nova são recusados com mensagem clara. Sem compressão por enquanto (~460 KB no fim da temporada; ~70 KB se comprimido, caso precise no futuro).

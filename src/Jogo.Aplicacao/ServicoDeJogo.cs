@@ -1,4 +1,5 @@
 using System.Globalization;
+using Jogo.Aplicacao.Saves;
 using Jogo.Dados.Definicoes;
 using Jogo.Dominio;
 using Jogo.Dominio.Clubes;
@@ -141,6 +142,33 @@ public sealed class ServicoDeJogo
 
     public Resposta<RodadaDto> UltimaRodada() => ComCarreira(c =>
         c.UltimaRodada is { } rodada ? ParaDto(c, rodada) : new RodadaDto(0, null, []));
+
+    // ------------------------------------------------------------------ saves
+
+    /// <summary>Gera o save da carreira atual (não dá durante uma rodada ao vivo).</summary>
+    public Resposta<SaveDto> ExportarSave() => ComCarreira(c => new SaveDto(
+        ConversorSave.Salvar(c),
+        c.Clube.Id,
+        c.Clube.Nome,
+        c.Clube.Cores.Primaria,
+        c.Clube.Cores.Secundaria,
+        c.Temporada.Ano,
+        c.Temporada.RodadaAtual,
+        c.MinhaCompeticao.Divisao.Nome));
+
+    /// <summary>Retoma uma carreira a partir de um save (não precisa das definições: o save tem o mundo inteiro).</summary>
+    public Resposta<EstadoDto> CarregarSave(string conteudo)
+    {
+        try
+        {
+            _carreira = ConversorSave.Carregar(conteudo);
+            return Estado();
+        }
+        catch (SaveInvalidoException ex)
+        {
+            return Resposta<EstadoDto>.Falha(ex.Message);
+        }
+    }
 
     // ------------------------------------------------------------------ ao vivo
 

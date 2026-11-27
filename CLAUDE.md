@@ -17,7 +17,7 @@ Prioridade: lançar rápido na web (desktop e celular), sem servidor: tudo roda 
 - **Ponte:** `src/Jogo.Wasm` compila para WebAssembly e só repassa `Jogo.Aplicacao.ApiJson` ao JavaScript com `[JSExport]`.
 - **Interface:** React 19 + TypeScript + Vite em `web/`. Lint com oxlint, testes com Vitest + Testing Library.
 - Testes C#: xUnit v3 no Microsoft.Testing.Platform; testes de arquitetura com Mono.Cecil.
-- Saves: no navegador (ver `docs/DECISOES.md`, P-006). Ainda não implementado: recarregar a página perde a carreira.
+- Saves: carreira serializada pelo C# (`Jogo.Aplicacao/Saves`) e guardada no IndexedDB do navegador, com exportar/importar arquivo (D-026). PWA com service worker em `web/public/sw.js`.
 - CI/CD: GitHub Actions (`.github/workflows/ci.yml`). Núcleo testado em Linux e Windows; site publicado no GitHub Pages a cada push na `main`.
 
 ## Comandos
@@ -51,6 +51,7 @@ web/                 Interface React + TypeScript (Vite).
   src/telas/AoVivo.tsx     Jogo ao vivo: relógio, velocidades, pausas, decisões e placar da rodada.
   src/textos.ts      Todos os textos da interface (inclusive a descrição dos eventos da partida).
   src/narracao.ts    Narração ao vivo: vários textos por tipo de lance (texto de interface, não regra de jogo).
+  src/saves/         Armazenamento dos saves (IndexedDB; versão em memória para testes), salvar e baixar arquivo.
 tools/Jogo.Calibracao    CLI que simula milhares de partidas e temporadas e confere as metas.
 tools/Jogo.Simulador     CLI que simula temporadas completas (Séries A e B) sem interface.
 tools/Jogo.GeradorDados  Gera o mundo inicial (40 clubes fictícios) em dados/definicoes.
@@ -67,6 +68,7 @@ docs/                ROADMAP.md (kanban), DECISOES.md, FORMATO_DADOS.md.
 - **Regras do jogo moram no C#.** A interface só exibe e envia comandos; nada de cálculo de jogo em TypeScript.
 - Fronteira C# ↔ JS: só JSON; nenhuma exceção atravessa (erros viram `{ ok: false, erros }`). Mudou `Jogo.Aplicacao/Contrato.cs`? Atualize `web/src/nucleo/contrato.ts`.
 - O estado do jogo mora no C# (`ServicoDeJogo`). A interface não guarda cópia: depois de cada ação, relê o que precisa.
+- Mudou algo que afeta o estado da carreira (nova propriedade em `Jogador`, `Clube`, `Temporada`...)? Inclua no save (`Jogo.Aplicacao/Saves`) e mantenha o teste "salvar e carregar = jogar direto" passando.
 - Sem over-engineering: nada de microserviços, CQRS, event sourcing ou contêiner de DI no MVP.
 
 ## Convenções de código

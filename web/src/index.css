@@ -751,6 +751,66 @@ select {
   font-weight: 700;
 }
 
+/* ------------------------------------------------------------ saves */
+
+.menu-rodape {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.situacao-save {
+  margin: 0;
+  min-height: 1.2em;
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+}
+
+.situacao-save-erro {
+  color: var(--perigo);
+}
+
+.botao-perigo {
+  background: var(--perigo);
+  color: #fff;
+}
+
+.botao-arquivo {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.botao-arquivo input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.lista-saves {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.save {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+}
+
+.save-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
 /* ------------------------------------------------------------ ao vivo */
 
 .acoes-rodada {
@@ -1016,6 +1076,16 @@ select {
 
   .ocultar-celular {
     display: none;
+  }
+
+  /* Cartão de save: escudo e nome em cima, botões numa linha própria embaixo. */
+  .save {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .save .acoes-rodada {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
   }
 
   .nome-completo {

@@ -18,10 +18,6 @@ _(nada)_
 - **Observação:** hoje os elencos só mudam por evolução, aposentadoria e base, e os contratos são renovados automaticamente. Por isso o clube mais forte domina várias temporadas seguidas. O mercado é o que vai trazer rotatividade entre os grandes.
 - **Aceite:** uma temporada simulada fecha o caixa de forma coerente para todos os clubes.
 
-### E9 · Save/load no navegador · M
-- **Objetivo:** vários saves guardados no navegador (IndexedDB), com exportar/importar arquivo (P-006). Site instalável como PWA.
-- **Aceite:** salvar no meio da temporada, fechar e carregar continua exatamente igual (incluindo o estado do gerador aleatório).
-
 ## Fase 2 (depois do lançamento do MVP)
 - **2.0 Calendário real:** datas, meses, jogos no meio de semana (pré-requisito do resto).
 - **2A Carreira:** diretoria (metas, confiança, demissão, propostas), notícias/jornal, prêmios da temporada, categorias de base.
@@ -35,6 +31,13 @@ _(nada)_
 Mobile, saves na nuvem, ligas online entre amigos, modelo freemium/assinatura.
 
 ## Feito
+
+### E9 · Save/load no navegador · M
+- A carreira é salva sozinha no navegador (IndexedDB) ao começar, depois de cada rodada, na virada de temporada e quando a tática muda. Recarregar a página não perde mais nada.
+- Tela "Suas carreiras": várias carreiras, continuar, apagar (com confirmação), novo jogo e importar arquivo. No jogo: "Exportar save" (arquivo .json para backup ou outro aparelho) e "Menu inicial".
+- O save (C#, `Jogo.Aplicacao/Saves`) guarda o mundo inteiro com o estado de carreira de cada jogador, as rodadas disputadas (compactas) e a tática; o calendário é recalculado pela seed. Cerca de 460 KB no fim da temporada.
+- Garantia testada: salvar e carregar no meio (inclusive atravessando a virada de temporada) termina com o save idêntico, byte a byte, ao de jogar direto.
+- PWA: manifesto, ícones e service worker "rede primeiro" (instalável e jogável offline depois do primeiro acesso). Decisão D-026.
 
 ### E7 · Partida ao vivo · M
 - "Jogar rodada" abre o jogo ao vivo: os 20 jogos correm juntos, minuto a minuto, com narração variada do seu jogo e o placar da rodada em tempo real.

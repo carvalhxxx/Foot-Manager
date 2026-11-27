@@ -54,6 +54,23 @@ public sealed record EventoPartida(
 /// <summary>Números de um time na partida.</summary>
 public sealed class EstatisticasTime
 {
+    public EstatisticasTime()
+    {
+    }
+
+    /// <summary>Recria as estatísticas de uma partida já disputada (ex.: lidas de um save).</summary>
+    public EstatisticasTime(int gols, int minutosComPosse, int finalizacoes, int noAlvo, int escanteios, int faltas, int amarelos, int vermelhos)
+    {
+        Gols = gols;
+        MinutosComPosse = minutosComPosse;
+        Finalizacoes = finalizacoes;
+        NoAlvo = noAlvo;
+        Escanteios = escanteios;
+        Faltas = faltas;
+        Amarelos = amarelos;
+        Vermelhos = vermelhos;
+    }
+
     public int Gols { get; internal set; }
     public int MinutosComPosse { get; internal set; }
     public int Finalizacoes { get; internal set; }

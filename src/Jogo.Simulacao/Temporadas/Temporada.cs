@@ -71,6 +71,58 @@ public sealed class Temporada
     public int TotalRodadas { get; }
     public bool Encerrada => RodadaAtual >= TotalRodadas;
 
+    /// <summary>
+    /// Recoloca as rodadas já disputadas (vindas de um save). O calendário é recalculado pela seed,
+    /// então cada jogo precisa existir nele; se não bater, o save é de outro mundo ou foi corrompido.
+    /// </summary>
+    public void Restaurar(int rodadaAtual, IEnumerable<(string DivisaoId, JogoDisputado Jogo)> disputados)
+    {
+        ArgumentNullException.ThrowIfNull(disputados);
+        if (RodadaAtual != 0 || EmAndamento is not null || Competicoes.Any(c => c.Disputados.Count > 0))
+        {
+            throw new InvalidOperationException("Só dá para restaurar uma temporada recém-criada.");
+        }
+
+        if (rodadaAtual < 0 || rodadaAtual > TotalRodadas)
+        {
+            throw new ArgumentOutOfRangeException(nameof(rodadaAtual), rodadaAtual, "Rodada fora do calendário.");
+        }
+
+        foreach (var (divisaoId, jogo) in disputados)
+        {
+            var competicao = Competicao(divisaoId);
+            var agendado = jogo.Placar.Jogo;
+            if (agendado.Rodada > rodadaAtual || !competicao.Calendario[agendado.Rodada - 1].Contains(agendado))
+            {
+                throw new InvalidOperationException(
+                    $"O jogo {agendado.MandanteId} x {agendado.VisitanteId} (rodada {agendado.Rodada}) não bate com o calendário.");
+            }
+
+            competicao.Registrar(jogo);
+        }
+
+        foreach (var competicao in Competicoes)
+        {
+            var esperados = competicao.Calendario.Take(rodadaAtual).Sum(r => r.Count);
+            if (competicao.Disputados.Count != esperados)
+            {
+                throw new InvalidOperationException($"Faltam jogos de {competicao.Divisao.Nome} no save.");
+            }
+        }
+
+        RodadaAtual = rodadaAtual;
+    }
+
+    /// <summary>Relatório de uma rodada já disputada, montado a partir dos jogos registrados.</summary>
+    public RelatorioRodada? RelatorioDaRodada(int rodada)
+    {
+        var jogos = Competicoes
+            .Select(c => (c.Divisao.Id, Jogos: c.Disputados.Where(j => j.Placar.Jogo.Rodada == rodada).ToArray()))
+            .Where(x => x.Jogos.Length > 0)
+            .ToDictionary(x => x.Id, x => (IReadOnlyList<JogoDisputado>)x.Jogos, StringComparer.Ordinal);
+        return jogos.Count == 0 ? null : new RelatorioRodada(rodada, jogos);
+    }
+
     public CompeticaoDaTemporada Competicao(string divisaoId) =>
         Competicoes.FirstOrDefault(c => c.Divisao.Id == divisaoId)
         ?? throw new KeyNotFoundException($"Divisão \"{divisaoId}\" não está nesta temporada.");

@@ -62,6 +62,10 @@ public sealed class ApiJson
 
     public string ConcluirAoVivo() => Json(_servico.ConcluirAoVivo());
 
+    public string ExportarSave() => Json(_servico.ExportarSave());
+
+    public string CarregarSave(string conteudo) => Json(_servico.CarregarSave(conteudo));
+
     // Uma sobrecarga por tipo de resposta: o serializador gerado em compilação precisa do tipo concreto.
     private static string Json(Resposta<ResumoMundoDto> r) => JsonSerializer.Serialize(r, ContratoJson.Default.RespostaResumoMundoDto);
     private static string Json(Resposta<EstadoDto> r) => JsonSerializer.Serialize(r, ContratoJson.Default.RespostaEstadoDto);
@@ -71,6 +75,7 @@ public sealed class ApiJson
     private static string Json(Resposta<ClassificacaoDto> r) => JsonSerializer.Serialize(r, ContratoJson.Default.RespostaClassificacaoDto);
     private static string Json(Resposta<FimDeTemporadaDto> r) => JsonSerializer.Serialize(r, ContratoJson.Default.RespostaFimDeTemporadaDto);
     private static string Json(Resposta<AoVivoDto> r) => JsonSerializer.Serialize(r, ContratoJson.Default.RespostaAoVivoDto);
+    private static string Json(Resposta<SaveDto> r) => JsonSerializer.Serialize(r, ContratoJson.Default.RespostaSaveDto);
 
     /// <summary>Converte entrada malformada em resposta de erro, em vez de deixar a exceção chegar ao JavaScript.</summary>
     private static string Proteger<T>(Func<string> acao, System.Text.Json.Serialization.Metadata.JsonTypeInfo<Resposta<T>> tipo)

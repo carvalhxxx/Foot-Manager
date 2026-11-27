@@ -160,6 +160,13 @@ public sealed record AoVivoDto(
 /// <summary>Decisão do jogador durante o jogo: "substituicao", "mentalidade" ou "formacao".</summary>
 public sealed record DecisaoDto(string Tipo, int? SaiId = null, int? EntraId = null, string? Mentalidade = null, string? Formacao = null);
 
+// ------------------------------------------------------------------ saves
+
+/// <summary>Save pronto para guardar: o conteúdo (texto opaco) e um resumo para a lista de saves.</summary>
+public sealed record SaveDto(
+    string Conteudo, string ClubeId, string ClubeNome, string CorPrimaria, string CorSecundaria,
+    int Ano, int Rodada, string Divisao);
+
 // ------------------------------------------------------------------ tabelas
 
 public sealed record LinhaTabelaDto(
@@ -185,6 +192,7 @@ public sealed record FimDeTemporadaDto(
 [JsonSerializable(typeof(DefinicaoTaticaDto))]
 [JsonSerializable(typeof(DecisaoDto))]
 [JsonSerializable(typeof(Resposta<AoVivoDto>))]
+[JsonSerializable(typeof(Resposta<SaveDto>))]
 [JsonSerializable(typeof(Resposta<ResumoMundoDto>))]
 [JsonSerializable(typeof(Resposta<EstadoDto>))]
 [JsonSerializable(typeof(Resposta<IReadOnlyList<JogadorDto>>))]

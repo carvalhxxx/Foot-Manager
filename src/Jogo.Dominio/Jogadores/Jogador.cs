@@ -118,6 +118,17 @@ public sealed class Jogador
         RodadasSuspenso = Math.Max(0, RodadasSuspenso - 1);
     }
 
+    /// <summary>Restaura o estado de carreira lido de um save.</summary>
+    public void RestaurarEstado(int condicao, int moral, int rodadasLesionado, int rodadasSuspenso, int amarelosAcumulados, int sequenciaComoTitular)
+    {
+        Condicao = Validacao.Faixa(condicao, 0, EscalaMaxima, nameof(condicao));
+        Moral = Validacao.Faixa(moral, 0, EscalaMaxima, nameof(moral));
+        RodadasLesionado = Validacao.Faixa(rodadasLesionado, 0, 60, nameof(rodadasLesionado));
+        RodadasSuspenso = Validacao.Faixa(rodadasSuspenso, 0, 20, nameof(rodadasSuspenso));
+        AmarelosAcumulados = Validacao.Faixa(amarelosAcumulados, 0, 99, nameof(amarelosAcumulados));
+        SequenciaComoTitular = Validacao.Faixa(sequenciaComoTitular, 0, 999, nameof(sequenciaComoTitular));
+    }
+
     /// <summary>Pré-temporada: zera cartões, suspensões e lesões, recupera o físico e aproxima a moral do neutro.</summary>
     public void ComecarNovaTemporada()
     {

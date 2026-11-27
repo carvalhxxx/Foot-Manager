@@ -297,6 +297,34 @@ export function criarNucleoFalso(opcoes: { totalRodadas?: number } = {}) {
       rodadaAtual++
       return ok({ ...rodada, rodada: rodadaAtual })
     }),
+    // Save falso: o conteúdo só guarda a rodada.
+    exportarSave: vi.fn(() =>
+      aoVivo
+        ? { ok: false as const, erros: [{ arquivo: '', local: '', mensagem: 'Não dá para salvar no meio de uma rodada ao vivo.' }] }
+        : ok({
+            conteudo: JSON.stringify({ falso: true, rodada: rodadaAtual }),
+            clubeId: pampa.id,
+            clubeNome: pampa.nome,
+            corPrimaria: pampa.corPrimaria,
+            corSecundaria: pampa.corSecundaria,
+            ano: 2027,
+            rodada: rodadaAtual,
+            divisao: 'Série A',
+          }),
+    ),
+    carregarSave: vi.fn((conteudo: string) => {
+      try {
+        const lido = JSON.parse(conteudo) as { falso?: boolean; rodada?: number }
+        if (lido.falso) {
+          rodadaAtual = lido.rodada ?? 0
+          aoVivo = undefined
+          return ok(estado())
+        }
+      } catch {
+        // cai no erro abaixo
+      }
+      return { ok: false as const, erros: [{ arquivo: '', local: '', mensagem: 'O arquivo não é um save válido do Foot Manager BR.' }] }
+    }),
   } satisfies Nucleo
 
   return nucleo

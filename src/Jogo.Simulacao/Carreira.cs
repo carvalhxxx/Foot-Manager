@@ -30,6 +30,25 @@ public sealed class Carreira
         UsarEscalacaoAutomatica();
     }
 
+    /// <summary>
+    /// Retoma uma carreira salva: o mundo já restaurado, a temporada recriada pela seed com as rodadas
+    /// disputadas (via <paramref name="restaurarTemporada"/>) e a tática do jogador.
+    /// </summary>
+    public static Carreira Restaurar(
+        Mundo mundo,
+        string clubeId,
+        ulong seed,
+        Action<Temporada> restaurarTemporada,
+        TaticaDoJogador tatica)
+    {
+        ArgumentNullException.ThrowIfNull(restaurarTemporada);
+        var carreira = new Carreira(mundo, clubeId, seed);
+        restaurarTemporada(carreira.Temporada);
+        carreira.UltimaRodada = carreira.Temporada.RelatorioDaRodada(carreira.Temporada.RodadaAtual);
+        carreira.DefinirTatica(tatica);
+        return carreira;
+    }
+
     public Mundo Mundo { get; }
     public Clube Clube { get; }
     public ulong Seed { get; }

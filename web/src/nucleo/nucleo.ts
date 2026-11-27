@@ -9,6 +9,7 @@ import type {
   Resposta,
   ResumoMundo,
   Rodada,
+  SaveExportado,
   Tatica,
 } from './contrato'
 
@@ -34,6 +35,8 @@ export interface Nucleo {
   avancarAoVivo(minutos: number): Resposta<AoVivo>
   decidirAoVivo(decisao: Decisao): Resposta<AoVivo>
   concluirAoVivo(): Resposta<Rodada>
+  exportarSave(): Resposta<SaveExportado>
+  carregarSave(conteudo: string): Resposta<Estado>
 }
 
 // Formato bruto exportado por src/Jogo.Wasm/NucleoJs.cs ([JSExport]): só strings.
@@ -55,6 +58,8 @@ interface ApiBruta {
   AvancarAoVivo(minutos: number): string
   DecidirAoVivo(decisaoJson: string): string
   ConcluirAoVivo(): string
+  ExportarSave(): string
+  CarregarSave(conteudo: string): string
 }
 
 interface RuntimeDotnet {
@@ -113,5 +118,7 @@ function embrulhar(api: ApiBruta): Nucleo {
     avancarAoVivo: (minutos) => ler(api.AvancarAoVivo(minutos)),
     decidirAoVivo: (decisao) => ler(api.DecidirAoVivo(JSON.stringify(decisao))),
     concluirAoVivo: () => ler(api.ConcluirAoVivo()),
+    exportarSave: () => ler(api.ExportarSave()),
+    carregarSave: (conteudo) => ler(api.CarregarSave(conteudo)),
   }
 }

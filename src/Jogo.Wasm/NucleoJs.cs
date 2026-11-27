@@ -65,4 +65,10 @@ public static partial class NucleoJs
 
     [JSExport]
     internal static string ConcluirAoVivo() => Api.ConcluirAoVivo();
+
+    [JSExport]
+    internal static string ExportarSave() => Api.ExportarSave();
+
+    [JSExport]
+    internal static string CarregarSave(string conteudo) => Api.CarregarSave(conteudo);
 }

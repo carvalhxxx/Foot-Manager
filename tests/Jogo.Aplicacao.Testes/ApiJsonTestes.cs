@@ -180,6 +180,40 @@ public class ApiJsonTestes
     }
 
     [Fact]
+    public void Save_ExportarECarregarEmOutraInstancia()
+    {
+        var api = ComCarreira("cerrado");
+        Ok(api.AvancarRodada());
+        Ok(api.AvancarRodada());
+
+        var save = Ok(api.ExportarSave());
+        Assert.Equal(("cerrado", 2027, 2, "Série A"),
+            (save["clubeId"]!.GetValue<string>(), save["ano"]!.GetValue<int>(), save["rodada"]!.GetValue<int>(), save["divisao"]!.GetValue<string>()));
+
+        // Outra aba/aparelho: sem carregar definições, só o save.
+        var outra = new ApiJson();
+        var estado = Ok(outra.CarregarSave(save["conteudo"]!.GetValue<string>()));
+        Assert.Equal(("cerrado", 2), (estado["clube"]!["id"]!.GetValue<string>(), estado["rodadaAtual"]!.GetValue<int>()));
+        Assert.Equal(2, Ok(outra.UltimaRodada())["rodada"]!.GetValue<int>());
+        Assert.Equal(3, Ok(outra.AvancarRodada())["rodada"]!.GetValue<int>());
+    }
+
+    [Fact]
+    public void Save_DuranteJogoAoVivo_FalhaComMensagem()
+    {
+        var api = ComCarreira();
+        Ok(api.IniciarAoVivo());
+
+        Assert.Contains("ao vivo", Falha(api.ExportarSave()), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Save_ArquivoInvalido_FalhaComMensagem()
+    {
+        Assert.Contains("save válido", Falha(new ApiJson().CarregarSave("{\"oi\": 1}")), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void AoVivo_SemRodadaIniciada_Falha()
     {
         var api = ComCarreira();

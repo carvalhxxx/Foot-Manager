@@ -267,6 +267,20 @@ export type Decisao =
   | { tipo: 'mentalidade'; mentalidade: string }
   | { tipo: 'formacao'; formacao: string }
 
+// ---------------------------------------------------------------- saves
+
+/** Save pronto para guardar: o conteúdo é texto opaco (só o C# lê) + um resumo para a lista. */
+export interface SaveExportado {
+  conteudo: string
+  clubeId: string
+  clubeNome: string
+  corPrimaria: string
+  corSecundaria: string
+  ano: number
+  rodada: number
+  divisao: string
+}
+
 // ---------------------------------------------------------------- tabelas
 
 export interface LinhaTabela {

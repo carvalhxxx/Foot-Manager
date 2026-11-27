@@ -3,6 +3,8 @@ import { Escudo } from './componentes/Escudo'
 import type { DefinicaoTatica, FimDeTemporada as FimDto, Resposta, ResumoMundo, Rodada } from './nucleo/contrato'
 import { descreverErros } from './nucleo/iniciar'
 import type { Nucleo } from './nucleo/nucleo'
+import type { ArmazenamentoSaves } from './saves/armazenamento'
+import { baixarSave, formatoHora, salvarCarreira } from './saves/salvar'
 import { AoVivo } from './telas/AoVivo'
 import { Classificacao } from './telas/Classificacao'
 import { Elenco } from './telas/Elenco'
@@ -26,6 +28,10 @@ interface Props {
   nucleo: Nucleo
   mundo: ResumoMundo
   botaoTema: ReactNode
+  /** Onde esta carreira é salva automaticamente. */
+  slotId: string
+  armazenamento: ArmazenamentoSaves
+  aoSairParaOMenu: () => void
 }
 
 /** Lança um erro com as mensagens do núcleo (só para respostas que nunca deveriam falhar). */
@@ -40,7 +46,9 @@ function elementoEditavel(alvo: EventTarget | null): boolean {
   return alvo instanceof HTMLElement && ['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON'].includes(alvo.tagName)
 }
 
-export function JogoEmAndamento({ nucleo, mundo, botaoTema }: Props) {
+type SituacaoSave = { tipo: 'salvo'; em: Date } | { tipo: 'erro'; mensagem: string }
+
+export function JogoEmAndamento({ nucleo, mundo, botaoTema, slotId, armazenamento, aoSairParaOMenu }: Props) {
   const [tela, setTela] = useState<Tela>('inicio')
   // O estado mora no núcleo C#: cada mudança só pede uma nova renderização, e as telas releem os dados.
   const [, setVersao] = useState(0)
@@ -49,11 +57,36 @@ export function JogoEmAndamento({ nucleo, mundo, botaoTema }: Props) {
   const [fim, setFim] = useState<FimDto | undefined>()
   const [errosTatica, setErrosTatica] = useState<string[]>([])
   const [divisaoVista, setDivisaoVista] = useState<string | undefined>()
+  const [save, setSave] = useState<SituacaoSave | undefined>()
 
   const estado = dados(nucleo.estado())
   const divisoes = mundo.divisoes.map((d) => ({ id: d.id, nome: d.nome }))
 
   const atualizar = () => setVersao((v) => v + 1)
+
+  // O estado só muda quando o salvamento termina (assíncrono), nunca durante a renderização.
+  const salvar = useCallback(() => {
+    const agora = new Date()
+    void salvarCarreira(nucleo, armazenamento, slotId, agora).then((erro) =>
+      setSave(erro ? { tipo: 'erro', mensagem: erro } : { tipo: 'salvo', em: agora }),
+    )
+  }, [armazenamento, nucleo, slotId])
+
+  // Salva sozinho ao entrar e sempre que uma rodada (ou temporada) termina. No meio do jogo ao vivo não dá.
+  useEffect(() => {
+    if (!estado.rodadaAoVivo) {
+      salvar()
+    }
+  }, [estado.ano, estado.rodadaAtual, estado.rodadaAoVivo, salvar])
+
+  const exportar = () => {
+    const r = nucleo.exportarSave()
+    if (r.ok) {
+      baixarSave(r.dados)
+    } else {
+      setSave({ tipo: 'erro', mensagem: descreverErros(r.erros).join(' ') })
+    }
+  }
 
   /** Ação principal: jogar a rodada ao vivo (ou voltar a ela), ou encerrar a temporada. */
   const acaoPrincipal = useCallback(() => {
@@ -106,12 +139,16 @@ export function JogoEmAndamento({ nucleo, mundo, botaoTema }: Props) {
   const mudarTatica = (definicao: DefinicaoTatica) => {
     const r = nucleo.definirTatica(definicao)
     setErrosTatica(r.ok ? [] : descreverErros(r.erros))
+    if (r.ok) {
+      salvar()
+    }
     atualizar()
   }
 
   const usarAutomatica = () => {
     dados(nucleo.escalacaoAutomatica())
     setErrosTatica([])
+    salvar()
     atualizar()
   }
 
@@ -211,7 +248,19 @@ export function JogoEmAndamento({ nucleo, mundo, botaoTema }: Props) {
             </button>
           )}
         </nav>
-        {botaoTema}
+        <div className="menu-rodape">
+          <p className={`situacao-save ${save?.tipo === 'erro' ? 'situacao-save-erro' : ''}`} aria-live="polite">
+            {save?.tipo === 'salvo' && textos.saves.salvoEm(formatoHora.format(save.em))}
+            {save?.tipo === 'erro' && save.mensagem}
+          </p>
+          <button type="button" className="menu-tema" onClick={exportar} disabled={estado.rodadaAoVivo}>
+            {textos.saves.exportar}
+          </button>
+          <button type="button" className="menu-tema" onClick={aoSairParaOMenu} disabled={estado.rodadaAoVivo}>
+            {textos.saves.menuInicial}
+          </button>
+          {botaoTema}
+        </div>
       </aside>
 
       <main className="conteudo">
