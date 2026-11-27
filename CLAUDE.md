@@ -29,11 +29,13 @@ dotnet test --solution FootManagerBR.slnx        # testes do núcleo
 dotnet run --project tools/Jogo.Calibracao       # calibração do motor, da temporada e de carreiras de 5 anos com mercado (sai com erro fora das metas)
 dotnet run --project tools/Jogo.Simulador -- --temporadas 3   # simula temporadas e mostra tabelas/artilharia
 dotnet run --project tools/Jogo.GeradorDados     # regera dados/definicoes a partir dos dados reais (seed 2027, temporada 2026)
+dotnet run --project tools/Jogo.GeradorDados -- --api   # SÓ LOCAL: elencos da API-Football (chave em API_FOOTBALL_KEY) em dados/local/definicoes
 
 # Site (rodar dentro de web/)
 npm install                                      # primeira vez
 npm run nucleo                                   # publica o núcleo C# em web/public/nucleo (rodar após mudar C#)
 npm run dev                                      # servidor de desenvolvimento
+npm run dev:local                                # idem, com os dados locais da API (dados/local/definicoes)
 npm run lint && npm test && npm run build        # o que o CI roda
 ```
 

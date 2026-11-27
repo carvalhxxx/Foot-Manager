@@ -29,6 +29,9 @@ Mobile, saves na nuvem, ligas online entre amigos, modelo freemium/assinatura.
 
 ## Feito
 
+### Elencos atuais pela API-Football (só local) · P
+- Importador com cache e cruzamento com os dados pesquisados; modo `npm run dev:local` no site; nada da API vai para o repositório nem para o site publicado (D-038).
+
 ### Vagas continentais no padrão 2026 · P
 - Tabela com 1º a 4º Libertadores (grupos), 5º preliminar e 6º a 11º Sul-Americana; motor de redistribuição das vagas (títulos continentais, Copa do Brasil, rebaixados) testado com os exemplos do regulamento (D-037).
 

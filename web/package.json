@@ -6,7 +6,9 @@
   "scripts": {
     "nucleo": "node scripts/publicar-nucleo.mjs",
     "dev": "vite",
+    "dev:local": "vite --mode dadoslocais",
     "build": "tsc -b && vite build",
+    "build:local": "tsc -b && vite build --mode dadoslocais",
     "preview": "vite preview",
     "lint": "oxlint --deny-warnings",
     "test": "vitest run",

@@ -480,3 +480,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Dados locais (API-Football): cache e definições geradas só para a máquina de quem joga. Nunca publicar (D-038).
+dados/local/
