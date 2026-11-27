@@ -81,6 +81,14 @@ Formato curto: contexto → decisão → consequência. Quando houver decisões 
 - **Decisão:** a interface passa a ser React + TypeScript (Vite) em `web/`. O núcleo C# (domínio, gerador, motor, simulação) continua igual e roda **dentro do navegador** via WebAssembly (`src/Jogo.Wasm`, `Microsoft.NET.Sdk.WebAssembly`, `[JSExport]`), trocando JSON com a interface. Sem servidor: hospedagem estática no GitHub Pages, publicada pelo CI. O projeto Avalonia (`Jogo.App`) foi removido.
 - **Consequência:** regras do jogo ficam só no C# (testadas com xUnit); o TypeScript só exibe e envia comandos. O primeiro acesso baixa o runtime do .NET (alguns MB, depois em cache). As definições do jogo base entram no site em tempo de build. O leitor de definições passou a aceitar qualquer fonte (`IFonteDefinicoes`: pasta ou memória), o que também prepara patches enviados pelo jogador.
 
+### D-020 · Motor de partida estatístico em 4 setores (2026-11-26)
+- **Decisão:** cada jogador em campo vale `força na posição × improviso × condição × moral (× mando)`. Cada posição contribui para Defesa, Meio e Ataque com pesos fixos (ex.: lateral 70% defesa e 30% meio). A força do setor é a qualidade média × (ocupação / ocupação do 4-4-2)^0,5. A cada minuto: posse sorteada por `meio^1,5`; chance de lance de perigo; duelo `ataque^2 × defesa^2`; finalização pela qualidade do atacante contra o goleiro; quando o ataque perde o duelo, saem escanteios e faltas. Há também faltas "de meio de campo", cartões (o segundo amarelo é mais raro), lesões ligadas à propensão e ao cansaço, e uma trava anti-goleada a partir de 3 gols de diferença. Improviso fora da posição: 100% na principal e nas secundárias, 93% no lado oposto, 85% no mesmo setor, 70% fora dele, 50% no gol. Goleiro expulso ou lesionado sem goleiro no banco: o jogador de linha com mais jeito vai para o gol.
+- **Consequência:** o meio-campo decide a posse, então tirar os meias (5-0-5) não compensa: a correção do bug do Elifoot está garantida por teste. Todos os números ficam em `ConfiguracaoMotor`, e mudar qualquer um exige recalibrar.
+
+### D-021 · Metas de calibração (2026-11-26)
+- **Decisão:** a calibração (`Calibrador` em `Jogo.Simulacao`, CLI `tools/Jogo.Calibracao`) exige: gols por jogo entre 2,3 e 2,7; vitórias do mandante entre 42% e 48%; empates entre 24% e 29%; favorito (+6 de força no top 11) vencendo entre 55% e 80%; cada formação padrão com 40% a 60% dos pontos contra o 4-4-2 (50% = equilíbrio, medido como fatia dos pontos do confronto para não depender da taxa de empates); 5-0-5 e 3-0-7 com no máximo 40%.
+- **Consequência:** a CLI sai com erro se uma meta falhar (o CI barra), e uma versão menor roda nos testes. Valores atuais, iguais em 3 seeds: 2,44 gols, 45% mandante, 26% empates, 58% favorito, 23 finalizações e 3,5 amarelos por jogo.
+
 ## Propostas (aguardando confirmação)
 
 ### P-006 · Saves no navegador em vez de SQLite

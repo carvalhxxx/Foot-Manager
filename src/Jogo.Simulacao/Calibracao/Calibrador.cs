@@ -1,0 +1,202 @@
+using Jogo.Dominio;
+using Jogo.Dominio.Aleatoriedade;
+using Jogo.Dominio.Clubes;
+using Jogo.Dominio.Jogadores;
+using Jogo.Motor;
+using Jogo.Simulacao.Ia;
+
+namespace Jogo.Simulacao.Calibracao;
+
+/// <summary>Uma faixa aceitável para uma métrica. Faixa nula = métrica só informativa.</summary>
+public sealed record Meta(string Nome, double Valor, double? Minimo, double? Maximo, string Formato = "F2")
+{
+    public bool Atingida => (Minimo is null || Valor >= Minimo) && (Maximo is null || Valor <= Maximo);
+}
+
+/// <summary>Resultado de uma rodada de calibração.</summary>
+public sealed record RelatorioCalibracao(IReadOnlyList<Meta> Liga, IReadOnlyList<Meta> Formacoes)
+{
+    public bool Aprovado => Liga.Concat(Formacoes).All(m => m.Atingida);
+}
+
+/// <summary>Faixas-alvo da calibração (docs/DECISOES.md, D-020).</summary>
+public sealed record MetasCalibracao
+{
+    public static MetasCalibracao Padrao { get; } = new();
+
+    public (double Min, double Max) GolsPorJogo { get; init; } = (2.3, 2.7);
+    public (double Min, double Max) VitoriasMandante { get; init; } = (0.42, 0.48);
+    public (double Min, double Max) Empates { get; init; } = (0.24, 0.29);
+
+    /// <summary>Vitórias do favorito (6+ pontos de força a mais no top 11): alta, mas sem ser certa.</summary>
+    public (double Min, double Max) FavoritoVence { get; init; } = (0.55, 0.80);
+
+    /// <summary>Fatia dos pontos de uma formação padrão nos confrontos contra o 4-4-2 (50% = equilíbrio).</summary>
+    public (double Min, double Max) FormacaoPadrao { get; init; } = (0.40, 0.60);
+
+    /// <summary>Fatia máxima dos pontos de uma formação absurda (5-0-5, 3-0-7) contra o 4-4-2.</summary>
+    public double FormacaoExtremaMaximo { get; init; } = 0.40;
+
+    public int DiferencaFavorito { get; init; } = 6;
+}
+
+/// <summary>
+/// Simula milhares de partidas e mede se o motor se comporta como futebol de verdade.
+/// Puro e determinístico: mesma seed e mesmo mundo = mesmo relatório.
+/// </summary>
+public static class Calibrador
+{
+    public static Formacao CincoZeroCinco { get; } = new("5-0-5",
+    [
+        Posicao.LateralDireito, Posicao.Zagueiro, Posicao.Zagueiro, Posicao.Zagueiro, Posicao.LateralEsquerdo,
+        Posicao.PontaDireita, Posicao.SegundoAtacante, Posicao.Centroavante, Posicao.Centroavante, Posicao.PontaEsquerda,
+    ]);
+
+    public static Formacao TresZeroSete { get; } = new("3-0-7",
+    [
+        Posicao.Zagueiro, Posicao.Zagueiro, Posicao.Zagueiro,
+        Posicao.PontaDireita, Posicao.SegundoAtacante, Posicao.SegundoAtacante, Posicao.Centroavante,
+        Posicao.Centroavante, Posicao.Centroavante, Posicao.PontaEsquerda,
+    ]);
+
+    public static RelatorioCalibracao Executar(
+        Mundo mundo,
+        int partidasLiga,
+        int partidasPorFormacao,
+        ulong seed,
+        MetasCalibracao? metas = null,
+        ConfiguracaoMotor? configuracao = null)
+    {
+        ArgumentNullException.ThrowIfNull(mundo);
+        metas ??= MetasCalibracao.Padrao;
+        configuracao ??= ConfiguracaoMotor.Padrao;
+
+        return new RelatorioCalibracao(
+            Liga(mundo, partidasLiga, seed, metas, configuracao),
+            Formacoes(mundo, partidasPorFormacao, seed ^ 0x5EED, metas, configuracao));
+    }
+
+    private static List<Meta> Liga(Mundo mundo, int partidas, ulong seed, MetasCalibracao metas, ConfiguracaoMotor cfg)
+    {
+        var sorteio = new GeradorAleatorio(seed);
+        var escalacoes = mundo.Clubes.ToDictionary(c => c.Id, c => Escalador.Escalar(c), StringComparer.Ordinal);
+        var top11 = mundo.Clubes.ToDictionary(c => c.Id, Top11, StringComparer.Ordinal);
+
+        int vitoriasMandante = 0, empates = 0, gols = 0, finalizacoes = 0, noAlvo = 0, amarelos = 0, vermelhos = 0, lesoes = 0;
+        int jogosComFavorito = 0, vitoriasFavorito = 0, empatesFavorito = 0;
+
+        for (var i = 0; i < partidas; i++)
+        {
+            var divisao = mundo.Divisoes[sorteio.Proximo(0, mundo.Divisoes.Count)];
+            var a = divisao.ClubeIds[sorteio.Proximo(0, divisao.ClubeIds.Count)];
+            string b;
+            do
+            {
+                b = divisao.ClubeIds[sorteio.Proximo(0, divisao.ClubeIds.Count)];
+            }
+            while (b == a);
+
+            var r = MotorDePartida.SimularRapido(escalacoes[a], escalacoes[b], new GeradorAleatorio(seed + (ulong)i + 1), configuracao: cfg);
+
+            gols += r.GolsMandante + r.GolsVisitante;
+            vitoriasMandante += r.GolsMandante > r.GolsVisitante ? 1 : 0;
+            empates += r.GolsMandante == r.GolsVisitante ? 1 : 0;
+            finalizacoes += r.EstatisticasMandante.Finalizacoes + r.EstatisticasVisitante.Finalizacoes;
+            noAlvo += r.EstatisticasMandante.NoAlvo + r.EstatisticasVisitante.NoAlvo;
+            amarelos += r.EstatisticasMandante.Amarelos + r.EstatisticasVisitante.Amarelos;
+            vermelhos += r.EstatisticasMandante.Vermelhos + r.EstatisticasVisitante.Vermelhos;
+            lesoes += r.Participacoes.Count(p => p.RodadasDeLesao > 0);
+
+            var diferenca = top11[a] - top11[b];
+            if (Math.Abs(diferenca) >= metas.DiferencaFavorito)
+            {
+                jogosComFavorito++;
+                var saldoFavorito = diferenca > 0 ? r.GolsMandante - r.GolsVisitante : r.GolsVisitante - r.GolsMandante;
+                vitoriasFavorito += saldoFavorito > 0 ? 1 : 0;
+                empatesFavorito += saldoFavorito == 0 ? 1 : 0;
+            }
+        }
+
+        double Por(int total) => (double)total / partidas;
+
+        return
+        [
+            new("Gols por jogo", Por(gols), metas.GolsPorJogo.Min, metas.GolsPorJogo.Max),
+            new("Vitórias do mandante", Por(vitoriasMandante), metas.VitoriasMandante.Min, metas.VitoriasMandante.Max, "P1"),
+            new("Empates", Por(empates), metas.Empates.Min, metas.Empates.Max, "P1"),
+            new("Vitórias do visitante", Por(partidas - vitoriasMandante - empates), null, null, "P1"),
+            new($"Favorito (+{metas.DiferencaFavorito} de força) vence", jogosComFavorito == 0 ? 0 : (double)vitoriasFavorito / jogosComFavorito,
+                metas.FavoritoVence.Min, metas.FavoritoVence.Max, "P1"),
+            new("Favorito empata", jogosComFavorito == 0 ? 0 : (double)empatesFavorito / jogosComFavorito, null, null, "P1"),
+            new("Finalizações por jogo", Por(finalizacoes), null, null, "F1"),
+            new("No alvo por jogo", Por(noAlvo), null, null, "F1"),
+            new("Amarelos por jogo", Por(amarelos), null, null, "F1"),
+            new("Vermelhos por jogo", Por(vermelhos), null, null, "F2"),
+            new("Lesões por jogo", Por(lesoes), null, null, "F2"),
+        ];
+    }
+
+    private static List<Meta> Formacoes(Mundo mundo, int partidas, ulong seed, MetasCalibracao metas, ConfiguracaoMotor cfg)
+    {
+        var resultado = new List<Meta>();
+        var serieA = mundo.Divisoes[0].ClubeIds.Select(mundo.Clube).ToArray();
+        var referencia = FormacoesPadrao.QuatroQuatroDois;
+
+        var testadas = FormacoesPadrao.Todas.Where(f => f != referencia)
+            .Select(f => (Formacao: f, Extrema: false))
+            .Concat([(CincoZeroCinco, true), (TresZeroSete, true)]);
+
+        foreach (var (formacao, extrema) in testadas)
+        {
+            var sorteio = new GeradorAleatorio(seed ^ Geracao.GeradorDeMundo.HashEstavel(formacao.Nome));
+            var cacheTeste = new Dictionary<string, TimeEscalado>(StringComparer.Ordinal);
+            var cacheReferencia = new Dictionary<string, TimeEscalado>(StringComparer.Ordinal);
+            int pontosTeste = 0, pontosReferencia = 0;
+
+            for (var i = 0; i < partidas; i++)
+            {
+                var a = serieA[sorteio.Proximo(0, serieA.Length)];
+                Clube b;
+                do
+                {
+                    b = serieA[sorteio.Proximo(0, serieA.Length)];
+                }
+                while (b.Id == a.Id);
+
+                var teste = Escalacao(cacheTeste, a, formacao);
+                var adversario = Escalacao(cacheReferencia, b, referencia);
+                var testeEmCasa = i % 2 == 0;
+
+                var r = testeEmCasa
+                    ? MotorDePartida.SimularRapido(teste, adversario, new GeradorAleatorio(seed + (ulong)i + 7), configuracao: cfg)
+                    : MotorDePartida.SimularRapido(adversario, teste, new GeradorAleatorio(seed + (ulong)i + 7), configuracao: cfg);
+
+                var saldo = testeEmCasa ? r.GolsMandante - r.GolsVisitante : r.GolsVisitante - r.GolsMandante;
+                pontosTeste += saldo > 0 ? 3 : saldo == 0 ? 1 : 0;
+                pontosReferencia += saldo < 0 ? 3 : saldo == 0 ? 1 : 0;
+            }
+
+            // Fatia dos pontos do confronto: 50% = equilíbrio, independente da taxa de empates.
+            var aproveitamento = (double)pontosTeste / Math.Max(1, pontosTeste + pontosReferencia);
+            resultado.Add(extrema
+                ? new Meta($"{formacao.Nome} x 4-4-2", aproveitamento, null, metas.FormacaoExtremaMaximo, "P1")
+                : new Meta($"{formacao.Nome} x 4-4-2", aproveitamento, metas.FormacaoPadrao.Min, metas.FormacaoPadrao.Max, "P1"));
+        }
+
+        return resultado;
+    }
+
+    private static TimeEscalado Escalacao(Dictionary<string, TimeEscalado> cache, Clube clube, Formacao formacao)
+    {
+        if (!cache.TryGetValue(clube.Id, out var escalacao))
+        {
+            escalacao = Escalador.EscalarNaFormacao(clube, formacao);
+            cache[clube.Id] = escalacao;
+        }
+
+        return escalacao;
+    }
+
+    private static double Top11(Clube clube) =>
+        clube.Elenco.OrderByDescending(j => j.ForcaGeral).Take(11).Average(j => j.ForcaGeral);
+}

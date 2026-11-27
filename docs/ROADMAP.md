@@ -13,16 +13,10 @@ _(nada)_
 
 ## Backlog (MVP · Fase 1)
 
-### E4 · Motor de partida + calibração · G
-- **Objetivo:** motor estatístico minuto a minuto (setores → posse → duelo → finalização), determinístico com seed. API `Iniciar` / `AvancarMinuto` / `AplicarDecisao` e modo rápido.
-- **Aceite:**
-  - a CLI de calibração simula 10.000+ partidas e confere: média de gols entre 2,3 e 2,7; mandante vence cerca de 45%; empates entre 25 e 28%;
-  - formações extremas (5-0-5, 3-0-7) não dominam;
-  - o CI falha se alguma meta sair da margem.
-
 ### E5 · Simulação de temporada · M
 - **Objetivo:** calendário de pontos corridos (38 rodadas), rodada completa, tabela, fim de temporada com acesso/rebaixamento, tudo via CLI, sem UI.
 - **Aceite:** uma temporada inteira simulada pela CLI; tabela com os critérios de desempate; o time mais forte vence com frequência alta, mas não absoluta.
+- **Inclui:** aplicar o pós-jogo ao elenco (condição, suspensões por cartões, lesões, moral por resultado) e o **entrosamento** (bônus leve para quem joga junto há várias rodadas), que depende do histórico de rodadas.
 
 ### E6 · UI mínima (web) · G
 - **Objetivo:** telas Início, Elenco, Tática, Partida (resultado + eventos), Classificação e botão grande "Avançar rodada" com atalho de teclado, em React, funcionando no desktop e no celular.
@@ -53,6 +47,12 @@ _(nada)_
 Mobile, saves na nuvem, ligas online entre amigos, modelo freemium/assinatura.
 
 ## Feito
+
+### E4 · Motor de partida + calibração · G
+- `Jogo.Motor`: força em 4 setores (contribuição por posição, ocupação com retorno decrescente), posse pelo meio-campo, duelo ataque × defesa, finalização (gol, defesa, trave, travessão, fora, por cima), escanteios, faltas, cartões, lesões, cansaço, moral, improviso fora de posição, mando e mentalidade.
+- API ao vivo (`Iniciar`, `AvancarMinuto`, `AplicarDecisao`: substituição, mentalidade, formação) e modo rápido com treinador automático.
+- `Escalador` (IA) escolhe formação e titulares; `Calibrador` + CLI conferem as metas, que o CI e os testes barram.
+- Calibração (10 mil jogos): 2,44 gols/jogo, mandante 45%, empates 26%, favorito vence 58%; formações padrão entre 45% e 50% contra o 4-4-2; 5-0-5 e 3-0-7 perdem. Decisões D-020 e D-021.
 
 ### E2b · Migração para a web · M
 - Interface trocada de Avalonia (desktop) para React + TypeScript + Vite (`web/`), com tema claro/escuro e layout para celular.
