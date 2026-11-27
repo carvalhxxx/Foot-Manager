@@ -551,27 +551,7 @@ select {
   display: grid;
   grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
   gap: 16px;
-}
-
-.lista-titulares,
-.lista-reservas {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.linha-titular {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.linha-titular select {
-  flex: 1;
-  min-width: 0;
+  align-items: start;
 }
 
 .forca-posicao {
@@ -599,11 +579,6 @@ select {
   color: #9b1c12;
 }
 
-.lista-reservas label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
 
 .erro-lista {
   color: var(--perigo);
@@ -1211,4 +1186,179 @@ select {
   padding-left: 1.25rem;
   display: grid;
   gap: 0.35rem;
+}
+
+/* Tática: campo com arrastar e soltar ------------------------------------ */
+.campo {
+  position: relative;
+  aspect-ratio: 68 / 100;
+  max-height: 80vh;
+  width: 100%;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  background: repeating-linear-gradient(180deg, #2e7d46 0 10%, #2a7340 10% 20%);
+  user-select: none;
+}
+
+.campo-linhas span {
+  position: absolute;
+  border: 2px solid rgb(255 255 255 / 0.45);
+}
+
+.campo-meio {
+  left: 0;
+  right: 0;
+  top: 50%;
+  border-width: 2px 0 0 !important;
+}
+
+.campo-circulo {
+  left: 50%;
+  top: 50%;
+  width: 26%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.campo-area {
+  left: 22%;
+  right: 22%;
+  height: 15%;
+}
+
+.campo-area-cima {
+  top: -2px;
+}
+
+.campo-area-baixo {
+  bottom: -2px;
+}
+
+.peca {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  width: 22%;
+  padding: 2px;
+  background: none;
+  border: 0;
+  color: #fff;
+  font: inherit;
+  cursor: grab;
+  touch-action: none;
+}
+
+.peca-camisa {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--destaque);
+  color: var(--destaque-texto);
+  font-weight: 700;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.35);
+}
+
+.peca-nome {
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.1;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.8);
+}
+
+.peca-posicao {
+  font-size: 0.68rem;
+  opacity: 0.9;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.8);
+}
+
+.peca-improvisada .peca-camisa {
+  background: #f0b429;
+  color: #3d2a00;
+}
+
+.peca-fora .peca-camisa {
+  background: var(--perigo);
+  color: #fff;
+}
+
+.peca[aria-pressed='true'] .peca-camisa,
+.linha-jogador[aria-pressed='true'] {
+  outline: 3px solid #ffd84d;
+  outline-offset: 2px;
+}
+
+.peca-arrastada {
+  position: fixed;
+  z-index: 50;
+  transform: translate(-50%, -120%);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--destaque);
+  color: var(--destaque-texto);
+  font-weight: 600;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.3);
+}
+
+.lado-tatica {
+  display: grid;
+  gap: 16px;
+}
+
+.lista-banco {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.linha-jogador {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--borda);
+  background: var(--superficie-2);
+  color: var(--texto);
+  font: inherit;
+  text-align: left;
+  cursor: grab;
+  touch-action: none;
+}
+
+.linha-jogador-nome {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vaga-vazia {
+  justify-content: center;
+  border-style: dashed;
+  color: var(--texto-suave);
+  background: transparent;
+  cursor: pointer;
+}
+
+.lado-tatica .cartao:last-child .lista-banco {
+  max-height: 50vh;
+  overflow-y: auto;
+  touch-action: pan-y;
 }

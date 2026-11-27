@@ -112,6 +112,24 @@ describe('App', () => {
     expect(screen.getByRole('button', { name: textos.tatica.mentalidades.Ofensiva })).toHaveAttribute('aria-pressed', 'true')
   })
 
+  it('tática: tocar num titular e depois em outro jogador troca os dois', async () => {
+    const nucleo = await entrarNoJogo()
+    await userEvent.click(screen.getByRole('button', { name: textos.menu.tatica }))
+    const t = textos.tatica
+
+    const titular = screen.getByRole('button', { name: new RegExp(`^${'Titular 1'}, titular`) })
+    await userEvent.click(titular)
+    expect(titular).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByText(t.escolhaDestino)).toBeInTheDocument()
+
+    const craque = screen.queryByRole('button', { name: t.foraDoTimeJogador('Craque Silva') }) ?? screen.getByRole('button', { name: t.noBanco('Craque Silva') })
+    await userEvent.click(craque)
+
+    const enviada = nucleo.definirTatica.mock.lastCall?.[0]
+    expect(enviada?.titulares).toContain(20)
+    expect(enviada?.titulares).not.toContain(2)
+  })
+
   it('tática: erro do núcleo aparece na tela', async () => {
     const nucleo = await entrarNoJogo()
     nucleo.definirTatica.mockReturnValueOnce({ ok: false, erros: [{ arquivo: '', local: '', mensagem: 'Escale exatamente 11 titulares.' }] })

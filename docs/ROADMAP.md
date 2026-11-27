@@ -27,6 +27,9 @@ Mobile, saves na nuvem, ligas online entre amigos, modelo freemium/assinatura.
 
 ## Feito
 
+### Tática no campo · P
+- Escalação arrastando os jogadores num campo (ou tocando em um e depois no outro), com banco e lista de quem está fora do time. Verificada no navegador com mouse e na largura de celular (D-031).
+
 ### E10 · Polimento para o lançamento do MVP · M
 - Calibração de carreiras de 5 anos com mercado (rotatividade de campeões, concentração de dinheiro, tamanho dos elencos) no CI. A IA ficou mais ativa no mercado (D-030).
 - Carreira nova começa com 40 agentes livres.
