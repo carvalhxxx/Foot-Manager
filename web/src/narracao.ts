@@ -3,7 +3,7 @@
 // A escolha do texto é determinística: o mesmo lance sempre recebe a mesma frase.
 
 import type { EventoPartida } from './nucleo/contrato'
-import { textos } from './textos'
+import { descreverEstilo, textos } from './textos'
 
 type Modelo = (d: { jogador: string; outro: string; time: string; adversario: string; detalhe: string }) => string
 
@@ -66,6 +66,7 @@ const MODELOS: Record<string, Modelo[]> = {
     ({ time, detalhe }) => `📋 O ${time} muda a postura: ${textos.tatica.mentalidades[detalhe] ?? detalhe}.`,
   ],
   TrocaDeFormacao: [({ time, detalhe }) => `📋 O ${time} muda o esquema para o ${detalhe}.`],
+  TrocaDeEstilo: [({ time, detalhe }) => `📋 O ${time} ajusta o estilo: ${descreverEstilo(detalhe)}.`],
 }
 
 /** Hash simples e estável para escolher o modelo (não é regra de jogo, só variedade de texto). */

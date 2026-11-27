@@ -211,7 +211,10 @@ public sealed class ServicoDeJogo
                 throw new ArgumentException($"Mentalidade \"{definicao.Mentalidade}\" desconhecida.");
             }
 
-            c.DefinirTatica(new TaticaDoJogador(formacao, mentalidade, definicao.Titulares, definicao.Reservas));
+            var marcacao = definicao.Marcacao is null ? c.Tatica.Marcacao : LerEnum<Marcacao>(definicao.Marcacao, "Marcação");
+            var concentracao = definicao.Concentracao is null ? c.Tatica.Concentracao : LerEnum<Concentracao>(definicao.Concentracao, "Concentração");
+            c.DefinirTatica(new TaticaDoJogador(formacao, mentalidade, definicao.Titulares, definicao.Reservas,
+                marcacao, concentracao, definicao.CapitaoId, definicao.CobradorId));
             return ParaDto(c);
         });
     }
@@ -348,6 +351,11 @@ public sealed class ServicoDeJogo
                 case "mentalidade":
                     c.DecidirAoVivo(new TrocaDeMentalidade(LerMentalidade(decisao.Mentalidade)));
                     break;
+                case "estilo":
+                    c.DecidirAoVivo(new TrocaDeEstilo(
+                        LerEnum<Marcacao>(decisao.Marcacao, "Marcação"),
+                        LerEnum<Concentracao>(decisao.Concentracao, "Concentração")));
+                    break;
                 case "formacao":
                     c.TrocarFormacaoAoVivo(FormacoesPadrao.Todas.FirstOrDefault(f => f.Nome == decisao.Formacao)
                         ?? throw new ArgumentException($"Formação \"{decisao.Formacao}\" desconhecida."));
@@ -413,6 +421,8 @@ public sealed class ServicoDeJogo
                 ParaDto(p.Visitante.Estatisticas),
                 time.Formacao.Nome,
                 time.Mentalidade.ToString(),
+                time.Marcacao.ToString(),
+                time.Concentracao.ToString(),
                 p.Configuracao.MaximoSubstituicoes - time.SubstituicoesFeitas,
                 [.. time.EmCampo.Select(j => new JogadorEmCampoDto(j.Jogador.Id, j.Jogador.Nome, j.Posicao.Sigla(),
                     (int)Math.Round(j.ForcaBase), (int)Math.Round(j.Condicao), j.Amarelos, j.Gols))],
@@ -433,6 +443,12 @@ public sealed class ServicoDeJogo
 
         return new AoVivoDto(rodada.Rodada, rodada.Encerrada, pausa, minha, placares);
     }
+
+    private static T LerEnum<T>(string? nome, string rotulo)
+        where T : struct, Enum =>
+        Enum.TryParse<T>(nome, out var valor) && Enum.IsDefined(valor) && !int.TryParse(nome, out _)
+            ? valor
+            : throw new ArgumentException($"{rotulo} \"{nome}\" desconhecida.");
 
     private static Mentalidade LerMentalidade(string? nome) =>
         Enum.TryParse<Mentalidade>(nome, out var m) && Enum.IsDefined(m)
@@ -534,6 +550,8 @@ public sealed class ServicoDeJogo
     {
         var porId = c.Clube.Elenco.ToDictionary(j => j.Id);
         var posicoes = c.Tatica.Formacao.PosicoesComGoleiro;
+        // Na ordem da formação (o primeiro é o goleiro), só quem ainda é do elenco.
+        var titularesDaTatica = c.Tatica.Titulares.Select(id => porId.GetValueOrDefault(id)).OfType<Jogador>().ToArray();
         return new TaticaDto(
             c.Tatica.Formacao.Nome,
             c.Tatica.Mentalidade.ToString(),
@@ -548,7 +566,16 @@ public sealed class ServicoDeJogo
             c.Tatica.Reservas,
             [.. FormacoesPadrao.Todas.Select(f => new FormacaoDto(f.Nome, [.. f.PosicoesComGoleiro.Select(p => p.Sigla())]))],
             // Em ordem de valor (da mais defensiva à mais ofensiva); GetNames não garante isso com valores negativos.
-            [.. Enum.GetValues<Mentalidade>().OrderBy(m => (int)m).Select(m => m.ToString())]);
+            [.. Enum.GetValues<Mentalidade>().OrderBy(m => (int)m).Select(m => m.ToString())],
+            c.Tatica.Marcacao.ToString(),
+            c.Tatica.Concentracao.ToString(),
+            [.. Enum.GetValues<Marcacao>().OrderBy(m => (int)m).Select(m => m.ToString())],
+            [.. Enum.GetValues<Concentracao>().Select(m => m.ToString())],
+            c.Tatica.CapitaoId,
+            c.Tatica.CobradorId,
+            c.Tatica.CapitaoId ?? TimeEscalado.CapitaoAutomatico(titularesDaTatica)?.Id,
+            // Os 3 melhores em Finalização + Passe, para ajudar a escolher.
+            [.. titularesDaTatica.Skip(1).OrderByDescending(j => j.Atributos.Finalizacao + j.Atributos.Passe).ThenBy(j => j.Id).Take(3).Select(j => j.Id)]);
     }
 
     private static RodadaDto ParaDto(Carreira c, RelatorioRodada rodada)

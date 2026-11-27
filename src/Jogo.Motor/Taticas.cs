@@ -12,6 +12,23 @@ public enum Mentalidade
     MuitoOfensiva = 2,
 }
 
+/// <summary>Intensidade da marcação: forte tira chances do adversário, mas faz mais faltas e cansa mais.</summary>
+public enum Marcacao
+{
+    Leve = -1,
+    Normal = 0,
+    Forte = 1,
+}
+
+/// <summary>Por onde o time concentra os ataques.</summary>
+public enum Concentracao
+{
+    Variado,
+    Esquerda,
+    Meio,
+    Direita,
+}
+
 /// <summary>
 /// Formação tática: as 10 posições de linha (o goleiro é implícito).
 /// Formações fora do padrão (ex.: 5-0-5) são permitidas: o motor é que não deixa elas compensarem.

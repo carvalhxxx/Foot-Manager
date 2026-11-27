@@ -19,6 +19,33 @@ public class CarreiraTestes
     }
 
     [Fact]
+    public void MontarEscalacao_LevaEstiloECapitao_LesionadoViraAutomatico()
+    {
+        var carreira = Nova();
+        var t = carreira.Tatica;
+        carreira.DefinirTatica(t with { Marcacao = Marcacao.Forte, Concentracao = Concentracao.Direita, CapitaoId = t.Titulares[4], CobradorId = t.Titulares[7] });
+
+        var escalacao = carreira.MontarEscalacao().Escalacao;
+        Assert.Equal((Marcacao.Forte, Concentracao.Direita, t.Titulares[4], t.Titulares[7]),
+            (escalacao.Marcacao, escalacao.Concentracao, escalacao.CapitaoId!.Value, escalacao.CobradorId!.Value));
+
+        carreira.Clube.Elenco.Single(j => j.Id == t.Titulares[4]).Lesionar(2);
+        Assert.Null(carreira.MontarEscalacao().Escalacao.CapitaoId);
+    }
+
+    [Fact]
+    public void DefinirTatica_CapitaoQueNaoETitular_VoltaParaOAutomatico()
+    {
+        var carreira = Nova();
+        var reserva = carreira.Tatica.Reservas[0];
+
+        carreira.DefinirTatica(carreira.Tatica with { CapitaoId = reserva, CobradorId = reserva });
+
+        Assert.Null(carreira.Tatica.CapitaoId);
+        Assert.Null(carreira.Tatica.CobradorId);
+    }
+
+    [Fact]
     public void MontarEscalacao_TrocaLesionadoEAvisa()
     {
         var carreira = Nova();

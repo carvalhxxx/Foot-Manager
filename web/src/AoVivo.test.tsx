@@ -91,6 +91,12 @@ describe('Rodada ao vivo', () => {
     expect(nucleo.decidirAoVivo).toHaveBeenCalledWith({ tipo: 'formacao', formacao: '4-3-3' })
     expect(screen.getByText(t.restantes(4))).toBeInTheDocument()
     expect(screen.getByRole('button', { name: textos.tatica.mentalidades.MuitoOfensiva })).toHaveAttribute('aria-pressed', 'true')
+
+    fireEvent.click(screen.getByRole('button', { name: textos.tatica.marcacoes.Forte }))
+    expect(nucleo.decidirAoVivo).toHaveBeenLastCalledWith({ tipo: 'estilo', marcacao: 'Forte', concentracao: 'Variado' })
+    fireEvent.click(screen.getByRole('button', { name: textos.tatica.concentracoes.Direita }))
+    expect(nucleo.decidirAoVivo).toHaveBeenLastCalledWith({ tipo: 'estilo', marcacao: 'Forte', concentracao: 'Direita' })
+    expect(screen.getByRole('button', { name: textos.tatica.concentracoes.Direita })).toHaveAttribute('aria-pressed', 'true')
   })
 
   it('pular para o fim, ver o resumo e voltar à tela da partida', async () => {

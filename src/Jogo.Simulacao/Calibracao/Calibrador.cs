@@ -62,6 +62,9 @@ public sealed record MetasCalibracao
     /// <summary>Fração máxima de clubes com caixa negativo no fim da temporada.</summary>
     public double ClubesNoVermelhoMaximo { get; init; } = 0.10;
 
+    /// <summary>Fatia dos pontos de cada opção de marcação/concentração contra o padrão (D-032).</summary>
+    public (double Min, double Max) EstiloPadrao { get; init; } = (0.45, 0.55);
+
     // Carreiras de vários anos (mercado ligado) ----------------------------------
 
     /// <summary>Em 5 anos, quantos campeões diferentes da Série A (nem dinastia, nem loteria).</summary>
@@ -110,7 +113,8 @@ public static class Calibrador
 
         return new RelatorioCalibracao(
             Liga(mundo, partidasLiga, seed, metas, configuracao),
-            Formacoes(mundo, partidasPorFormacao, seed ^ 0x5EED, metas, configuracao));
+            [.. Formacoes(mundo, partidasPorFormacao, seed ^ 0x5EED, metas, configuracao),
+             .. Estilos(mundo, partidasPorFormacao, seed ^ 0xE57110, metas, configuracao)]);
     }
 
     /// <summary>
@@ -346,6 +350,62 @@ public static class Calibrador
             resultado.Add(extrema
                 ? new Meta($"{formacao.Nome} x 4-4-2", aproveitamento, null, metas.FormacaoExtremaMaximo, "P1")
                 : new Meta($"{formacao.Nome} x 4-4-2", aproveitamento, metas.FormacaoPadrao.Min, metas.FormacaoPadrao.Max, "P1"));
+        }
+
+        return resultado;
+    }
+
+    /// <summary>
+    /// Marcação e concentração (D-032): cada opção, num 4-4-2, contra o mesmo 4-4-2 com marcação normal e
+    /// ataque variado. Nenhuma opção deve ganhar ou perder sempre.
+    /// </summary>
+    private static List<Meta> Estilos(Mundo mundo, int partidas, ulong seed, MetasCalibracao metas, ConfiguracaoMotor cfg)
+    {
+        var resultado = new List<Meta>();
+        var serieA = mundo.Divisoes[0].ClubeIds.Select(mundo.Clube).ToArray();
+        var formacao = FormacoesPadrao.QuatroQuatroDois;
+        (string Nome, Marcacao Marcacao, Concentracao Concentracao)[] testadas =
+        [
+            ("Marcação forte x normal", Marcacao.Forte, Concentracao.Variado),
+            ("Marcação leve x normal", Marcacao.Leve, Concentracao.Variado),
+            ("Ataque pela esquerda x variado", Marcacao.Normal, Concentracao.Esquerda),
+            ("Ataque pelo meio x variado", Marcacao.Normal, Concentracao.Meio),
+            ("Ataque pela direita x variado", Marcacao.Normal, Concentracao.Direita),
+        ];
+
+        foreach (var (nome, marcacao, concentracao) in testadas)
+        {
+            var sorteio = new GeradorAleatorio(seed ^ Geracao.GeradorDeMundo.HashEstavel(nome));
+            var cache = new Dictionary<string, TimeEscalado>(StringComparer.Ordinal);
+            int pontosTeste = 0, pontosReferencia = 0;
+
+            for (var i = 0; i < partidas; i++)
+            {
+                var a = serieA[sorteio.Proximo(0, serieA.Length)];
+                Clube b;
+                do
+                {
+                    b = serieA[sorteio.Proximo(0, serieA.Length)];
+                }
+                while (b.Id == a.Id);
+
+                var normal = Escalacao(cache, a, formacao);
+                var teste = new TimeEscalado(normal.ClubeId, normal.Formacao, normal.Titulares, normal.Reservas, normal.Mentalidade,
+                    normal.BonusEntrosamento, marcacao, concentracao);
+                var adversario = Escalacao(cache, b, formacao);
+                var testeEmCasa = i % 2 == 0;
+
+                var r = testeEmCasa
+                    ? MotorDePartida.SimularRapido(teste, adversario, new GeradorAleatorio(seed + (ulong)i + 11), configuracao: cfg)
+                    : MotorDePartida.SimularRapido(adversario, teste, new GeradorAleatorio(seed + (ulong)i + 11), configuracao: cfg);
+
+                var saldo = testeEmCasa ? r.GolsMandante - r.GolsVisitante : r.GolsVisitante - r.GolsMandante;
+                pontosTeste += saldo > 0 ? 3 : saldo == 0 ? 1 : 0;
+                pontosReferencia += saldo < 0 ? 3 : saldo == 0 ? 1 : 0;
+            }
+
+            var aproveitamento = (double)pontosTeste / Math.Max(1, pontosTeste + pontosReferencia);
+            resultado.Add(new Meta(nome, aproveitamento, metas.EstiloPadrao.Min, metas.EstiloPadrao.Max, "P1"));
         }
 
         return resultado;

@@ -9,7 +9,24 @@ using Jogo.Simulacao.Temporadas;
 namespace Jogo.Simulacao;
 
 /// <summary>A tática que o jogador escolheu: formação, mentalidade, titulares (na ordem das posições) e reservas.</summary>
-public sealed record TaticaDoJogador(Formacao Formacao, Mentalidade Mentalidade, IReadOnlyList<int> Titulares, IReadOnlyList<int> Reservas);
+/// <remarks>Capitão e cobrador nulos = escolha automática. Se não forem titulares, viram automáticos.</remarks>
+public sealed record TaticaDoJogador(
+    Formacao Formacao,
+    Mentalidade Mentalidade,
+    IReadOnlyList<int> Titulares,
+    IReadOnlyList<int> Reservas,
+    Marcacao Marcacao = Marcacao.Normal,
+    Concentracao Concentracao = Concentracao.Variado,
+    int? CapitaoId = null,
+    int? CobradorId = null)
+{
+    /// <summary>A mesma tática, sem capitão/cobrador que não estejam entre os titulares.</summary>
+    public TaticaDoJogador Normalizada() => this with
+    {
+        CapitaoId = CapitaoId is { } c && Titulares.Contains(c) ? c : null,
+        CobradorId = CobradorId is { } f && Titulares.Contains(f) ? f : null,
+    };
+}
 
 /// <summary>Escalação que vai a campo nesta rodada e o que o auxiliar teve de mudar.</summary>
 public sealed record EscalacaoDaRodada(TimeEscalado Escalacao, IReadOnlyList<string> Ajustes);
@@ -124,7 +141,7 @@ public sealed class Carreira
             throw new ArgumentException(string.Join(" ", erros), nameof(tatica));
         }
 
-        Tatica = tatica;
+        Tatica = tatica.Normalizada();
     }
 
     /// <summary>Renova o contrato de um jogador do elenco pelo salário que ele pede.</summary>
@@ -162,7 +179,9 @@ public sealed class Carreira
     {
         var sugestao = Temporada.Escalar(Clube);
         Tatica = new TaticaDoJogador(sugestao.Formacao, Tatica?.Mentalidade ?? Mentalidade.Equilibrada,
-            [.. sugestao.Titulares.Select(j => j.Id)], [.. sugestao.Reservas.Select(j => j.Id)]);
+            [.. sugestao.Titulares.Select(j => j.Id)], [.. sugestao.Reservas.Select(j => j.Id)],
+            Tatica?.Marcacao ?? Marcacao.Normal, Tatica?.Concentracao ?? Concentracao.Variado,
+            Tatica?.CapitaoId, Tatica?.CobradorId).Normalizada();
     }
 
     /// <summary>
@@ -224,7 +243,10 @@ public sealed class Carreira
 
         reservas.AddRange(sobra.OrderByDescending(j => j.ForcaGeral).ThenBy(j => j.Id).Take(Escalador.Reservas - reservas.Count));
 
-        var escalacao = new TimeEscalado(Clube.Id, Tatica.Formacao, titulares, reservas, Tatica.Mentalidade);
+        // Capitão ou cobrador que ficou fora (lesão, suspensão) volta para a escolha automática.
+        int? NoTime(int? id) => id is { } x && titulares.Any(j => j.Id == x) ? x : null;
+        var escalacao = new TimeEscalado(Clube.Id, Tatica.Formacao, titulares, reservas, Tatica.Mentalidade, 0,
+            Tatica.Marcacao, Tatica.Concentracao, NoTime(Tatica.CapitaoId), NoTime(Tatica.CobradorId));
         return new EscalacaoDaRodada(escalacao, ajustes);
     }
 
@@ -355,17 +377,19 @@ public sealed class Carreira
     {
         var escalacao = _escalacaoAoVivo ?? throw new InvalidOperationException("Não há rodada ao vivo.");
         var mentalidadeFinal = MeuTimeAoVivo?.Mentalidade ?? Tatica.Mentalidade;
+        var marcacaoFinal = MeuTimeAoVivo?.Marcacao ?? Tatica.Marcacao;
+        var concentracaoFinal = MeuTimeAoVivo?.Concentracao ?? Tatica.Concentracao;
         UltimaRodada = Temporada.ConcluirRodada();
         _escalacaoAoVivo = null;
         FixarEscalacaoQueJogou(escalacao);
-        Tatica = Tatica with { Mentalidade = mentalidadeFinal };
+        Tatica = Tatica with { Mentalidade = mentalidadeFinal, Marcacao = marcacaoFinal, Concentracao = concentracaoFinal };
         MercadoDaIa();
         return UltimaRodada;
     }
 
     /// <summary>A tática passa a ser a escalação que de fato começou o jogo (sem lesionados/suspensos da rodada anterior).</summary>
     private void FixarEscalacaoQueJogou(TimeEscalado escalacao) =>
-        Tatica = Tatica with { Titulares = [.. escalacao.Titulares.Select(j => j.Id)], Reservas = [.. escalacao.Reservas.Select(j => j.Id)] };
+        Tatica = (Tatica with { Titulares = [.. escalacao.Titulares.Select(j => j.Id)], Reservas = [.. escalacao.Reservas.Select(j => j.Id)] }).Normalizada();
 
     /// <summary>Fecha a temporada (acesso, evolução, base...) e começa a próxima.</summary>
     public ResultadoTemporada EncerrarTemporada()

@@ -77,6 +77,26 @@ public sealed record ConfiguracaoMotor
     public double MentalidadeDefesa { get; init; } = 0.05;
     public double MentalidadeLances { get; init; } = 0.04;
 
+    // Opções de estilo (D-032) ----------------------------------------------
+
+    /// <summary>Marcação forte: o adversário cria tantos % a menos de lances (leve: a mais).</summary>
+    public double MarcacaoLances { get; init; } = 0.10;
+
+    /// <summary>Marcação forte: tantos % a mais de faltas (e, com elas, cartões); leve: a menos.</summary>
+    public double MarcacaoFaltas { get; init; } = 0.35;
+
+    /// <summary>Marcação forte: tantos % a mais de desgaste físico; leve: a menos.</summary>
+    public double MarcacaoDesgaste { get; init; } = 0.15;
+
+    /// <summary>Efeito máximo, no ataque, de concentrar as jogadas num lado melhor (ou pior) que a defesa rival.</summary>
+    public double ConcentracaoMaxima { get; init; } = 0.06;
+
+    /// <summary>Vantagem relativa (força do lado ÷ força da defesa rival − 1) que dá o efeito máximo.</summary>
+    public double ConcentracaoReferencia { get; init; } = 0.15;
+
+    /// <summary>Bônus de força do capitão em campo com Determinação 20 (proporcional abaixo disso).</summary>
+    public double BonusCapitao { get; init; } = 0.02;
+
     // Modificadores individuais ---------------------------------------------
 
     /// <summary>Variação máxima de rendimento pela moral (moral 0 = −x, moral 100 = +x).</summary>

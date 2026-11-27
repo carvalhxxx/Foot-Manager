@@ -263,6 +263,8 @@ export function JogoEmAndamento({ nucleo, mundo, botaoTema, slotId, armazenament
             inicial={dados(nucleo.aoVivo())}
             formacoes={tatica.formacoes.map((f) => f.nome)}
             mentalidades={tatica.mentalidades}
+            marcacoes={tatica.marcacoes}
+            concentracoes={tatica.concentracoes}
             avancar={(minutos) => nucleo.avancarAoVivo(minutos)}
             decidir={(decisao) => nucleo.decidirAoVivo(decisao)}
             aoConcluir={concluirAoVivo}

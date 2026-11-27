@@ -132,6 +132,7 @@ public static class MotorDePartida
         {
             Substituicao s => Substituir(partida, time, s),
             TrocaDeMentalidade m => TrocarMentalidade(partida, time, m.Nova),
+            TrocaDeEstilo e => TrocarEstilo(partida, time, e),
             TrocaDeFormacao f => TrocarFormacao(partida, time, f),
             _ => throw new InvalidOperationException("Decisão desconhecida."),
         };
@@ -145,12 +146,79 @@ public static class MotorDePartida
         ArgumentNullException.ThrowIfNull(partida);
         ArgumentNullException.ThrowIfNull(time);
 
-        var mando = Mando(partida, time) * (1 + time.BonusEntrosamento);
+        var mando = Mando(partida, time) * (1 + time.BonusEntrosamento) * Lideranca(partida.Configuracao, time);
         var forca = Setores.Calcular(
             time.EmCampo.Select(j => (j.Posicao, j.ForcaBase * FatorIndividual(partida.Configuracao, j) * mando)),
             partida.Configuracao.ExpoenteOcupacao);
 
         return forca;
+    }
+
+    /// <summary>Bônus do capitão enquanto ele estiver em campo, proporcional à Determinação.</summary>
+    private static double Lideranca(ConfiguracaoMotor cfg, TimeEmJogo time) =>
+        time.EmCampoInterno.Find(j => j.Jogador.Id == time.CapitaoId) is { } capitao
+            ? 1 + (cfg.BonusCapitao * capitao.Jogador.Atributos.Determinacao / 20.0)
+            : 1;
+
+    // Lados do campo para "concentrar ataques": quem ataca por um lado e quem defende aquele lado no rival.
+    private static readonly Posicao[] AtaqueEsquerda = [Posicao.LateralEsquerdo, Posicao.AlaEsquerdo, Posicao.MeiaEsquerdo, Posicao.PontaEsquerda];
+    private static readonly Posicao[] AtaqueDireita = [Posicao.LateralDireito, Posicao.AlaDireito, Posicao.MeiaDireito, Posicao.PontaDireita];
+    private static readonly Posicao[] AtaqueMeio = [Posicao.MeiaCentral, Posicao.MeiaOfensivo, Posicao.SegundoAtacante, Posicao.Centroavante];
+    private static readonly Posicao[] DefesaDireita = [Posicao.LateralDireito, Posicao.AlaDireito, Posicao.MeiaDireito];
+    private static readonly Posicao[] DefesaEsquerda = [Posicao.LateralEsquerdo, Posicao.AlaEsquerdo, Posicao.MeiaEsquerdo];
+    private static readonly Posicao[] DefesaMeio = [Posicao.Zagueiro, Posicao.Volante];
+
+    /// <summary>
+    /// Multiplicador do ataque por concentrar as jogadas num lado: compara a força média de quem ataca
+    /// por ali com a de quem defende aquele lado no adversário. "Variado" é neutro.
+    /// </summary>
+    public static double FatorConcentracao(Partida partida, TimeEmJogo atacante, TimeEmJogo defensor)
+    {
+        ArgumentNullException.ThrowIfNull(partida);
+        ArgumentNullException.ThrowIfNull(atacante);
+        ArgumentNullException.ThrowIfNull(defensor);
+        var cfg = partida.Configuracao;
+        Posicao[] meus, deles;
+        switch (atacante.Concentracao)
+        {
+            // Atacar pela esquerda é enfrentar o lado direito da defesa rival (e vice-versa).
+            case Concentracao.Esquerda:
+                (meus, deles) = (AtaqueEsquerda, DefesaDireita);
+                break;
+            case Concentracao.Direita:
+                (meus, deles) = (AtaqueDireita, DefesaEsquerda);
+                break;
+            case Concentracao.Meio:
+                (meus, deles) = (AtaqueMeio, DefesaMeio);
+                break;
+            default:
+                return 1;
+        }
+
+        double? Media(TimeEmJogo time, Posicao[] posicoes)
+        {
+            var valores = time.EmCampoInterno.Where(j => posicoes.Contains(j.Posicao))
+                .Select(j => j.ForcaBase * FatorIndividual(cfg, j)).ToArray();
+            return valores.Length == 0 ? null : valores.Average();
+        }
+
+        var ataque = Media(atacante, meus);
+        var defesa = Media(defensor, deles);
+        double vantagem;
+        if (ataque is null)
+        {
+            vantagem = -cfg.ConcentracaoReferencia; // ninguém para atacar por ali
+        }
+        else if (defesa is null)
+        {
+            vantagem = cfg.ConcentracaoReferencia; // ninguém defendendo aquele lado
+        }
+        else
+        {
+            vantagem = (ataque.Value / defesa.Value) - 1;
+        }
+
+        return 1 + (cfg.ConcentracaoMaxima * Math.Clamp(vantagem / cfg.ConcentracaoReferencia, -1, 1));
     }
 
     private static double Mando(Partida partida, TimeEmJogo time) =>
@@ -172,7 +240,8 @@ public static class MotorDePartida
         foreach (var jogador in time.EmCampo.ToArray())
         {
             var resistencia = jogador.Jogador.Atributos.Resistencia;
-            jogador.Condicao = Math.Max(0, jogador.Condicao - (cfg.DesgastePorMinuto * (1.3 - (0.03 * resistencia))));
+            var marcacao = 1 + (cfg.MarcacaoDesgaste * (int)time.Marcacao);
+            jogador.Condicao = Math.Max(0, jogador.Condicao - (cfg.DesgastePorMinuto * (1.3 - (0.03 * resistencia)) * marcacao));
 
             var chanceLesao = cfg.ChanceLesaoPorMinuto * (jogador.Jogador.Ocultos.PropensaoLesao / 10.0)
                               * (1 + ((100 - jogador.Condicao) / 100));
@@ -221,14 +290,15 @@ public static class MotorDePartida
         atacante.Estatisticas.MinutosComPosse++;
 
         // Falta comum, sem perigo: quem está sem a bola tenta recuperá-la.
-        if (partida.Aleatorio.Chance(cfg.ChanceFaltaPorMinuto))
+        if (partida.Aleatorio.Chance(cfg.ChanceFaltaPorMinuto * (1 + (cfg.MarcacaoFaltas * (int)defensor.Marcacao))))
         {
             CometerFalta(partida, defensor);
         }
 
         var nivelAtaque = (int)atacante.Mentalidade;
         var nivelDefesa = (int)defensor.Mentalidade;
-        var chanceDeLance = cfg.ChanceDeLance * (1 + (cfg.MentalidadeLances * nivelAtaque) + (cfg.MentalidadeLances * 0.5 * nivelDefesa));
+        var chanceDeLance = cfg.ChanceDeLance * (1 + (cfg.MentalidadeLances * nivelAtaque) + (cfg.MentalidadeLances * 0.5 * nivelDefesa))
+                            * (1 - (cfg.MarcacaoLances * (int)defensor.Marcacao));
         if (!partida.Aleatorio.Chance(chanceDeLance))
         {
             return;
@@ -236,7 +306,7 @@ public static class MotorDePartida
 
         var forcaAtaque = atacante.Equipe == Equipe.Mandante ? forcaMandante : forcaVisitante;
         var forcaDefesa = defensor.Equipe == Equipe.Mandante ? forcaMandante : forcaVisitante;
-        var ataque = forcaAtaque.Ataque * (1 + (cfg.MentalidadeAtaque * nivelAtaque));
+        var ataque = forcaAtaque.Ataque * (1 + (cfg.MentalidadeAtaque * nivelAtaque)) * FatorConcentracao(partida, atacante, defensor);
         var defesa = forcaDefesa.Defesa * (1 - (cfg.MentalidadeDefesa * nivelDefesa));
 
         if (partida.Aleatorio.Chance(Disputa(ataque, defesa, cfg.ExpoenteDuelo)))
@@ -252,7 +322,7 @@ public static class MotorDePartida
             partida.Registrar(TipoEvento.Escanteio, atacante.Equipe);
             if (partida.Aleatorio.Chance(cfg.ChanceFinalizacaoDeEscanteio))
             {
-                Finalizar(partida, atacante, defensor, OrigemLance.Escanteio, 0.8);
+                Finalizar(partida, atacante, defensor, OrigemLance.Escanteio, 0.8 * FatorCobranca(atacante));
             }
         }
         else if (desfecho < cfg.ChanceEscanteio + cfg.ChanceFalta)
@@ -266,6 +336,10 @@ public static class MotorDePartida
 
         // Senão: a defesa afastou o perigo (sem evento).
     }
+
+    /// <summary>Qualidade do cruzamento no escanteio pelo Passe do cobrador (Passe 10 = neutro, 20 = +15%).</summary>
+    private static double FatorCobranca(TimeEmJogo time) =>
+        time.Cobrador is { } c ? 0.85 + (0.015 * c.Jogador.Atributos.Passe) : 1;
 
     /// <summary>Probabilidade de A vencer B numa disputa: A^k / (A^k + B^k).</summary>
     private static double Disputa(double a, double b, double expoente)
@@ -285,7 +359,8 @@ public static class MotorDePartida
         var cfg = partida.Configuracao;
         // Quem finaliza: atacantes mais, meias também; em escanteio, zagueiros sobem para cabecear.
         // Peso linear na Finalização para os gols não se concentrarem demais num jogador só.
-        var finalizador = SortearPorPeso(partida, atacante.EmCampo, j =>
+        // Falta direta: quem bate é o cobrador.
+        var finalizador = origem == OrigemLance.Falta && atacante.Cobrador is { } cobrador ? cobrador : SortearPorPeso(partida, atacante.EmCampo, j =>
         {
             var (defesa, meio, ataque) = Setores.Contribuicao(j.Posicao);
             var participacao = ataque + (0.4 * meio) + 0.05 + (origem == OrigemLance.Escanteio ? 0.5 * defesa : 0);
@@ -299,7 +374,9 @@ public static class MotorDePartida
 
         atacante.Estatisticas.Finalizacoes++;
         var atributos = finalizador.Jogador.Atributos;
-        var qualidade = ((0.65 * atributos.Finalizacao) + (0.35 * atributos.Decisao))
+        var qualidade = (origem == OrigemLance.Falta
+                            ? (0.55 * atributos.Finalizacao) + (0.45 * atributos.Passe)
+                            : (0.65 * atributos.Finalizacao) + (0.35 * atributos.Decisao))
                         * Setores.FatorImproviso(finalizador.Jogador, finalizador.Posicao)
                         * FatorIndividual(cfg, finalizador) * Mando(partida, atacante) * fatorLance;
 
@@ -483,6 +560,13 @@ public static class MotorDePartida
     {
         time.Mentalidade = nova;
         return partida.Registrar(TipoEvento.TrocaDeMentalidade, time.Equipe, detalhe: nova.ToString());
+    }
+
+    private static EventoPartida TrocarEstilo(Partida partida, TimeEmJogo time, TrocaDeEstilo troca)
+    {
+        time.Marcacao = troca.Marcacao;
+        time.Concentracao = troca.Concentracao;
+        return partida.Registrar(TipoEvento.TrocaDeEstilo, time.Equipe, detalhe: troca.Marcacao + "/" + troca.Concentracao);
     }
 
     private static EventoPartida TrocarFormacao(Partida partida, TimeEmJogo time, TrocaDeFormacao troca)

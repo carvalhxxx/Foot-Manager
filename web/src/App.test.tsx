@@ -144,6 +144,30 @@ describe('App', () => {
     expect(document.querySelector('.peca-arrastada')).toBeNull()
   })
 
+  it('tática: marcação, concentração, capitão e cobrador vão para o núcleo', async () => {
+    const nucleo = await entrarNoJogo()
+    await userEvent.click(screen.getByRole('button', { name: textos.menu.tatica }))
+    const t = textos.tatica
+
+    await userEvent.click(screen.getByRole('button', { name: t.marcacoes.Forte }))
+    expect(nucleo.definirTatica).toHaveBeenLastCalledWith(expect.objectContaining({ marcacao: 'Forte' }))
+    await userEvent.click(screen.getByRole('button', { name: t.concentracoes.Esquerda }))
+    expect(nucleo.definirTatica).toHaveBeenLastCalledWith(expect.objectContaining({ marcacao: 'Forte', concentracao: 'Esquerda' }))
+
+    expect(screen.getByText(t.semCobrador)).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: /^Titular 3, titular/ }))
+    await userEvent.click(screen.getByRole('button', { name: t.fazerCobrador('Titular 3') }))
+    expect(nucleo.definirTatica).toHaveBeenLastCalledWith(expect.objectContaining({ cobradorId: 4 }))
+    expect(screen.getByTitle(t.seloCobrador)).toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('button', { name: /^Titular 5, titular/ }))
+    await userEvent.click(screen.getByRole('button', { name: t.fazerCapitao('Titular 5') }))
+    expect(nucleo.definirTatica).toHaveBeenLastCalledWith(expect.objectContaining({ capitaoId: 6, cobradorId: 4 }))
+
+    await userEvent.click(screen.getByRole('button', { name: t.tirarCobrador }))
+    expect(nucleo.definirTatica).toHaveBeenLastCalledWith(expect.objectContaining({ cobradorId: undefined, capitaoId: 6 }))
+  })
+
   it('tática: erro do núcleo aparece na tela', async () => {
     const nucleo = await entrarNoJogo()
     nucleo.definirTatica.mockReturnValueOnce({ ok: false, erros: [{ arquivo: '', local: '', mensagem: 'Escale exatamente 11 titulares.' }] })

@@ -23,6 +23,7 @@ public enum TipoEvento
     Substituicao,
     TrocaDeMentalidade,
     TrocaDeFormacao,
+    TrocaDeEstilo,
     Intervalo,
     FimDeJogo,
 }

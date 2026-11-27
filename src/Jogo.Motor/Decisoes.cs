@@ -8,6 +8,9 @@ public sealed record Substituicao(int SaiId, int EntraId) : Decisao;
 
 public sealed record TrocaDeMentalidade(Mentalidade Nova) : Decisao;
 
+/// <summary>Muda a marcação e/ou a concentração dos ataques.</summary>
+public sealed record TrocaDeEstilo(Marcacao Marcacao, Concentracao Concentracao) : Decisao;
+
 /// <summary>
 /// Muda a formação. <paramref name="JogadoresNaOrdem"/> são os ids dos jogadores de linha em campo,
 /// na ordem das posições da nova formação.

@@ -95,6 +95,20 @@ public class SaveTestes
     }
 
     [Fact]
+    public void Carregar_MantemMarcacaoConcentracaoCapitaoECobrador()
+    {
+        var carreira = new Carreira(NovoMundo(), "cerrado", 5);
+        var t = carreira.Tatica;
+        carreira.DefinirTatica(t with { Marcacao = Marcacao.Leve, Concentracao = Concentracao.Meio, CapitaoId = t.Titulares[2], CobradorId = t.Titulares[8] });
+
+        var carregada = ConversorSave.Carregar(ConversorSave.Salvar(carreira));
+
+        Assert.Equal(carreira.Tatica.Marcacao, carregada.Tatica.Marcacao);
+        Assert.Equal(carreira.Tatica.Concentracao, carregada.Tatica.Concentracao);
+        Assert.Equal((t.Titulares[2], t.Titulares[8]), (carregada.Tatica.CapitaoId!.Value, carregada.Tatica.CobradorId!.Value));
+    }
+
+    [Fact]
     public void Carregar_MantemAgentesLivres()
     {
         var carreira = new Carreira(NovoMundo(), "cerrado", 5);

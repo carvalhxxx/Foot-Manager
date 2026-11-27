@@ -121,6 +121,31 @@ public class ApiJsonTestes
         var poucos = JsonSerializer.Serialize(new { formacao = "4-4-2", mentalidade = "Ofensiva", titulares = titulares[..10], reservas = Array.Empty<int>() });
         Assert.Contains("11 titulares", Falha(api.DefinirTatica(poucos)), StringComparison.Ordinal);
 
+        Assert.Equal("Normal", definida["marcacao"]!.GetValue<string>());
+        Assert.NotNull(definida["capitaoEfetivo"]);
+        Assert.Null(definida["capitaoId"]);
+
+        // Marcação, concentração, capitão e cobrador; capitão no banco volta para o automático.
+        var estilo = JsonSerializer.Serialize(new
+        {
+            formacao = "4-4-2", mentalidade = "Ofensiva", titulares, reservas = Array.Empty<int>(),
+            marcacao = "Forte", concentracao = "Esquerda", capitaoId = titulares[3], cobradorId = titulares[9],
+        });
+        var comEstilo = Ok(api.DefinirTatica(estilo));
+        Assert.Equal(("Forte", "Esquerda", titulares[3], titulares[9]), (
+            comEstilo["marcacao"]!.GetValue<string>(), comEstilo["concentracao"]!.GetValue<string>(),
+            comEstilo["capitaoId"]!.GetValue<int>(), comEstilo["cobradorId"]!.GetValue<int>()));
+        Assert.Equal(3, comEstilo["sugestaoDeCobradores"]!.AsArray().Count);
+        var foraDoTime = Ok(api.Elenco()).AsArray().Select(j => j!["id"]!.GetValue<int>()).First(id => !titulares.Contains(id));
+        var capitaoNoBanco = JsonSerializer.Serialize(new
+        {
+            formacao = "4-4-2", mentalidade = "Ofensiva", titulares = titulares.Select(id => id == titulares[3] ? foraDoTime : id), reservas = Array.Empty<int>(),
+            capitaoId = titulares[3],
+        });
+        var normalizada = Ok(api.DefinirTatica(capitaoNoBanco));
+        Assert.Null(normalizada["capitaoId"]);
+        Assert.Equal("Forte", normalizada["marcacao"]!.GetValue<string>());
+
         var semFormacao = JsonSerializer.Serialize(new { formacao = "9-9-9", mentalidade = "Ofensiva", titulares, reservas = Array.Empty<int>() });
         Assert.Contains("Formação", Falha(api.DefinirTatica(semFormacao)), StringComparison.Ordinal);
     }
@@ -168,6 +193,10 @@ public class ApiJsonTestes
 
         var mentalidade = Ok(api.DecidirAoVivo(JsonSerializer.Serialize(new { tipo = "mentalidade", mentalidade = "MuitoOfensiva" })));
         Assert.Equal("MuitoOfensiva", mentalidade["minhaPartida"]!["mentalidade"]!.GetValue<string>());
+
+        var estilo = Ok(api.DecidirAoVivo(JsonSerializer.Serialize(new { tipo = "estilo", marcacao = "Forte", concentracao = "Direita" })));
+        Assert.Equal(("Forte", "Direita"), (estilo["minhaPartida"]!["marcacao"]!.GetValue<string>(), estilo["minhaPartida"]!["concentracao"]!.GetValue<string>()));
+        Assert.Contains("Marcação", Falha(api.DecidirAoVivo(JsonSerializer.Serialize(new { tipo = "estilo", marcacao = "Zona", concentracao = "Meio" }))), StringComparison.Ordinal);
 
         Assert.Contains("desconhecida", Falha(api.DecidirAoVivo(JsonSerializer.Serialize(new { tipo = "magica" }))), StringComparison.Ordinal);
         Assert.Contains("rodada em andamento", Falha(api.AvancarRodada()), StringComparison.Ordinal);

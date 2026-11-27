@@ -1362,3 +1362,36 @@ select {
   overflow-y: auto;
   touch-action: pan-y;
 }
+
+.peca-camisa {
+  position: relative;
+}
+
+.selo-peca {
+  position: absolute;
+  top: -6px;
+  display: grid;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  font-size: 0.65rem;
+  font-weight: 800;
+  border: 1px solid #fff;
+}
+
+.selo-capitao {
+  right: -8px;
+  background: #ffd84d;
+  color: #3d2a00;
+}
+
+.selo-cobrador {
+  left: -8px;
+  background: #fff;
+  color: #18211b;
+}
+
+.acoes-funcao {
+  margin-bottom: 12px;
+}

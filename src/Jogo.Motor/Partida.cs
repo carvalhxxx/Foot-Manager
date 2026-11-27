@@ -56,6 +56,10 @@ public sealed class TimeEmJogo
         Formacao = escalado.Formacao;
         Mentalidade = escalado.Mentalidade;
         BonusEntrosamento = escalado.BonusEntrosamento;
+        Marcacao = escalado.Marcacao;
+        Concentracao = escalado.Concentracao;
+        CapitaoId = escalado.CapitaoEfetivo;
+        CobradorId = escalado.CobradorId;
         Automatico = automatico;
 
         var posicoes = escalado.Formacao.PosicoesComGoleiro;
@@ -75,6 +79,27 @@ public sealed class TimeEmJogo
     public Mentalidade Mentalidade { get; internal set; }
 
     public double BonusEntrosamento { get; }
+
+    public Marcacao Marcacao { get; internal set; }
+    public Concentracao Concentracao { get; internal set; }
+
+    /// <summary>Capitão do jogo; se sair de campo, o bônus de liderança acaba.</summary>
+    public int CapitaoId { get; }
+
+    /// <summary>Cobrador escolhido (nulo = sem cobrador fixo: bate quem estiver na jogada, como antes).</summary>
+    public int? CobradorId { get; }
+
+    /// <summary>
+    /// Quem cobra as faltas e escanteios agora: o escolhido ou, se ele saiu, o melhor em campo.
+    /// Nulo quando o time não escolheu cobrador (D-032: um cobrador automático "ideal" para todos
+    /// deixava os grandes fortes demais na calibração).
+    /// </summary>
+    public JogadorEmCampo? Cobrador => CobradorId is null
+        ? null
+        : EmCampoInterno.Find(j => j.Jogador.Id == CobradorId)
+        ?? (TimeEscalado.CobradorAutomatico(EmCampoInterno.Where(j => j.Posicao != Posicao.Goleiro).Select(j => j.Jogador)) is { } auto
+            ? EmCampoInterno.Find(j => j.Jogador.Id == auto.Id)
+            : null);
 
     /// <summary>Se verdadeiro, o treinador automático faz substituições e muda a mentalidade.</summary>
     public bool Automatico { get; }

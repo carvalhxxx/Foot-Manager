@@ -126,6 +126,18 @@ export interface Tatica {
   reservas: number[]
   formacoes: Formacao[]
   mentalidades: string[]
+  marcacao: string
+  concentracao: string
+  marcacoes: string[]
+  concentracoes: string[]
+  /** Capitão escolhido (ausente = automático). */
+  capitaoId?: number
+  /** Cobrador de faltas escolhido (ausente = sem cobrador fixo). */
+  cobradorId?: number
+  /** Quem vai ser o capitão (o escolhido ou o automático). */
+  capitaoEfetivo?: number
+  /** Os 3 titulares melhores em Finalização + Passe. */
+  sugestaoDeCobradores: number[]
 }
 
 export interface DefinicaoTatica {
@@ -133,6 +145,10 @@ export interface DefinicaoTatica {
   mentalidade: string
   titulares: number[]
   reservas: number[]
+  marcacao?: string
+  concentracao?: string
+  capitaoId?: number
+  cobradorId?: number
 }
 
 // ---------------------------------------------------------------- partidas
@@ -242,6 +258,8 @@ export interface MinhaPartidaAoVivo {
   estatisticasVisitante: Estatisticas
   formacao: string
   mentalidade: string
+  marcacao: string
+  concentracao: string
   substituicoesRestantes: number
   emCampo: JogadorEmCampo[]
   reservas: Reserva[]
@@ -281,6 +299,7 @@ export type Decisao =
   | { tipo: 'substituicao'; saiId: number; entraId: number }
   | { tipo: 'mentalidade'; mentalidade: string }
   | { tipo: 'formacao'; formacao: string }
+  | { tipo: 'estilo'; marcacao: string; concentracao: string }
 
 // ---------------------------------------------------------------- finanças
 

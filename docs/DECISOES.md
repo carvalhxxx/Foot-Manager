@@ -136,3 +136,13 @@ Formato curto: contexto → decisão → consequência. Quando houver decisões 
 - **Contexto:** escalar com listas de seleção era lento e pouco visual. O dono do projeto pediu um campo em que se arrastam os jogadores.
 - **Decisão:** a tela Tática mostra os titulares num campo desenhado, nas posições da formação, com a força na posição e o aviso de improvisado. Ao lado ficam o banco (7 vagas) e quem está fora do time. Há duas formas de trocar: arrastar (pointer events, funciona com mouse e com toque) ou tocar em um jogador e depois no outro (funciona com teclado e em telas pequenas). A interface só rearruma as vagas; quem valida a escalação continua sendo o núcleo C#. O visual é próprio, sem copiar outros jogos.
 - **Consequência:** as coordenadas no campo e as regras de troca de vaga ficam em `web/src/telas/campoTatico.ts`, com testes próprios.
+
+### D-032 · Marcação, concentração, capitão e cobrador (2026-11-27)
+- **Contexto:** o dono do projeto pediu essas quatro opções táticas. Cada uma precisa caber numa linha e não pode virar a "tática vencedora".
+- **Decisão:**
+  - **Marcação** Leve/Normal/Forte. A forte tira 10% dos lances do adversário, dá +35% de faltas (e de cartões) e +15% de desgaste. A leve faz o contrário.
+  - **Concentrar ataques** Variado/Esquerda/Meio/Direita. O ataque ganha ou perde até 6% conforme a força média de quem ataca por aquele lado em relação a quem defende aquele lado no rival. Uma vantagem de 15% já dá o efeito máximo. É uma versão simples do modelo de zonas da Fase 2E.
+  - **Capitão** (padrão: o titular de maior Determinação). Dá até +2% de força enquanto está em campo, e com ele em campo a derrota tira metade da moral.
+  - **Cobrador de faltas** (opcional). Bate as faltas diretas com Finalização e Passe e melhora os escanteios pelo Passe (até +15%). Se sair de campo, o melhor em campo assume. Sem cobrador escolhido, bate quem estiver na jogada, como antes.
+  - Marcação e concentração podem ser trocadas no jogo ao vivo (evento `TrocaDeEstilo`). Tudo é salvo (campos opcionais na tática do save). A IA usa Normal/Variado, o capitão automático e não escolhe cobrador.
+- **Consequência:** a calibração ganhou 5 metas, cada opção contra o padrão entre 45% e 55% dos pontos (resultado: de 50,0% a 52,3%). Um cobrador automático "ideal" para todos os times deixava o mais forte campeão em cerca de 78% das temporadas (meta: até 75%). Por isso o cobrador só existe quando o jogador escolhe, e escolher vira uma vantagem pequena e real.

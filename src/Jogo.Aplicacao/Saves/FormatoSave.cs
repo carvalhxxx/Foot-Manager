@@ -148,6 +148,12 @@ internal sealed class TaticaSave
     public string? Mentalidade { get; set; }
     public List<int>? Titulares { get; set; }
     public List<int>? Reservas { get; set; }
+
+    // Versão 2 em diante, opcionais (ausentes = Normal, Variado e automáticos).
+    public string? Marcacao { get; set; }
+    public string? Concentracao { get; set; }
+    public int? Capitao { get; set; }
+    public int? Cobrador { get; set; }
 }
 
 [JsonSourceGenerationOptions(

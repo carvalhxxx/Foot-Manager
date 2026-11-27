@@ -14,6 +14,8 @@ interface Props {
   inicial: AoVivoDto
   formacoes: string[]
   mentalidades: string[]
+  marcacoes: string[]
+  concentracoes: string[]
   avancar: (minutos: number) => Resposta<AoVivoDto>
   decidir: (decisao: Decisao) => Resposta<AoVivoDto>
   aoConcluir: () => void
@@ -23,7 +25,7 @@ function elementoEditavel(alvo: EventTarget | null): boolean {
   return alvo instanceof HTMLElement && ['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON'].includes(alvo.tagName)
 }
 
-export function AoVivo({ inicial, formacoes, mentalidades, avancar, decidir, aoConcluir }: Props) {
+export function AoVivo({ inicial, formacoes, mentalidades, marcacoes, concentracoes, avancar, decidir, aoConcluir }: Props) {
   const t = textos.aoVivo
   const [dados, setDados] = useState(inicial)
   const [rodando, setRodando] = useState(!inicial.rodadaEncerrada)
@@ -234,6 +236,36 @@ export function AoVivo({ inicial, formacoes, mentalidades, avancar, decidir, aoC
                 onClick={() => enviar({ tipo: 'mentalidade', mentalidade: m })}
               >
                 {textos.tatica.mentalidades[m] ?? m}
+              </button>
+            ))}
+          </fieldset>
+
+          <fieldset className="mentalidades">
+            <legend>{textos.tatica.marcacao}</legend>
+            {marcacoes.map((m) => (
+              <button
+                key={m}
+                type="button"
+                className={`pilula ${m === p.marcacao ? 'pilula-ativa' : ''}`}
+                aria-pressed={m === p.marcacao}
+                onClick={() => enviar({ tipo: 'estilo', marcacao: m, concentracao: p.concentracao })}
+              >
+                {textos.tatica.marcacoes[m] ?? m}
+              </button>
+            ))}
+          </fieldset>
+
+          <fieldset className="mentalidades">
+            <legend>{textos.tatica.concentracao}</legend>
+            {concentracoes.map((c) => (
+              <button
+                key={c}
+                type="button"
+                className={`pilula ${c === p.concentracao ? 'pilula-ativa' : ''}`}
+                aria-pressed={c === p.concentracao}
+                onClick={() => enviar({ tipo: 'estilo', marcacao: p.marcacao, concentracao: c })}
+              >
+                {textos.tatica.concentracoes[c] ?? c}
               </button>
             ))}
           </fieldset>

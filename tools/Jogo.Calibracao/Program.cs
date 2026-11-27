@@ -59,7 +59,7 @@ var aprovado = relatorio.Aprovado && metasTemporada.All(m => m.Atingida) && meta
 var pt = CultureInfo.GetCultureInfo("pt-BR");
 Console.WriteLine($"Calibração: {partidas:N0} partidas de liga + {porFormacao:N0} por formação + {temporadas} temporadas (seed {seed}) em {cronometro.Elapsed.TotalSeconds:F1}s");
 Imprimir("Liga", relatorio.Liga);
-Imprimir("Formações (fatia dos pontos contra o 4-4-2; 50% = equilíbrio)", relatorio.Formacoes);
+Imprimir("Formações e estilos (fatia dos pontos contra o padrão; 50% = equilíbrio)", relatorio.Formacoes);
 Imprimir($"Temporada da Série A ({temporadas} simulações)", metasTemporada);
 Imprimir($"Carreiras com mercado ({carreiras} × {anos} anos)", metasCarreira);
 Console.WriteLine();

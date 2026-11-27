@@ -122,6 +122,12 @@ const tatica: Tatica = {
     { nome: '4-3-3', posicoes: [] },
   ],
   mentalidades: ['MuitoDefensiva', 'Defensiva', 'Equilibrada', 'Ofensiva', 'MuitoOfensiva'],
+  marcacao: 'Normal',
+  concentracao: 'Variado',
+  marcacoes: ['Leve', 'Normal', 'Forte'],
+  concentracoes: ['Variado', 'Esquerda', 'Meio', 'Direita'],
+  capitaoEfetivo: 1,
+  sugestaoDeCobradores: [2, 3, 4],
 }
 
 export const rodada: Rodada = {
@@ -213,7 +219,7 @@ export function criarNucleoFalso(opcoes: { totalRodadas?: number } = {}) {
   let rodadaAtual = 0
   let taticaAtual = tatica
   let precoIngresso: number | undefined
-  let aoVivo: { minuto: number; mentalidade: string; formacao: string; emCampo: number[]; reservas: number[]; trocas: number } | undefined
+  let aoVivo: { minuto: number; mentalidade: string; marcacao: string; concentracao: string; formacao: string; emCampo: number[]; reservas: number[]; trocas: number } | undefined
 
   const fotoAoVivo = (pausa?: AoVivoDto['pausa']): AoVivoDto => {
     const v = aoVivo!
@@ -250,6 +256,8 @@ export function criarNucleoFalso(opcoes: { totalRodadas?: number } = {}) {
         estatisticasVisitante: rodada.minhaPartida!.estatisticasVisitante,
         formacao: v.formacao,
         mentalidade: v.mentalidade,
+        marcacao: v.marcacao,
+        concentracao: v.concentracao,
         substituicoesRestantes: 5 - v.trocas,
         emCampo: v.emCampo.map((id) => ({ ...porId.get(id)!, condicao: 90, amarelos: 0, gols: 0 })),
         reservas: v.reservas.map((id) => ({ ...porId.get(id)!, condicao: 100 })),
@@ -314,7 +322,17 @@ export function criarNucleoFalso(opcoes: { totalRodadas?: number } = {}) {
       if (d.titulares.length !== 11) {
         return { ok: false as const, erros: [{ arquivo: '', local: '', mensagem: 'Escale exatamente 11 titulares.' }] }
       }
-      taticaAtual = { ...taticaAtual, formacao: d.formacao, mentalidade: d.mentalidade, reservas: d.reservas }
+      taticaAtual = {
+        ...taticaAtual,
+        formacao: d.formacao,
+        mentalidade: d.mentalidade,
+        reservas: d.reservas,
+        marcacao: d.marcacao ?? taticaAtual.marcacao,
+        concentracao: d.concentracao ?? taticaAtual.concentracao,
+        capitaoId: d.capitaoId,
+        cobradorId: d.cobradorId,
+        capitaoEfetivo: d.capitaoId ?? 1,
+      }
       return ok(taticaAtual)
     }),
     escalacaoAutomatica: vi.fn(() => ok(taticaAtual)),
@@ -332,6 +350,8 @@ export function criarNucleoFalso(opcoes: { totalRodadas?: number } = {}) {
       aoVivo ??= {
         minuto: 0,
         mentalidade: 'Equilibrada',
+        marcacao: 'Normal',
+        concentracao: 'Variado',
         formacao: '4-4-2',
         emCampo: elenco.slice(0, 11).map((j) => j.id),
         reservas: [20, 21],
@@ -355,6 +375,9 @@ export function criarNucleoFalso(opcoes: { totalRodadas?: number } = {}) {
         v.mentalidade = d.mentalidade
       } else if (d.tipo === 'formacao') {
         v.formacao = d.formacao
+      } else if (d.tipo === 'estilo') {
+        v.marcacao = d.marcacao
+        v.concentracao = d.concentracao
       } else {
         v.emCampo = v.emCampo.map((id) => (id === d.saiId ? d.entraId : id))
         v.reservas = v.reservas.filter((id) => id !== d.entraId)

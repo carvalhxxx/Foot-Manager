@@ -215,6 +215,25 @@ export const textos = {
     noBanco: (nome: string) => `${nome}, no banco`,
     vagaNoBanco: (n: number) => `Vaga ${n} no banco`,
     foraDoTime: 'Fora do time',
+    estilo: 'Estilo de jogo',
+    marcacao: 'Marcação',
+    marcacoes: { Leve: 'Leve', Normal: 'Normal', Forte: 'Forte' } as Record<string, string>,
+    concentracao: 'Concentrar ataques',
+    concentracoes: { Variado: 'Variado', Esquerda: 'Pela esquerda', Meio: 'Pelo meio', Direita: 'Pela direita' } as Record<string, string>,
+    dicaMarcacao: 'Forte: o rival finaliza menos, mas seu time faz mais faltas, leva mais cartões e cansa mais.',
+    dicaConcentracao: 'Ataque pelo lado em que seus jogadores são melhores que a defesa rival.',
+    funcoes: 'Capitão e bola parada',
+    capitao: 'Capitão',
+    capitaoAutomatico: (nome: string) => `${nome} (automático)`,
+    cobrador: 'Cobrador de faltas',
+    semCobrador: 'Nenhum fixo: bate quem estiver na jogada.',
+    sugestao: (nomes: string) => `Melhores para bater: ${nomes}.`,
+    fazerCapitao: (nome: string) => `Fazer ${nome} capitão`,
+    fazerCobrador: (nome: string) => `${nome} bate as faltas`,
+    capitaoAuto: 'Capitão automático',
+    tirarCobrador: 'Sem cobrador fixo',
+    seloCapitao: 'Capitão',
+    seloCobrador: 'Cobrador de faltas',
     foraDoTimeJogador: (nome: string) => `${nome}, fora do time`,
     improvisado: 'Improvisado',
     forcaNaPosicao: 'Força na posição',
@@ -315,6 +334,8 @@ export function descreverEvento(e: EventoPartida, nomeDoTime: (equipe: EventoPar
       return `${time} muda a postura: ${textos.tatica.mentalidades[e.detalhe ?? ''] ?? e.detalhe}.`
     case 'TrocaDeFormacao':
       return `${time} muda para o ${e.detalhe}.`
+    case 'TrocaDeEstilo':
+      return `${time} muda o estilo: ${descreverEstilo(e.detalhe)}.`
     default:
       return e.tipo
   }
@@ -343,3 +364,11 @@ export const formatoDinheiro = new Intl.NumberFormat('pt-BR', {
   currency: 'BRL',
   maximumFractionDigits: 0,
 })
+
+/** "Forte/Esquerda" → "marcação forte, ataques pela esquerda". */
+export function descreverEstilo(detalhe: string | undefined): string {
+  const [marcacao = '', concentracao = ''] = (detalhe ?? '').split('/')
+  const m = (textos.tatica.marcacoes[marcacao] ?? marcacao).toLowerCase()
+  const c = (textos.tatica.concentracoes[concentracao] ?? concentracao).toLowerCase()
+  return `marcação ${m}, ataques ${c === 'variado' ? 'variados' : c}`
+}

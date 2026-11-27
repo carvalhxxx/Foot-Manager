@@ -21,6 +21,12 @@ public static class PosJogo
             : (resultado.GolsVisitante, resultado.GolsMandante);
         var moralDoResultado = pro > contra ? regras.MoralVitoria : pro == contra ? regras.MoralEmpate : regras.MoralDerrota;
 
+        // Com o capitão em campo, a derrota pesa pela metade na moral.
+        if (pro < contra && participacoes.ContainsKey(escalacao.CapitaoEfetivo))
+        {
+            moralDoResultado /= 2;
+        }
+
         foreach (var jogador in clube.Elenco)
         {
             var jogou = participacoes.TryGetValue(jogador.Id, out var p);

@@ -27,6 +27,9 @@ Mobile, saves na nuvem, ligas online entre amigos, modelo freemium/assinatura.
 
 ## Feito
 
+### Opções táticas · M
+- Marcação (leve, normal, forte), concentrar ataques (variado, esquerda, meio, direita), capitão e cobrador de faltas. Na tela Tática (toque no jogador do campo para fazer capitão ou cobrador, com os selos C e F), e marcação e concentração também no jogo ao vivo. Calibradas para nenhuma opção dominar (D-032).
+
 ### Tática no campo · P
 - Escalação arrastando os jogadores num campo (ou tocando em um e depois no outro), com banco e lista de quem está fora do time. Verificada no navegador com mouse e na largura de celular (D-031).
 

@@ -86,10 +86,29 @@ public sealed record TaticaDto(
     IReadOnlyList<TitularDto> Titulares,
     IReadOnlyList<int> Reservas,
     IReadOnlyList<FormacaoDto> Formacoes,
-    IReadOnlyList<string> Mentalidades);
+    IReadOnlyList<string> Mentalidades,
+    string Marcacao,
+    string Concentracao,
+    IReadOnlyList<string> Marcacoes,
+    IReadOnlyList<string> Concentracoes,
+    int? CapitaoId,
+    int? CobradorId,
+    int? CapitaoEfetivo,
+    IReadOnlyList<int> SugestaoDeCobradores);
 
-/// <summary>O que a interface envia para mudar a tática.</summary>
-public sealed record DefinicaoTaticaDto(string Formacao, string Mentalidade, IReadOnlyList<int> Titulares, IReadOnlyList<int> Reservas);
+/// <summary>
+/// O que a interface envia para mudar a tática. Marcação e concentração nulas mantêm as atuais;
+/// capitão e cobrador nulos = escolha automática.
+/// </summary>
+public sealed record DefinicaoTaticaDto(
+    string Formacao,
+    string Mentalidade,
+    IReadOnlyList<int> Titulares,
+    IReadOnlyList<int> Reservas,
+    string? Marcacao = null,
+    string? Concentracao = null,
+    int? CapitaoId = null,
+    int? CobradorId = null);
 
 // ------------------------------------------------------------------ partidas
 
@@ -142,6 +161,8 @@ public sealed record MinhaPartidaAoVivoDto(
     EstatisticasDto EstatisticasVisitante,
     string Formacao,
     string Mentalidade,
+    string Marcacao,
+    string Concentracao,
     int SubstituicoesRestantes,
     IReadOnlyList<JogadorEmCampoDto> EmCampo,
     IReadOnlyList<ReservaDto> Reservas,
@@ -167,7 +188,9 @@ public sealed record AoVivoDto(
     IReadOnlyList<RodadaDivisaoAoVivoDto> Placares);
 
 /// <summary>Decisão do jogador durante o jogo: "substituicao", "mentalidade" ou "formacao".</summary>
-public sealed record DecisaoDto(string Tipo, int? SaiId = null, int? EntraId = null, string? Mentalidade = null, string? Formacao = null);
+public sealed record DecisaoDto(
+    string Tipo, int? SaiId = null, int? EntraId = null, string? Mentalidade = null, string? Formacao = null,
+    string? Marcacao = null, string? Concentracao = null);
 
 // ------------------------------------------------------------------ finanças
 

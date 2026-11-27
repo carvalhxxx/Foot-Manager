@@ -49,8 +49,15 @@ export function Tatica({ tatica, jogadores, erros, aoMudar, aoUsarAutomatica }: 
       mentalidade: tatica.mentalidade,
       titulares,
       reservas: tatica.reservas,
+      marcacao: tatica.marcacao,
+      concentracao: tatica.concentracao,
+      capitaoId: tatica.capitaoId,
+      cobradorId: tatica.cobradorId,
       ...mudanca,
     })
+
+  const nomeDe = (id: number | undefined) => (id === undefined ? '' : (porId.get(id)?.nome ?? ''))
+  const titularSelecionado = selecionado?.tipo === 'titular' ? titulares[selecionado.indice] : undefined
 
   const aplicar = (origem: Local, destino: Local) => {
     setSelecionado(undefined)
@@ -185,9 +192,70 @@ export function Tatica({ tatica, jogadores, erros, aoMudar, aoUsarAutomatica }: 
         </fieldset>
       </div>
 
+      <div className="controles-tatica">
+        <fieldset className="mentalidades">
+          <legend>{t.marcacao}</legend>
+          {tatica.marcacoes.map((m) => (
+            <button
+              key={m}
+              type="button"
+              className={`pilula ${m === tatica.marcacao ? 'pilula-ativa' : ''}`}
+              aria-pressed={m === tatica.marcacao}
+              onClick={() => enviar({ marcacao: m })}
+            >
+              {t.marcacoes[m] ?? m}
+            </button>
+          ))}
+        </fieldset>
+
+        <fieldset className="mentalidades">
+          <legend>{t.concentracao}</legend>
+          {tatica.concentracoes.map((c) => (
+            <button
+              key={c}
+              type="button"
+              className={`pilula ${c === tatica.concentracao ? 'pilula-ativa' : ''}`}
+              aria-pressed={c === tatica.concentracao}
+              onClick={() => enviar({ concentracao: c })}
+            >
+              {t.concentracoes[c] ?? c}
+            </button>
+          ))}
+        </fieldset>
+      </div>
+
+      <p className="secundario dica">
+        {t.dicaMarcacao} {t.dicaConcentracao}
+      </p>
+
       <p className="secundario dica" aria-live="polite">
         {selecionado ? t.escolhaDestino : t.dicaArrastar}
       </p>
+
+      {titularSelecionado !== undefined && (
+        <div className="acoes acoes-funcao">
+          <button
+            type="button"
+            className="botao botao-secundario"
+            onClick={() => {
+              setSelecionado(undefined)
+              enviar({ capitaoId: titularSelecionado })
+            }}
+          >
+            {t.fazerCapitao(nomeDe(titularSelecionado))}
+          </button>
+          <button
+            type="button"
+            className="botao botao-secundario"
+            onClick={() => {
+              setSelecionado(undefined)
+              enviar({ cobradorId: titularSelecionado })
+            }}
+          >
+            {t.fazerCobrador(nomeDe(titularSelecionado))}
+          </button>
+        </div>
+      )}
 
       <div className="grade-tatica">
         <section className="campo" aria-label={t.titulares}>
@@ -212,6 +280,16 @@ export function Tatica({ tatica, jogadores, erros, aoMudar, aoUsarAutomatica }: 
               >
                 <span className="peca-camisa" title={t.forcaNaPosicao}>
                   {titular.forcaNaPosicao}
+                  {titular.jogadorId === tatica.capitaoEfetivo && (
+                    <span className="selo-peca selo-capitao" title={t.seloCapitao}>
+                      C
+                    </span>
+                  )}
+                  {titular.jogadorId === tatica.cobradorId && (
+                    <span className="selo-peca selo-cobrador" title={t.seloCobrador}>
+                      F
+                    </span>
+                  )}
                 </span>
                 <span className="peca-nome">{apelido(nome)}</span>
                 <span className="peca-posicao">
@@ -225,6 +303,33 @@ export function Tatica({ tatica, jogadores, erros, aoMudar, aoUsarAutomatica }: 
         </section>
 
         <div className="lado-tatica">
+          <section className="cartao">
+            <h2>{t.funcoes}</h2>
+            <dl className="resumo-fim">
+              <dt>{t.capitao}</dt>
+              <dd>
+                {tatica.capitaoId !== undefined ? nomeDe(tatica.capitaoId) : t.capitaoAutomatico(nomeDe(tatica.capitaoEfetivo))}
+              </dd>
+              <dt>{t.cobrador}</dt>
+              <dd>{tatica.cobradorId !== undefined ? nomeDe(tatica.cobradorId) : t.semCobrador}</dd>
+            </dl>
+            {tatica.cobradorId === undefined && tatica.sugestaoDeCobradores.length > 0 && (
+              <p className="secundario dica">{t.sugestao(tatica.sugestaoDeCobradores.map(nomeDe).join(', '))}</p>
+            )}
+            <div className="acoes">
+              {tatica.capitaoId !== undefined && (
+                <button type="button" className="botao botao-secundario" onClick={() => enviar({ capitaoId: undefined })}>
+                  {t.capitaoAuto}
+                </button>
+              )}
+              {tatica.cobradorId !== undefined && (
+                <button type="button" className="botao botao-secundario" onClick={() => enviar({ cobradorId: undefined })}>
+                  {t.tirarCobrador}
+                </button>
+              )}
+            </div>
+          </section>
+
           <section className="cartao">
             <h2>{t.reservas}</h2>
             <ul className="lista-banco">

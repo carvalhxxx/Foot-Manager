@@ -59,6 +59,10 @@ public static class ConversorSave
                 Mentalidade = carreira.Tatica.Mentalidade.ToString(),
                 Titulares = [.. carreira.Tatica.Titulares],
                 Reservas = [.. carreira.Tatica.Reservas],
+                Marcacao = carreira.Tatica.Marcacao.ToString(),
+                Concentracao = carreira.Tatica.Concentracao.ToString(),
+                Capitao = carreira.Tatica.CapitaoId,
+                Cobrador = carreira.Tatica.CobradorId,
             },
         };
 
@@ -100,7 +104,11 @@ public static class ConversorSave
                     ?? throw new SaveInvalidoException($"Formação \"{save.Tatica.Formacao}\" desconhecida."),
                 Enum.Parse<Mentalidade>(save.Tatica.Mentalidade!),
                 save.Tatica.Titulares ?? [],
-                save.Tatica.Reservas ?? []);
+                save.Tatica.Reservas ?? [],
+                save.Tatica.Marcacao is null ? Marcacao.Normal : Enum.Parse<Marcacao>(save.Tatica.Marcacao),
+                save.Tatica.Concentracao is null ? Concentracao.Variado : Enum.Parse<Concentracao>(save.Tatica.Concentracao),
+                save.Tatica.Capitao,
+                save.Tatica.Cobrador);
 
             var temporadaSave = save.Temporada;
             return Carreira.Restaurar(
