@@ -69,6 +69,19 @@ public sealed class ApiJson
         () => Json(_servico.DefinirPrecoIngresso(string.IsNullOrWhiteSpace(preco) ? null : decimal.Parse(preco, CultureInfo.InvariantCulture))),
         ContratoJson.Default.RespostaFinancasDto);
 
+    public string Mercado(string buscaJson) => Proteger(() =>
+    {
+        var busca = JsonSerializer.Deserialize(buscaJson, ContratoJson.Default.BuscaMercadoDto)
+            ?? throw new JsonException("Busca vazia.");
+        return JsonSerializer.Serialize(_servico.Mercado(busca), ContratoJson.Default.RespostaMercadoDto);
+    }, ContratoJson.Default.RespostaMercadoDto);
+
+    public string Comprar(int jogadorId) => Json(_servico.Comprar(jogadorId));
+
+    public string OfertaPor(int jogadorId) => JsonSerializer.Serialize(_servico.OfertaPor(jogadorId), ContratoJson.Default.RespostaOfertaDto);
+
+    public string Vender(int jogadorId) => Json(_servico.Vender(jogadorId));
+
     public string RenovarContrato(int jogadorId, int anos) => Json(_servico.RenovarContrato(jogadorId, anos));
 
     public string Dispensar(int jogadorId) => Json(_servico.Dispensar(jogadorId));

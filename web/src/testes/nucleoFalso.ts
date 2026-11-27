@@ -9,6 +9,8 @@ import type {
   Estado,
   FimDeTemporada,
   Jogador,
+  JogadorMercado,
+  Mercado,
   Resposta,
   ResumoMundo,
   Rodada,
@@ -87,6 +89,22 @@ export const elenco: Jogador[] = [
   ...Array.from({ length: 10 }, (_, i) => jogador(2 + i, `Titular ${i + 1}`, 'MC')),
   jogador(20, 'Craque Silva', 'ATA', { forca: 88, estrela: true, podeRenovar: true, contratoAte: 2027 }),
   jogador(21, 'Machucado Souza', 'ZAG', { disponivel: false, rodadasLesionado: 3 }),
+]
+
+export const jogadoresDoMercado: JogadorMercado[] = [
+  {
+    id: 500, nome: 'Reforço Lima', idade: 24, posicao: 'ATA', forca: 78, estrela: false, clubeNome: 'Cerrado FC', clubeSigla: 'CER',
+    livre: false, preco: 6000000, salarioPedido: 90000, valorDeMercado: 5000000, anosDeContrato: 4,
+  },
+  {
+    id: 501, nome: 'Livre Costa', idade: 31, posicao: 'ZAG', forca: 66, estrela: false,
+    livre: true, preco: 0, salarioPedido: 30000, valorDeMercado: 400000, anosDeContrato: 2,
+  },
+  {
+    id: 502, nome: 'Caro Demais', idade: 27, posicao: 'MC', forca: 85, estrela: true, clubeNome: 'Cerrado FC', clubeSigla: 'CER',
+    livre: false, preco: 50000000, salarioPedido: 400000, valorDeMercado: 40000000, anosDeContrato: 3,
+    impedimento: 'Não há dinheiro em caixa para essa compra.',
+  },
 ]
 
 const tatica: Tatica = {
@@ -258,6 +276,7 @@ export function criarNucleoFalso(opcoes: { totalRodadas?: number } = {}) {
     ultimosResultados: rodadaAtual > 0 ? [{ rodada: 1, adversarioSigla: 'CER', emCasa: true, golsPro: 2, golsContra: 1 }] : [],
     ajustesNaEscalacao: ['Fulano entra no lugar de Machucado Souza (lesionado).'],
     rodadaAoVivo: aoVivo !== undefined,
+    janelaAberta: rodadaAtual < 3,
   })
 
   const nucleo = {
@@ -270,6 +289,21 @@ export function criarNucleoFalso(opcoes: { totalRodadas?: number } = {}) {
       ok(elenco.map((j) => (j.id === jogadorId ? { ...j, podeRenovar: false, contratoAte: 2027 + anos, salario: j.salarioPedido } : j))),
     ),
     dispensar: vi.fn((jogadorId: number) => ok(elenco.filter((j) => j.id !== jogadorId))),
+    mercado: vi.fn((busca: { posicao?: string; forcaMinima: number; apenasLivres: boolean }) => {
+      const resultado: Mercado = {
+        janelaAberta: rodadaAtual < 3,
+        caixa: 20000000,
+        elencoAtual: elenco.length,
+        posicoes: ['GOL', 'ZAG', 'MC', 'ATA'],
+        jogadores: jogadoresDoMercado.filter(
+          (j) => (!busca.posicao || j.posicao === busca.posicao) && j.forca >= busca.forcaMinima && (!busca.apenasLivres || j.livre),
+        ),
+      }
+      return ok(resultado)
+    }),
+    comprar: vi.fn(() => ok(elenco)),
+    ofertaPor: vi.fn((jogadorId: number) => ok({ jogadorId, clubeNome: 'Cerrado FC', valor: 3000000, janelaAberta: true })),
+    vender: vi.fn((jogadorId: number) => ok(elenco.filter((j) => j.id !== jogadorId))),
     tatica: vi.fn(() => ok(taticaAtual)),
     definirTatica: vi.fn((d) => {
       if (d.titulares.length !== 11) {

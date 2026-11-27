@@ -93,7 +93,7 @@ public sealed class ServicoDeJogo
 
         return new EstadoDto(c.Temporada.Ano, c.Temporada.RodadaAtual, c.Temporada.TotalRodadas, c.Temporada.Encerrada,
             Resumir(c.Clube), competicao.Divisao.Id, competicao.Divisao.Nome, minhaLinha.Posicao, minhaLinha.Pontos,
-            proximo, ultimos, ajustes, c.AoVivo is not null);
+            proximo, ultimos, ajustes, c.AoVivo is not null, c.JanelaAberta);
     });
 
     public Resposta<IReadOnlyList<JogadorDto>> Elenco() => ComCarreira<IReadOnlyList<JogadorDto>>(c =>
@@ -123,6 +123,71 @@ public sealed class ServicoDeJogo
         var r = ComCarreira(c =>
         {
             c.Dispensar(jogadorId);
+            return 0;
+        });
+        return r.Ok ? Elenco() : Resposta<IReadOnlyList<JogadorDto>>.Falha([.. r.Erros!]);
+    }
+
+    /// <summary>Jogadores à venda (outros clubes e agentes livres) que passam nos filtros; os 60 mais fortes.</summary>
+    public Resposta<MercadoDto> Mercado(BuscaMercadoDto busca)
+    {
+        ArgumentNullException.ThrowIfNull(busca);
+        return ComCarreira(c =>
+        {
+            Posicao? posicao = null;
+            if (!string.IsNullOrWhiteSpace(busca.Posicao))
+            {
+                posicao = PosicaoExtensoes.TentarDaSigla(busca.Posicao, out var p) ? p : throw new ArgumentException($"Posição \"{busca.Posicao}\" desconhecida.");
+            }
+
+            var ano = c.Mundo.TemporadaAtual;
+            var candidatos = (busca.ApenasLivres ? [] : c.Mundo.Clubes.Where(cl => cl != c.Clube).SelectMany(cl => cl.Elenco))
+                .Concat(c.Mundo.AgentesLivres)
+                .Where(j => posicao is null || j.PosicaoPrincipal == posicao)
+                .Where(j => j.ForcaGeral >= busca.ForcaMinima)
+                .Where(j => busca.PrecoMaximo is not { } max || Transferencias.Preco(j, ano) <= max)
+                .OrderByDescending(j => j.ForcaGeral).ThenBy(j => j.Id)
+                .Take(60)
+                .Select(j =>
+                {
+                    var dono = j.Contrato is { } ct ? c.Mundo.Clube(ct.ClubeId) : null;
+                    return new JogadorMercadoDto(j.Id, j.Nome, j.Idade, j.PosicaoPrincipal.Sigla(), j.ForcaGeral, j.ForcaGeral >= ForcaDeEstrela,
+                        dono?.Nome, dono?.Sigla, dono is null, Transferencias.Preco(j, ano), Valores.SalarioPedido(j),
+                        Valores.ValorDeMercado(j, ano), Transferencias.AnosDeContrato(j),
+                        c.Temporada.Encerrada ? "A temporada acabou: comece a próxima para negociar."
+                            : Transferencias.Impedimento(c.Mundo, c.Clube, j, c.Temporada.RodadaAtual));
+                });
+
+            return new MercadoDto(c.JanelaAberta, c.Clube.Caixa, c.Clube.Elenco.Count,
+                [.. Enum.GetValues<Posicao>().Select(p => p.Sigla())], [.. candidatos]);
+        });
+    }
+
+    /// <summary>Compra (ou contrata o agente livre) e devolve o elenco atualizado.</summary>
+    public Resposta<IReadOnlyList<JogadorDto>> Comprar(int jogadorId)
+    {
+        var r = ComCarreira(c =>
+        {
+            c.Comprar(jogadorId);
+            return 0;
+        });
+        return r.Ok ? Elenco() : Resposta<IReadOnlyList<JogadorDto>>.Falha([.. r.Erros!]);
+    }
+
+    /// <summary>Melhor proposta da IA por um jogador do elenco (sem vender).</summary>
+    public Resposta<OfertaDto> OfertaPor(int jogadorId) => ComCarreira(c =>
+    {
+        var jogador = c.Clube.Elenco.FirstOrDefault(j => j.Id == jogadorId) ?? throw new KeyNotFoundException("Esse jogador não é do seu elenco.");
+        var oferta = Transferencias.MelhorOferta(c.Mundo, c.Clube, jogador);
+        return new OfertaDto(jogadorId, oferta?.Clube.Nome, oferta?.Valor ?? 0, c.JanelaAberta);
+    });
+
+    /// <summary>Vende para a melhor proposta e devolve o elenco atualizado.</summary>
+    public Resposta<IReadOnlyList<JogadorDto>> Vender(int jogadorId)
+    {
+        var r = ComCarreira(c =>
+        {
+            c.Vender(jogadorId);
             return 0;
         });
         return r.Ok ? Elenco() : Resposta<IReadOnlyList<JogadorDto>>.Falha([.. r.Erros!]);

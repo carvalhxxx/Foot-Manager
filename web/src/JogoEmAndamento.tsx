@@ -11,11 +11,12 @@ import { Elenco } from './telas/Elenco'
 import { Financas } from './telas/Financas'
 import { FimDeTemporada } from './telas/FimDeTemporada'
 import { Inicio } from './telas/Inicio'
+import { Mercado } from './telas/Mercado'
 import { Partida } from './telas/Partida'
 import { Tatica } from './telas/Tatica'
 import { textos } from './textos'
 
-type Tela = 'inicio' | 'elenco' | 'tatica' | 'partida' | 'classificacao' | 'financas' | 'aoVivo' | 'fim'
+type Tela = 'inicio' | 'elenco' | 'tatica' | 'partida' | 'classificacao' | 'mercado' | 'financas' | 'aoVivo' | 'fim'
 
 const MENU: { tela: Tela; rotulo: string }[] = [
   { tela: 'inicio', rotulo: textos.menu.inicio },
@@ -23,6 +24,7 @@ const MENU: { tela: Tela; rotulo: string }[] = [
   { tela: 'tatica', rotulo: textos.menu.tatica },
   { tela: 'partida', rotulo: textos.menu.partida },
   { tela: 'classificacao', rotulo: textos.menu.classificacao },
+  { tela: 'mercado', rotulo: textos.menu.mercado },
   { tela: 'financas', rotulo: textos.menu.financas },
 ]
 
@@ -60,6 +62,8 @@ export function JogoEmAndamento({ nucleo, mundo, botaoTema, slotId, armazenament
   const [errosTatica, setErrosTatica] = useState<string[]>([])
   const [errosFinancas, setErrosFinancas] = useState<string[]>([])
   const [errosElenco, setErrosElenco] = useState<string[]>([])
+  const [errosMercado, setErrosMercado] = useState<string[]>([])
+  const [mensagemMercado, setMensagemMercado] = useState<string>()
   const [divisaoVista, setDivisaoVista] = useState<string | undefined>()
   const [save, setSave] = useState<SituacaoSave | undefined>()
 
@@ -176,6 +180,36 @@ export function JogoEmAndamento({ nucleo, mundo, botaoTema, slotId, armazenament
             aoDispensar={(id) => {
               const r = nucleo.dispensar(id)
               setErrosElenco(r.ok ? [] : descreverErros(r.erros))
+              if (r.ok) {
+                salvar()
+              }
+              atualizar()
+            }}
+            consultarOferta={(id) => {
+              const r = nucleo.ofertaPor(id)
+              setErrosElenco(r.ok ? [] : descreverErros(r.erros))
+              return r.ok ? r.dados : undefined
+            }}
+            aoVender={(id) => {
+              const r = nucleo.vender(id)
+              setErrosElenco(r.ok ? [] : descreverErros(r.erros))
+              if (r.ok) {
+                salvar()
+              }
+              atualizar()
+            }}
+          />
+        )
+      case 'mercado':
+        return (
+          <Mercado
+            buscar={(busca) => dados(nucleo.mercado(busca))}
+            erros={errosMercado}
+            mensagem={mensagemMercado}
+            aoComprar={(jogador) => {
+              const r = nucleo.comprar(jogador.id)
+              setErrosMercado(r.ok ? [] : descreverErros(r.erros))
+              setMensagemMercado(r.ok ? textos.mercado.contratado(jogador.nome) : undefined)
               if (r.ok) {
                 salvar()
               }

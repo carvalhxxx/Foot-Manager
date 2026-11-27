@@ -5,14 +5,7 @@ Cada entrega termina com testes passando, commit claro e este arquivo atualizado
 
 ## Em andamento
 
-### E8 · Mercado, contratos e finanças · G
-- **Objetivo:** comprar, vender e dispensar (com a IA também negociando), janelas de transferência, contratos e renovação, bilheteria com preço do ingresso, patrocínio, TV, premiação e salários.
-- **Observação:** hoje os elencos só mudam por evolução, aposentadoria e base, e os contratos são renovados automaticamente. Por isso o clube mais forte domina várias temporadas seguidas. O mercado é o que vai trazer rotatividade entre os grandes.
-- **Aceite:** uma temporada simulada fecha o caixa de forma coerente para todos os clubes.
-- **Etapas:**
-  1. ~~8a · Finanças~~ ✔ bilheteria com preço do ingresso, TV, patrocínio, salários por rodada, premiação, tela Finanças, calibração (D-027);
-  2. ~~8b · Contratos~~ ✔ valor de mercado, renovação no Elenco (1 a 4 anos), dispensa com rescisão, agentes livres, IA renovando e liberando (D-028);
-  3. 8c · Mercado: janelas, comprar e vender, IA negociando.
+_(nada)_
 
 ## Refinando
 
@@ -33,6 +26,12 @@ _(nada)_
 Mobile, saves na nuvem, ligas online entre amigos, modelo freemium/assinatura.
 
 ## Feito
+
+### E8 · Mercado, contratos e finanças · G
+- **Finanças (8a):** bilheteria com preço do ingresso escolhido pelo jogador, cota de TV, patrocínio e salários a cada rodada, premiação no fim da temporada, extrato por categoria e tela Finanças. Metas de economia na calibração (D-027).
+- **Contratos (8b):** valor de mercado, renovação no Elenco (1 a 4 anos, pelo salário pedido), dispensa com 3 salários de rescisão e agentes livres. Quem não renova sai de graça. A IA renova os úteis e libera os veteranos fracos (D-028).
+- **Mercado (8c):** janelas antes das rodadas 1–3 e 18–21; agentes livres a qualquer momento. Tela Mercado com busca por posição, força mínima, preço máximo e só livres; compra por preço fixo com uma confirmação; venda pelo Elenco para a melhor proposta. A IA reforça a posição mais fraca e vende quando fica no vermelho. Aviso de janela no Início (D-029).
+- Três temporadas simuladas com mercado: elencos entre 20 e 35 e no máximo 20% dos clubes no vermelho (teste).
 
 ### E9 · Save/load no navegador · M
 - A carreira é salva sozinha no navegador (IndexedDB) ao começar, depois de cada rodada, na virada de temporada e quando a tática muda. Recarregar a página não perde mais nada.

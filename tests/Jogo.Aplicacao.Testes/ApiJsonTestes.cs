@@ -242,6 +242,28 @@ public class ApiJsonTestes
     }
 
     [Fact]
+    public void Mercado_BuscarComprarEVender()
+    {
+        var api = ComCarreira();
+        Assert.True(Ok(api.Estado())["janelaAberta"]!.GetValue<bool>());
+
+        var mercado = Ok(api.Mercado("""{"posicao":"ATA","forcaMinima":60,"apenasLivres":false}"""));
+        var jogadores = mercado["jogadores"]!.AsArray();
+        Assert.NotEmpty(jogadores);
+        Assert.All(jogadores, j => Assert.Equal("ATA", j!["posicao"]!.GetValue<string>()));
+
+        var compravel = jogadores.First(j => j!["impedimento"] is null)!;
+        var id = compravel["id"]!.GetValue<int>();
+        var elenco = Ok(api.Comprar(id)).AsArray();
+        Assert.Contains(elenco, j => j!["id"]!.GetValue<int>() == id);
+
+        var oferta = Ok(api.OfertaPor(id));
+        Assert.True(oferta["valor"]!.GetValue<decimal>() > 0);
+        Assert.DoesNotContain(Ok(api.Vender(id)).AsArray(), j => j!["id"]!.GetValue<int>() == id);
+        Assert.Contains("Posição", Falha(api.Mercado("""{"posicao":"XYZ","forcaMinima":0,"apenasLivres":false}""")), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void Save_DuranteJogoAoVivo_FalhaComMensagem()
     {
         var api = ComCarreira();

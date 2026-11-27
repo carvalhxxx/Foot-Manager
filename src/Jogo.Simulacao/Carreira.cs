@@ -223,7 +223,58 @@ public sealed class Carreira
         var (escalacao, _) = MontarEscalacao();
         UltimaRodada = Temporada.JogarRodada(new Dictionary<string, TimeEscalado>(StringComparer.Ordinal) { [Clube.Id] = escalacao });
         FixarEscalacaoQueJogou(escalacao);
+        MercadoDaIa();
         return UltimaRodada;
+    }
+
+    // ------------------------------------------------------------------ mercado
+
+    /// <summary>A janela de transferências está aberta agora (antes da próxima rodada)?</summary>
+    public bool JanelaAberta => !Temporada.Encerrada && Mercado.Transferencias.JanelaAberta(Temporada.RodadaAtual);
+
+    /// <summary>Compra um jogador de outro clube (janela aberta) ou contrata um agente livre.</summary>
+    public void Comprar(int jogadorId)
+    {
+        ExigirForaDoAoVivo();
+        var jogador = Mundo.Clubes.SelectMany(c => c.Elenco).Concat(Mundo.AgentesLivres).FirstOrDefault(j => j.Id == jogadorId)
+            ?? throw new KeyNotFoundException("Jogador não encontrado.");
+        if (Temporada.Encerrada)
+        {
+            throw new InvalidOperationException("A temporada acabou: comece a próxima para negociar.");
+        }
+
+        Mercado.Transferencias.Comprar(Mundo, Clube, jogador, Temporada.RodadaAtual);
+    }
+
+    /// <summary>Vende um jogador do elenco para a melhor oferta.</summary>
+    public Mercado.Oferta Vender(int jogadorId)
+    {
+        ExigirForaDoAoVivo();
+        if (Temporada.Encerrada)
+        {
+            throw new InvalidOperationException("A temporada acabou: comece a próxima para negociar.");
+        }
+
+        var oferta = Mercado.Transferencias.Vender(Mundo, Clube, JogadorDoElenco(jogadorId), Temporada.RodadaAtual);
+        if (Tatica.Titulares.Contains(jogadorId) || Tatica.Reservas.Contains(jogadorId))
+        {
+            UsarEscalacaoAutomatica();
+        }
+
+        return oferta;
+    }
+
+    /// <summary>Depois de cada rodada, com a janela aberta, a IA compra e vende (sorteio pela seed da rodada).</summary>
+    private void MercadoDaIa()
+    {
+        if (Temporada.Encerrada)
+        {
+            return;
+        }
+
+        var aleatorio = new Dominio.Aleatoriedade.GeradorAleatorio(
+            SementeDoAno(Temporada.Ano) ^ GeradorDeMundo.HashEstavel($"mercado/{Temporada.RodadaAtual}"));
+        Mercado.Transferencias.MovimentarIa(Mundo, Clube.Id, Temporada.RodadaAtual, aleatorio);
     }
 
     // ------------------------------------------------------------------ ao vivo
@@ -293,6 +344,7 @@ public sealed class Carreira
         _escalacaoAoVivo = null;
         FixarEscalacaoQueJogou(escalacao);
         Tatica = Tatica with { Mentalidade = mentalidadeFinal };
+        MercadoDaIa();
         return UltimaRodada;
     }
 

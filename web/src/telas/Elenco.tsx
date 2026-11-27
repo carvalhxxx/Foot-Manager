@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { Jogador } from '../nucleo/contrato'
+import type { Jogador, Oferta } from '../nucleo/contrato'
 import { formatoDinheiro, textos } from '../textos'
 
 interface Props {
@@ -7,6 +7,8 @@ interface Props {
   erros: string[]
   aoRenovar: (jogadorId: number, anos: number) => void
   aoDispensar: (jogadorId: number) => void
+  consultarOferta: (jogadorId: number) => Oferta | undefined
+  aoVender: (jogadorId: number) => void
 }
 
 const dinheiro = (v: number) => formatoDinheiro.format(v)
@@ -16,13 +18,16 @@ interface PropsContrato {
   erros: string[]
   aoRenovar: (anos: number) => void
   aoDispensar: () => void
+  consultarOferta: () => Oferta | undefined
+  aoVender: () => void
   aoFechar: () => void
 }
 
-function CartaoContrato({ jogador, erros, aoRenovar, aoDispensar, aoFechar }: PropsContrato) {
+function CartaoContrato({ jogador, erros, aoRenovar, aoDispensar, consultarOferta, aoVender, aoFechar }: PropsContrato) {
   const t = textos.elenco
   const [anos, setAnos] = useState(2)
   const [confirmando, setConfirmando] = useState(false)
+  const [oferta, setOferta] = useState<Oferta>()
 
   return (
     <section className="cartao cartao-contrato" aria-label={jogador.nome}>
@@ -57,7 +62,25 @@ function CartaoContrato({ jogador, erros, aoRenovar, aoDispensar, aoFechar }: Pr
       )}
       {jogador.podeRenovar && <p className="secundario dica">{t.semRenovacao}</p>}
       <p className="secundario">{t.custoDispensa(dinheiro(jogador.custoDaDispensa))}</p>
+      {oferta && (
+        <p className="secundario">
+          {!oferta.janelaAberta
+            ? t.janelaFechada
+            : oferta.clubeNome
+              ? t.proposta(oferta.clubeNome, dinheiro(oferta.valor))
+              : t.semProposta}
+        </p>
+      )}
       <div className="acoes">
+        {oferta?.janelaAberta && oferta.clubeNome ? (
+          <button type="button" className="botao" onClick={aoVender}>
+            {t.vender(dinheiro(oferta.valor))}
+          </button>
+        ) : (
+          <button type="button" className="botao botao-secundario" onClick={() => setOferta(consultarOferta())}>
+            {t.verPropostas}
+          </button>
+        )}
         {confirmando ? (
           <>
             <button type="button" className="botao botao-perigo" onClick={aoDispensar}>
@@ -101,7 +124,7 @@ function situacao(j: Jogador): { texto: string; classe: string } {
   return { texto: t.disponivel, classe: 'situacao-ok' }
 }
 
-export function Elenco({ jogadores, erros, aoRenovar, aoDispensar }: Props) {
+export function Elenco({ jogadores, erros, aoRenovar, aoDispensar, consultarOferta, aoVender }: Props) {
   const t = textos.elenco
   const [selecionado, setSelecionado] = useState<number>()
   const escolhido = jogadores.find((j) => j.id === selecionado)
@@ -117,6 +140,8 @@ export function Elenco({ jogadores, erros, aoRenovar, aoDispensar }: Props) {
           erros={erros}
           aoRenovar={(anos) => aoRenovar(escolhido.id, anos)}
           aoDispensar={() => aoDispensar(escolhido.id)}
+          consultarOferta={() => consultarOferta(escolhido.id)}
+          aoVender={() => aoVender(escolhido.id)}
           aoFechar={() => setSelecionado(undefined)}
         />
       )}

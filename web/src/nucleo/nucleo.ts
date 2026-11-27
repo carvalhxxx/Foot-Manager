@@ -6,6 +6,9 @@ import type {
   Estado,
   FimDeTemporada,
   Financas,
+  BuscaMercado,
+  Mercado,
+  Oferta,
   Jogador,
   Resposta,
   ResumoMundo,
@@ -26,6 +29,10 @@ export interface Nucleo {
   elenco(): Resposta<Jogador[]>
   renovarContrato(jogadorId: number, anos: number): Resposta<Jogador[]>
   dispensar(jogadorId: number): Resposta<Jogador[]>
+  mercado(busca: BuscaMercado): Resposta<Mercado>
+  comprar(jogadorId: number): Resposta<Jogador[]>
+  ofertaPor(jogadorId: number): Resposta<Oferta>
+  vender(jogadorId: number): Resposta<Jogador[]>
   tatica(): Resposta<Tatica>
   definirTatica(definicao: DefinicaoTatica): Resposta<Tatica>
   escalacaoAutomatica(): Resposta<Tatica>
@@ -67,6 +74,10 @@ interface ApiBruta {
   Financas(): string
   RenovarContrato(jogadorId: number, anos: number): string
   Dispensar(jogadorId: number): string
+  Mercado(buscaJson: string): string
+  Comprar(jogadorId: number): string
+  OfertaPor(jogadorId: number): string
+  Vender(jogadorId: number): string
   DefinirPrecoIngresso(preco: string): string
   ExportarSave(): string
   CarregarSave(conteudo: string): string
@@ -118,6 +129,10 @@ function embrulhar(api: ApiBruta): Nucleo {
     elenco: () => ler(api.Elenco()),
     renovarContrato: (jogadorId, anos) => ler(api.RenovarContrato(jogadorId, anos)),
     dispensar: (jogadorId) => ler(api.Dispensar(jogadorId)),
+    mercado: (busca) => ler(api.Mercado(JSON.stringify(busca))),
+    comprar: (jogadorId) => ler(api.Comprar(jogadorId)),
+    ofertaPor: (jogadorId) => ler(api.OfertaPor(jogadorId)),
+    vender: (jogadorId) => ler(api.Vender(jogadorId)),
     tatica: () => ler(api.Tatica()),
     definirTatica: (definicao) => ler(api.DefinirTatica(JSON.stringify(definicao))),
     escalacaoAutomatica: () => ler(api.EscalacaoAutomatica()),

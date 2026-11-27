@@ -23,6 +23,7 @@ export function Inicio({ estado }: Props) {
       </header>
 
       {estado.temporadaEncerrada && <p className="aviso-destaque">{t.fimDaTemporada}</p>}
+      {estado.janelaAberta && <p className="aviso-destaque">{t.janelaAberta}</p>}
 
       <div className="painel">
         {proximo && (

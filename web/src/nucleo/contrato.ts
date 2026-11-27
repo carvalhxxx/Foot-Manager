@@ -65,6 +65,7 @@ export interface Estado {
   ultimosResultados: ResultadoRecente[]
   ajustesNaEscalacao: string[]
   rodadaAoVivo: boolean
+  janelaAberta: boolean
 }
 
 export interface Atributos {
@@ -360,4 +361,43 @@ export interface FimDeTemporada {
   revelacoes: number
   proximoAno: number
   meuResultadoFinanceiro: number
+}
+
+export interface BuscaMercado {
+  posicao?: string
+  forcaMinima: number
+  precoMaximo?: number
+  apenasLivres: boolean
+}
+
+export interface JogadorMercado {
+  id: number
+  nome: string
+  idade: number
+  posicao: string
+  forca: number
+  estrela: boolean
+  clubeNome?: string
+  clubeSigla?: string
+  livre: boolean
+  preco: number
+  salarioPedido: number
+  valorDeMercado: number
+  anosDeContrato: number
+  impedimento?: string
+}
+
+export interface Mercado {
+  janelaAberta: boolean
+  caixa: number
+  elencoAtual: number
+  posicoes: string[]
+  jogadores: JogadorMercado[]
+}
+
+export interface Oferta {
+  jogadorId: number
+  clubeNome?: string
+  valor: number
+  janelaAberta: boolean
 }

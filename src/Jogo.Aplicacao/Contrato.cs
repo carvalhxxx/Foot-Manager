@@ -44,7 +44,8 @@ public sealed record EstadoDto(
     ProximoJogoDto? ProximoJogo,
     IReadOnlyList<ResultadoRecenteDto> UltimosResultados,
     IReadOnlyList<string> AjustesNaEscalacao,
-    bool RodadaAoVivo);
+    bool RodadaAoVivo,
+    bool JanelaAberta);
 
 public sealed record AtributosDto(
     int Finalizacao, int Passe, int Desarme, int Drible, int Velocidade,
@@ -207,12 +208,28 @@ public sealed record FimDeTemporadaDto(
     int Ano, IReadOnlyList<ResumoDivisaoDto> Divisoes, int MinhaPosicao, string MinhaDivisao,
     string? Movimento, int Aposentados, int Revelacoes, int ProximoAno, decimal MeuResultadoFinanceiro);
 
+/// <summary>Filtros da busca no mercado (todos opcionais).</summary>
+public sealed record BuscaMercadoDto(string? Posicao, int ForcaMinima, decimal? PrecoMaximo, bool ApenasLivres);
+
+public sealed record JogadorMercadoDto(
+    int Id, string Nome, int Idade, string Posicao, int Forca, bool Estrela,
+    string? ClubeNome, string? ClubeSigla, bool Livre,
+    decimal Preco, decimal SalarioPedido, decimal ValorDeMercado, int AnosDeContrato, string? Impedimento);
+
+public sealed record MercadoDto(bool JanelaAberta, decimal Caixa, int ElencoAtual, IReadOnlyList<string> Posicoes, IReadOnlyList<JogadorMercadoDto> Jogadores);
+
+/// <summary>Proposta da IA por um jogador do elenco (nula quando ninguém quer).</summary>
+public sealed record OfertaDto(int JogadorId, string? ClubeNome, decimal Valor, bool JanelaAberta);
+
 [JsonSourceGenerationOptions(
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 [JsonSerializable(typeof(Dictionary<string, string>))]
 [JsonSerializable(typeof(DefinicaoTaticaDto))]
 [JsonSerializable(typeof(DecisaoDto))]
+[JsonSerializable(typeof(BuscaMercadoDto))]
+[JsonSerializable(typeof(Resposta<MercadoDto>))]
+[JsonSerializable(typeof(Resposta<OfertaDto>))]
 [JsonSerializable(typeof(Resposta<AoVivoDto>))]
 [JsonSerializable(typeof(Resposta<SaveDto>))]
 [JsonSerializable(typeof(Resposta<FinancasDto>))]
