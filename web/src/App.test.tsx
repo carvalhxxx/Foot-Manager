@@ -1,4 +1,4 @@
-import { act, render, screen, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import App from './App'
@@ -128,6 +128,20 @@ describe('App', () => {
     const enviada = nucleo.definirTatica.mock.lastCall?.[0]
     expect(enviada?.titulares).toContain(20)
     expect(enviada?.titulares).not.toContain(2)
+  })
+
+  it('tática: depois de soltar o arrasto, o nome não fica flutuando', async () => {
+    await entrarNoJogo()
+    await userEvent.click(screen.getByRole('button', { name: textos.menu.tatica }))
+    const peca = screen.getByRole('button', { name: /^Titular 1, titular/ })
+
+    fireEvent.pointerDown(peca, { clientX: 10, clientY: 10 })
+    fireEvent.pointerMove(window, { clientX: 60, clientY: 60 })
+    expect(document.querySelector('.peca-arrastada')).not.toBeNull()
+
+    fireEvent.pointerUp(window, { clientX: 60, clientY: 60 })
+    fireEvent.pointerMove(window, { clientX: 65, clientY: 65 })
+    expect(document.querySelector('.peca-arrastada')).toBeNull()
   })
 
   it('tática: erro do núcleo aparece na tela', async () => {

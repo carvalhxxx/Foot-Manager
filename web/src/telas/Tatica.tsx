@@ -1,4 +1,4 @@
-import { type PointerEvent, useEffect, useRef, useState } from 'react'
+import { type DragEvent, type PointerEvent, useEffect, useRef, useState } from 'react'
 import type { DefinicaoTatica, Jogador, Tatica as TaticaDto } from '../nucleo/contrato'
 import { textos } from '../textos'
 import { escreverAlvo, lerAlvo, type Local, mesmoLocal, posicoesNoCampo, trocar } from './campoTatico'
@@ -41,6 +41,7 @@ export function Tatica({ tatica, jogadores, erros, aoMudar, aoUsarAutomatica }: 
   const [selecionado, setSelecionado] = useState<Local>()
   const [arrasto, setArrasto] = useState<Arrasto>()
   const inicioArrasto = useRef<InicioArrasto | undefined>(undefined)
+  const acabouDeArrastar = useRef(false)
 
   const enviar = (mudanca: Partial<DefinicaoTatica>) =>
     aoMudar({
@@ -67,7 +68,7 @@ export function Tatica({ tatica, jogadores, erros, aoMudar, aoUsarAutomatica }: 
 
   // Tocar/clicar: o primeiro toque escolhe, o segundo troca.
   const tocar = (local: Local) => {
-    if (inicioArrasto.current?.moveu) return
+    if (acabouDeArrastar.current) return
     if (!selecionado) {
       if (local.tipo === 'reserva' && tatica.reservas[local.indice] === undefined) return
       setSelecionado(local)
@@ -89,27 +90,36 @@ export function Tatica({ tatica, jogadores, erros, aoMudar, aoUsarAutomatica }: 
     }
     const soltar = (e: globalThis.PointerEvent) => {
       const inicio = inicioArrasto.current
-      if (!inicio) return
-      if (!inicio.moveu) {
-        inicioArrasto.current = undefined
-        return
-      }
+      // Termina o arrasto já: um "pointermove" que chegue depois não pode redesenhar o nome flutuando.
+      inicioArrasto.current = undefined
       setArrasto(undefined)
-      const alvo = document.elementFromPoint(e.clientX, e.clientY)?.closest<HTMLElement>('[data-alvo]')
+      if (!inicio?.moveu) return
+
+      const alvo = document.elementFromPoint?.(e.clientX, e.clientY)?.closest<HTMLElement>('[data-alvo]')
       const destino = lerAlvo(alvo?.dataset.alvo)
       if (destino) {
         aplicarRef.current(inicio.local, destino)
       }
       // O clique que o navegador dispara logo depois do arrasto não deve selecionar nada.
+      acabouDeArrastar.current = true
       setTimeout(() => {
-        inicioArrasto.current = undefined
+        acabouDeArrastar.current = false
       }, 0)
+    }
+    // O navegador cancelou o gesto (ex.: virou rolagem): some com o nome e não troca nada.
+    const cancelar = () => {
+      inicioArrasto.current = undefined
+      setArrasto(undefined)
     }
     window.addEventListener('pointermove', mover)
     window.addEventListener('pointerup', soltar)
+    window.addEventListener('pointercancel', cancelar)
+    window.addEventListener('blur', cancelar)
     return () => {
       window.removeEventListener('pointermove', mover)
       window.removeEventListener('pointerup', soltar)
+      window.removeEventListener('pointercancel', cancelar)
+      window.removeEventListener('blur', cancelar)
     }
   }, [])
 
@@ -117,6 +127,8 @@ export function Tatica({ tatica, jogadores, erros, aoMudar, aoUsarAutomatica }: 
     'data-alvo': escreverAlvo(local),
     'aria-pressed': selecionado !== undefined && mesmoLocal(selecionado, local),
     onClick: () => tocar(local),
+    // Sem o arrastar nativo do navegador (ele engoliria o pointerup).
+    onDragStart: (e: DragEvent<HTMLElement>) => e.preventDefault(),
     onPointerDown: (e: PointerEvent<HTMLElement>) => {
       if (nome !== undefined) {
         inicioArrasto.current = { local, x: e.clientX, y: e.clientY, nome, moveu: false }
