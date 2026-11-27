@@ -81,6 +81,54 @@ public sealed class Jogador
         Atributos = novos;
     }
 
+    // Estado de carreira (muda a cada rodada; não faz parte das definições JSON) ----------
+
+    /// <summary>Rodadas que ainda vai desfalcar por lesão.</summary>
+    public int RodadasLesionado { get; private set; }
+
+    /// <summary>Rodadas que ainda vai cumprir de suspensão.</summary>
+    public int RodadasSuspenso { get; private set; }
+
+    /// <summary>Amarelos acumulados desde a última suspensão por cartões.</summary>
+    public int AmarelosAcumulados { get; private set; }
+
+    /// <summary>Rodadas seguidas como titular (base do entrosamento).</summary>
+    public int SequenciaComoTitular { get; private set; }
+
+    /// <summary>Pode ser escalado (não está lesionado nem suspenso).</summary>
+    public bool Disponivel => RodadasLesionado == 0 && RodadasSuspenso == 0;
+
+    public void Lesionar(int rodadas) =>
+        RodadasLesionado = Math.Max(RodadasLesionado, Validacao.Faixa(rodadas, 1, 60, nameof(rodadas)));
+
+    public void Suspender(int rodadas) => RodadasSuspenso += Validacao.Faixa(rodadas, 1, 20, nameof(rodadas));
+
+    public void AdicionarAmarelos(int quantidade) => AmarelosAcumulados += Validacao.Faixa(quantidade, 0, 2, nameof(quantidade));
+
+    /// <summary>Desconta amarelos que viraram suspensão.</summary>
+    public void DescontarAmarelos(int quantidade) =>
+        AmarelosAcumulados = Math.Max(0, AmarelosAcumulados - Validacao.Faixa(quantidade, 0, 99, nameof(quantidade)));
+
+    public void RegistrarRodada(bool titular) => SequenciaComoTitular = titular ? SequenciaComoTitular + 1 : 0;
+
+    /// <summary>Uma rodada passou: desconta lesão e suspensão.</summary>
+    public void CumprirRodada()
+    {
+        RodadasLesionado = Math.Max(0, RodadasLesionado - 1);
+        RodadasSuspenso = Math.Max(0, RodadasSuspenso - 1);
+    }
+
+    /// <summary>Pré-temporada: zera cartões, suspensões e lesões, recupera o físico e aproxima a moral do neutro.</summary>
+    public void ComecarNovaTemporada()
+    {
+        RodadasLesionado = 0;
+        RodadasSuspenso = 0;
+        AmarelosAcumulados = 0;
+        SequenciaComoTitular = 0;
+        Condicao = EscalaMaxima;
+        Moral = (Moral + 50) / 2;
+    }
+
     private static Posicao[] ValidarSecundarias(Posicao principal, IEnumerable<Posicao> secundarias)
     {
         var lista = secundarias.ToArray();

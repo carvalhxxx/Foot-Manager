@@ -103,3 +103,23 @@ public class MundoTestes
         Assert.False(PosicaoExtensoes.TentarDaSigla(null, out _));
     }
 }
+
+public class MundoReorganizacaoTestes
+{
+    private static Clube Clube(string id) => new(id, id, "ABC", "Recife", "PE", new Cores("#000000", "#FFFFFF"),
+        new Estadio("Estádio", 20_000), 50, 50, 0m);
+
+    [Fact]
+    public void ReorganizarDivisoes_TrocaClubesEntreSeries()
+    {
+        var mundo = new Mundo(2027,
+            [new Divisao("a", "A", 1, ["c1", "c2"], 0, 1), new Divisao("b", "B", 2, ["c3", "c4"], 1, 0)],
+            [Clube("c1"), Clube("c2"), Clube("c3"), Clube("c4")]);
+
+        mundo.ReorganizarDivisoes([new Divisao("a", "A", 1, ["c1", "c3"], 0, 1), new Divisao("b", "B", 2, ["c2", "c4"], 1, 0)]);
+
+        Assert.Equal(["c1", "c3"], mundo.Divisoes[0].ClubeIds);
+        Assert.Throws<ArgumentException>(() =>
+            mundo.ReorganizarDivisoes([new Divisao("a", "A", 1, ["c1", "c3"], 0, 1), new Divisao("b", "B", 2, ["c1", "c4"], 1, 0)]));
+    }
+}

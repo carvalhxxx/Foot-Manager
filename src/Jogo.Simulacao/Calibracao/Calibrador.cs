@@ -4,6 +4,7 @@ using Jogo.Dominio.Clubes;
 using Jogo.Dominio.Jogadores;
 using Jogo.Motor;
 using Jogo.Simulacao.Ia;
+using Jogo.Simulacao.Temporadas;
 
 namespace Jogo.Simulacao.Calibracao;
 
@@ -38,6 +39,17 @@ public sealed record MetasCalibracao
     public double FormacaoExtremaMaximo { get; init; } = 0.40;
 
     public int DiferencaFavorito { get; init; } = 6;
+
+    // Temporada (Série A, pontos corridos) ------------------------------------
+
+    /// <summary>Quantas vezes o clube mais forte (top 11 no início) é campeão: alta, mas não absoluta.</summary>
+    public (double Min, double Max) MaisForteCampeao { get; init; } = (0.25, 0.75);
+
+    /// <summary>Fração mínima de títulos ficando com um dos 4 mais fortes.</summary>
+    public double CampeaoEntreOsQuatroMaisFortes { get; init; } = 0.70;
+
+    public (double Min, double Max) PontosDoCampeao { get; init; } = (68, 88);
+    public (double Min, double Max) PontosDoLanterna { get; init; } = (18, 40);
 }
 
 /// <summary>
@@ -74,6 +86,47 @@ public static class Calibrador
         return new RelatorioCalibracao(
             Liga(mundo, partidasLiga, seed, metas, configuracao),
             Formacoes(mundo, partidasPorFormacao, seed ^ 0x5EED, metas, configuracao));
+    }
+
+    /// <summary>
+    /// Simula temporadas completas, cada uma a partir de um mundo novo (sem acesso/rebaixamento entre elas),
+    /// e mede a Série A: quem é campeão e com quantos pontos.
+    /// </summary>
+    public static IReadOnlyList<Meta> Temporadas(Func<Mundo> criarMundo, int temporadas, ulong seed, MetasCalibracao? metas = null)
+    {
+        ArgumentNullException.ThrowIfNull(criarMundo);
+        metas ??= MetasCalibracao.Padrao;
+
+        int maisForteCampeao = 0, entreQuatro = 0;
+        double pontosCampeao = 0, pontosLanterna = 0, golsPorJogo = 0;
+
+        for (var i = 0; i < temporadas; i++)
+        {
+            var mundo = criarMundo();
+            var serieA = mundo.Divisoes[0];
+            var porForca = serieA.ClubeIds.OrderByDescending(id => Top11(mundo.Clube(id))).ThenBy(id => id, StringComparer.Ordinal).ToArray();
+
+            var temporada = new Temporada(mundo, seed + (ulong)i);
+            temporada.JogarAteOFim();
+            var tabela = temporada.Tabela(serieA.Id);
+
+            maisForteCampeao += tabela[0].ClubeId == porForca[0] ? 1 : 0;
+            entreQuatro += porForca.Take(4).Contains(tabela[0].ClubeId) ? 1 : 0;
+            pontosCampeao += tabela[0].Pontos;
+            pontosLanterna += tabela[^1].Pontos;
+            golsPorJogo += (double)tabela.Sum(l => l.GolsPro) / tabela.Sum(l => l.Jogos) * 2;
+        }
+
+        double Media(double total) => total / temporadas;
+
+        return
+        [
+            new("Mais forte é campeão", Media(maisForteCampeao), metas.MaisForteCampeao.Min, metas.MaisForteCampeao.Max, "P0"),
+            new("Campeão entre os 4 mais fortes", Media(entreQuatro), metas.CampeaoEntreOsQuatroMaisFortes, null, "P0"),
+            new("Pontos do campeão", Media(pontosCampeao), metas.PontosDoCampeao.Min, metas.PontosDoCampeao.Max, "F1"),
+            new("Pontos do lanterna", Media(pontosLanterna), metas.PontosDoLanterna.Min, metas.PontosDoLanterna.Max, "F1"),
+            new("Gols por jogo na temporada", Media(golsPorJogo), null, null, "F2"),
+        ];
     }
 
     private static List<Meta> Liga(Mundo mundo, int partidas, ulong seed, MetasCalibracao metas, ConfiguracaoMotor cfg)

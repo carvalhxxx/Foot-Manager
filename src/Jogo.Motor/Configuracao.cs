@@ -40,7 +40,7 @@ public sealed record ConfiguracaoMotor
     public double ChanceNoAlvoBase { get; init; } = 0.34;
 
     /// <summary>Chance de gol num chute no alvo quando atacante e goleiro têm o mesmo nível.</summary>
-    public double ChanceGolNoAlvoBase { get; init; } = 0.285;
+    public double ChanceGolNoAlvoBase { get; init; } = 0.295;
 
     public double ExpoenteGol { get; init; } = 1.2;
 

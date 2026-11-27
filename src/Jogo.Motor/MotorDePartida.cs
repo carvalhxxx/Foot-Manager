@@ -145,7 +145,7 @@ public static class MotorDePartida
         ArgumentNullException.ThrowIfNull(partida);
         ArgumentNullException.ThrowIfNull(time);
 
-        var mando = Mando(partida, time);
+        var mando = Mando(partida, time) * (1 + time.BonusEntrosamento);
         var forca = Setores.Calcular(
             time.EmCampo.Select(j => (j.Posicao, j.ForcaBase * FatorIndividual(partida.Configuracao, j) * mando)),
             partida.Configuracao.ExpoenteOcupacao);
@@ -283,11 +283,13 @@ public static class MotorDePartida
     private static void Finalizar(Partida partida, TimeEmJogo atacante, TimeEmJogo defensor, OrigemLance origem, double fatorLance)
     {
         var cfg = partida.Configuracao;
+        // Quem finaliza: atacantes mais, meias também; em escanteio, zagueiros sobem para cabecear.
+        // Peso linear na Finalização para os gols não se concentrarem demais num jogador só.
         var finalizador = SortearPorPeso(partida, atacante.EmCampo, j =>
         {
-            var (_, meio, ataque) = Setores.Contribuicao(j.Posicao);
-            var participacao = ataque + (0.3 * meio) + 0.05;
-            return participacao * j.Jogador.Atributos.Finalizacao * j.Jogador.Atributos.Finalizacao;
+            var (defesa, meio, ataque) = Setores.Contribuicao(j.Posicao);
+            var participacao = ataque + (0.4 * meio) + 0.05 + (origem == OrigemLance.Escanteio ? 0.5 * defesa : 0);
+            return participacao * j.Jogador.Atributos.Finalizacao;
         });
 
         if (finalizador is null)

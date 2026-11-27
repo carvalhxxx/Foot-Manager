@@ -34,7 +34,24 @@ public sealed class Mundo
     public int TemporadaAtual { get; private set; }
 
     /// <summary>Divisões ordenadas por nível (Série A primeiro).</summary>
-    public IReadOnlyList<Divisao> Divisoes { get; }
+    public IReadOnlyList<Divisao> Divisoes { get; private set; }
+
+    /// <summary>Troca a composição das divisões (fim de temporada: acesso e rebaixamento).</summary>
+    public void ReorganizarDivisoes(IEnumerable<Divisao> novas)
+    {
+        ArgumentNullException.ThrowIfNull(novas);
+        var lista = novas.OrderBy(d => d.Nivel).ToArray();
+        var inconsistencias = Inconsistencias(TemporadaAtual, lista, Clubes);
+        if (inconsistencias.Count > 0)
+        {
+            throw new ArgumentException("Divisões inconsistentes:\n- " + string.Join("\n- ", inconsistencias));
+        }
+
+        Divisoes = lista;
+    }
+
+    /// <summary>Maior id de jogador em uso (para criar jogadores novos sem colisão).</summary>
+    public int MaiorIdDeJogador => Clubes.SelectMany(c => c.Elenco).Select(j => j.Id).DefaultIfEmpty(0).Max();
 
     /// <summary>Clubes na ordem em que foram definidos.</summary>
     public IReadOnlyList<Clube> Clubes { get; }

@@ -6,6 +6,7 @@ namespace Jogo.Motor;
 public sealed class TimeEscalado
 {
     public const int MaximoReservas = 9;
+    public const double BonusEntrosamentoMaximo = 0.1;
 
     /// <param name="titulares">11 jogadores alinhados com <see cref="Formacao.PosicoesComGoleiro"/> (o primeiro vai no gol).</param>
     public TimeEscalado(
@@ -13,7 +14,8 @@ public sealed class TimeEscalado
         Formacao formacao,
         IReadOnlyList<Jogador> titulares,
         IReadOnlyList<Jogador> reservas,
-        Mentalidade mentalidade = Mentalidade.Equilibrada)
+        Mentalidade mentalidade = Mentalidade.Equilibrada,
+        double bonusEntrosamento = 0)
     {
         ArgumentNullException.ThrowIfNull(formacao);
         ArgumentNullException.ThrowIfNull(titulares);
@@ -35,7 +37,13 @@ public sealed class TimeEscalado
             throw new ArgumentException("Jogador repetido na escalação.", nameof(titulares));
         }
 
+        if (bonusEntrosamento is < 0 or > BonusEntrosamentoMaximo || double.IsNaN(bonusEntrosamento))
+        {
+            throw new ArgumentOutOfRangeException(nameof(bonusEntrosamento), bonusEntrosamento, "Bônus de entrosamento fora da faixa.");
+        }
+
         ClubeId = clubeId;
+        BonusEntrosamento = bonusEntrosamento;
         Formacao = formacao;
         Titulares = [.. titulares];
         Reservas = [.. reservas];
@@ -47,4 +55,10 @@ public sealed class TimeEscalado
     public IReadOnlyList<Jogador> Titulares { get; }
     public IReadOnlyList<Jogador> Reservas { get; }
     public Mentalidade Mentalidade { get; }
+
+    /// <summary>Bônus de força em todos os setores por jogarem juntos há várias rodadas (0 a 0,1).</summary>
+    public double BonusEntrosamento { get; }
+
+    /// <summary>Cópia com outro bônus de entrosamento.</summary>
+    public TimeEscalado ComEntrosamento(double bonus) => new(ClubeId, Formacao, Titulares, Reservas, Mentalidade, bonus);
 }

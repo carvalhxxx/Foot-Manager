@@ -13,11 +13,6 @@ _(nada)_
 
 ## Backlog (MVP · Fase 1)
 
-### E5 · Simulação de temporada · M
-- **Objetivo:** calendário de pontos corridos (38 rodadas), rodada completa, tabela, fim de temporada com acesso/rebaixamento, tudo via CLI, sem UI.
-- **Aceite:** uma temporada inteira simulada pela CLI; tabela com os critérios de desempate; o time mais forte vence com frequência alta, mas não absoluta.
-- **Inclui:** aplicar o pós-jogo ao elenco (condição, suspensões por cartões, lesões, moral por resultado) e o **entrosamento** (bônus leve para quem joga junto há várias rodadas), que depende do histórico de rodadas.
-
 ### E6 · UI mínima (web) · G
 - **Objetivo:** telas Início, Elenco, Tática, Partida (resultado + eventos), Classificação e botão grande "Avançar rodada" com atalho de teclado, em React, funcionando no desktop e no celular.
 - **Aceite:** é possível jogar uma temporada inteira pela interface.
@@ -28,6 +23,7 @@ _(nada)_
 
 ### E8 · Mercado, contratos e finanças · G
 - **Objetivo:** comprar, vender e dispensar (com a IA também negociando), janelas de transferência, contratos e renovação, bilheteria com preço do ingresso, patrocínio, TV, premiação e salários.
+- **Observação:** hoje os elencos só mudam por evolução, aposentadoria e base, e os contratos são renovados automaticamente. Por isso o clube mais forte domina várias temporadas seguidas. O mercado é o que vai trazer rotatividade entre os grandes.
 - **Aceite:** uma temporada simulada fecha o caixa de forma coerente para todos os clubes.
 
 ### E9 · Save/load no navegador · M
@@ -47,6 +43,13 @@ _(nada)_
 Mobile, saves na nuvem, ligas online entre amigos, modelo freemium/assinatura.
 
 ## Feito
+
+### E5 · Simulação de temporada · M
+- Calendário de pontos corridos (turno e returno espelhados, 19 jogos em casa, no máximo 3 seguidos no mesmo mando).
+- Rodada completa com IA escalando sem lesionados e suspensos; pós-jogo no elenco: cansaço e recuperação, suspensão (vermelho e 3º amarelo), lesões, moral e entrosamento.
+- Tabela com os critérios do Brasileirão (vitórias, saldo, gols pró, confronto direto, cartões, sorteio) e artilharia.
+- Fim de temporada: 4 sobem e 4 descem, evolução por idade e profissionalismo, aposentadorias, revelações da base, renovação automática de contratos (até a E8).
+- `tools/Jogo.Simulador` (1 temporada em ~3 s); metas de temporada na calibração: o mais forte é campeão em 67% das vezes, o campeão faz 84 pontos e o lanterna 27. Decisões D-022 e D-023.
 
 ### E4 · Motor de partida + calibração · G
 - `Jogo.Motor`: força em 4 setores (contribuição por posição, ocupação com retorno decrescente), posse pelo meio-campo, duelo ataque × defesa, finalização (gol, defesa, trave, travessão, fora, por cima), escanteios, faltas, cartões, lesões, cansaço, moral, improviso fora de posição, mando e mentalidade.

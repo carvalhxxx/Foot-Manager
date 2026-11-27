@@ -19,7 +19,7 @@ public static class GeradorDeMundo
     public const int BonusDeCraque = 15;
 
     /// <summary>Elenco base de 25 jogadores (3 goleiros, 8 defensores, 8 meio-campistas, 6 atacantes).</summary>
-    private static readonly Posicao[] ElencoBase =
+    internal static readonly Posicao[] ElencoBase =
     [
         Posicao.Goleiro, Posicao.Goleiro, Posicao.Goleiro,
         Posicao.Zagueiro, Posicao.Zagueiro, Posicao.Zagueiro, Posicao.Zagueiro,

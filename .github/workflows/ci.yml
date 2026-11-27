@@ -43,8 +43,11 @@ jobs:
       - name: Testes
         run: dotnet test --solution FootManagerBR.slnx -c Release --no-build
 
-      - name: Calibração do motor
+      - name: Calibração do motor e da temporada
         run: dotnet run --project tools/Jogo.Calibracao -c Release --no-build
+
+      - name: Simulação de 2 temporadas seguidas (fumaça)
+        run: dotnet run --project tools/Jogo.Simulador -c Release --no-build -- --temporadas 2
 
   web:
     name: Site (React + núcleo em WebAssembly)

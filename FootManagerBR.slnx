@@ -16,5 +16,6 @@
   <Folder Name="/tools/">
     <Project Path="tools/Jogo.Calibracao/Jogo.Calibracao.csproj" />
     <Project Path="tools/Jogo.GeradorDados/Jogo.GeradorDados.csproj" />
+    <Project Path="tools/Jogo.Simulador/Jogo.Simulador.csproj" />
   </Folder>
 </Solution>

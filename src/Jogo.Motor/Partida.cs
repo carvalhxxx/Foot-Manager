@@ -55,6 +55,7 @@ public sealed class TimeEmJogo
         ClubeId = escalado.ClubeId;
         Formacao = escalado.Formacao;
         Mentalidade = escalado.Mentalidade;
+        BonusEntrosamento = escalado.BonusEntrosamento;
         Automatico = automatico;
 
         var posicoes = escalado.Formacao.PosicoesComGoleiro;
@@ -72,6 +73,8 @@ public sealed class TimeEmJogo
     public string ClubeId { get; }
     public Formacao Formacao { get; internal set; }
     public Mentalidade Mentalidade { get; internal set; }
+
+    public double BonusEntrosamento { get; }
 
     /// <summary>Se verdadeiro, o treinador automático faz substituições e muda a mentalidade.</summary>
     public bool Automatico { get; }

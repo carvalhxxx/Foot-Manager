@@ -24,7 +24,8 @@ Prioridade: lançar rápido na web (desktop e celular), sem servidor: tudo roda 
 # Núcleo C#
 dotnet build FootManagerBR.slnx                 # build (warnings viram erro)
 dotnet test --solution FootManagerBR.slnx        # testes do núcleo
-dotnet run --project tools/Jogo.Calibracao       # calibração do motor
+dotnet run --project tools/Jogo.Calibracao       # calibração do motor e da temporada (sai com erro fora das metas)
+dotnet run --project tools/Jogo.Simulador -- --temporadas 3   # simula temporadas e mostra tabelas/artilharia
 dotnet run --project tools/Jogo.GeradorDados     # regera dados/definicoes (seed 2027)
 
 # Site (rodar dentro de web/)
@@ -45,7 +46,8 @@ web/                 Interface React + TypeScript (Vite).
   src/nucleo/        Carregamento do runtime .NET e contrato com o núcleo (contrato.ts espelha ContratoJson.cs).
   src/telas/         Uma tela por arquivo.
   src/textos.ts      Todos os textos da interface.
-tools/Jogo.Calibracao    CLI que simula milhares de partidas e confere as metas.
+tools/Jogo.Calibracao    CLI que simula milhares de partidas e temporadas e confere as metas.
+tools/Jogo.Simulador     CLI que simula temporadas completas (Séries A e B) sem interface.
 tools/Jogo.GeradorDados  Gera o mundo inicial (40 clubes fictícios) em dados/definicoes.
 tests/               Um projeto de testes por camada + Jogo.Arquitetura.Testes.
 dados/definicoes/    Ligas, clubes e jogadores em JSON (formato aberto). Entram no site em tempo de build.

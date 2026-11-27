@@ -41,3 +41,17 @@ public class CalibradorTestes
         Assert.False(new Meta("teto", 0.5, null, 0.4).Atingida);
     }
 }
+
+public class CalibradorTemporadaTestes
+{
+    [Fact]
+    public void Temporadas_MedemCampeaoEPontosDaSerieA()
+    {
+        var metas = Calibrador.Temporadas(() => GeradorDeMundo.Gerar(2027, 2027, CatalogoBase.Clubes), 3, 5);
+
+        Assert.Equal(5, metas.Count);
+        Assert.InRange(metas.Single(m => m.Nome == "Pontos do campeão").Valor, 60, 100);
+        Assert.InRange(metas.Single(m => m.Nome == "Pontos do lanterna").Valor, 5, 45);
+        Assert.Equal(1.0, metas.Single(m => m.Nome == "Campeão entre os 4 mais fortes").Valor, 6);
+    }
+}

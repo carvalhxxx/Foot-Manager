@@ -147,3 +147,60 @@ public class JogadorTestes
         Assert.True(contrato.VenceAoFimDe(2027));
     }
 }
+
+public class JogadorCarreiraTestes
+{
+    private static Jogador Novo() => new(1, "J", 25, Posicao.Volante, [], Atributos.Uniformes(10),
+        new AtributosOcultos { Potencial = 60, PropensaoLesao = 5, Profissionalismo = 10 });
+
+    [Fact]
+    public void LesaoESuspensao_TiramDeCampoAteSeremCumpridas()
+    {
+        var jogador = Novo();
+        jogador.Lesionar(2);
+        jogador.Suspender(1);
+
+        Assert.False(jogador.Disponivel);
+        jogador.CumprirRodada();
+        Assert.Equal((1, 0), (jogador.RodadasLesionado, jogador.RodadasSuspenso));
+        jogador.CumprirRodada();
+        Assert.True(jogador.Disponivel);
+    }
+
+    [Fact]
+    public void Lesao_NovaMenorNaoEncurtaAAtual()
+    {
+        var jogador = Novo();
+        jogador.Lesionar(5);
+        jogador.Lesionar(2);
+
+        Assert.Equal(5, jogador.RodadasLesionado);
+    }
+
+    [Fact]
+    public void SequenciaComoTitular_ZeraQuandoNaoJoga()
+    {
+        var jogador = Novo();
+        jogador.RegistrarRodada(true);
+        jogador.RegistrarRodada(true);
+        Assert.Equal(2, jogador.SequenciaComoTitular);
+
+        jogador.RegistrarRodada(false);
+        Assert.Equal(0, jogador.SequenciaComoTitular);
+    }
+
+    [Fact]
+    public void NovaTemporada_ZeraCartoesELesoesERecuperaOFisico()
+    {
+        var jogador = Novo();
+        jogador.Lesionar(3);
+        jogador.AdicionarAmarelos(2);
+        jogador.AjustarCondicao(-40);
+        jogador.AjustarMoral(+40);
+
+        jogador.ComecarNovaTemporada();
+
+        Assert.True(jogador.Disponivel);
+        Assert.Equal((0, 100, 70), (jogador.AmarelosAcumulados, jogador.Condicao, jogador.Moral));
+    }
+}

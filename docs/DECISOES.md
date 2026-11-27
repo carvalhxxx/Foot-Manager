@@ -88,6 +88,18 @@ Formato curto: contexto → decisão → consequência. Quando houver decisões 
 ### D-021 · Metas de calibração (2026-11-26)
 - **Decisão:** a calibração (`Calibrador` em `Jogo.Simulacao`, CLI `tools/Jogo.Calibracao`) exige: gols por jogo entre 2,3 e 2,7; vitórias do mandante entre 42% e 48%; empates entre 24% e 29%; favorito (+6 de força no top 11) vencendo entre 55% e 80%; cada formação padrão com 40% a 60% dos pontos contra o 4-4-2 (50% = equilíbrio, medido como fatia dos pontos do confronto para não depender da taxa de empates); 5-0-5 e 3-0-7 com no máximo 40%.
 - **Consequência:** a CLI sai com erro se uma meta falhar (o CI barra), e uma versão menor roda nos testes. Valores atuais, iguais em 3 seeds: 2,44 gols, 45% mandante, 26% empates, 58% favorito, 23 finalizações e 3,5 amarelos por jogo.
+- **Ajuste na E5:** quem finaliza passou a ser sorteado com peso linear na Finalização (antes era ao quadrado), com mais participação dos meias e dos zagueiros nos escanteios. Com o peso ao quadrado, o artilheiro fazia ~37 gols em 38 jogos; agora faz ~25. A chance de gol no alvo subiu de 0,285 para 0,295 para manter a média de gols.
+
+### D-022 · Temporada e carreira (2026-11-26)
+- **Calendário:** fatoração canônica do método do círculo, com a ordem dos clubes sorteada pela seed; returno igual ao turno com mandos invertidos.
+- **Desempate:** pontos, vitórias, saldo, gols pró, confronto direto (só entre 2 clubes), menos vermelhos, menos amarelos e sorteio determinístico.
+- **Pós-jogo:** a condição física fica com o valor do fim do jogo e recupera `15 + Resistência/2` por rodada. Vermelho = 1 jogo de suspensão; 3 amarelos = 1 jogo. A lesão tem a duração sorteada pelo motor. Moral: vitória +3, derrota −3, quem jogou +1, quem não jogou −1, e 10% de volta ao neutro a cada rodada. Entrosamento: até +3% de força quando os titulares vêm jogando juntos há 5 rodadas.
+- **Fim de temporada:** a evolução depende da idade e o profissionalismo acelera o crescimento e freia o declínio; o crescimento nunca passa do potencial. Aposentadoria a partir dos 34 (chance crescente; obrigatória aos 39). Revelações da base: 1 ou 2 por ano, mais o que faltar para o elenco ter 25. Contratos vencidos são renovados automaticamente por 2 anos até a E8.
+- **Consequência:** cada jogo tem semente própria (ano/divisão/rodada/jogo), então a temporada é reproduzível e mudar um jogo não afeta os outros. Lesões, suspensões e sequências ficam no `Jogador` como estado de carreira (fora das definições JSON; vão para o save na E9).
+
+### D-023 · Metas de temporada (2026-11-26)
+- **Decisão:** em simulações independentes da Série A, partindo do mundo base: o clube mais forte é campeão entre 25% e 75% das vezes; o campeão está entre os 4 mais fortes em pelo menos 70% das vezes; o campeão faz entre 68 e 88 pontos; o lanterna, entre 18 e 40.
+- **Consequência:** com 30 temporadas, os valores atuais são 67%, 93%, 84 pontos e 27 pontos. Amostras pequenas (10 temporadas) oscilam bastante, por isso a CLI usa 30.
 
 ## Propostas (aguardando confirmação)
 
