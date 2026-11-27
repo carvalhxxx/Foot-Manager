@@ -60,7 +60,7 @@ public class JogadorTestes
 
     [Theory]
     [InlineData(14)]
-    [InlineData(46)]
+    [InlineData(51)]
     public void Construtor_IdadeForaDaFaixa_Lanca(int idade)
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => Criar(idade: idade));

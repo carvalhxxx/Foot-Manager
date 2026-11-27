@@ -7,7 +7,7 @@ namespace Jogo.Dominio.Jogadores;
 public sealed class Jogador
 {
     public const int IdadeMinima = 15;
-    public const int IdadeMaxima = 45;
+    public const int IdadeMaxima = 50;
     public const int MaximoPosicoesSecundarias = 2;
     public const int EscalaMaxima = 100;
 

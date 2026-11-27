@@ -27,6 +27,10 @@ Mobile, saves na nuvem, ligas online entre amigos, modelo freemium/assinatura.
 
 ## Feito
 
+### Clubes e jogadores reais · M
+- As Séries A e B de 2026 com os 40 clubes reais (nomes, cidades, estádios e cores, sem escudos) e os elencos de novembro de 2026 (nome, idade e valor de mercado de fontes públicas). Atributos estimados pelo nosso gerador a partir do valor de mercado. Temporada inicial 2026. Calibração ajustada para os dados reais (D-033).
+- **Pendente:** elencos reais de Avaí e América-MG (sem fonte acessível; hoje gerados), idades e valores de São Paulo, Grêmio, Fortaleza e Novorizontino, e atacantes de Remo e Mirassol (a fonte cortou a lista).
+
 ### Opções táticas · M
 - Marcação (leve, normal, forte), concentrar ataques (variado, esquerda, meio, direita), capitão e cobrador de faltas. Na tela Tática (toque no jogador do campo para fazer capitão ou cobrador, com os selos C e F), e marcação e concentração também no jogo ao vivo. Calibradas para nenhuma opção dominar (D-032).
 

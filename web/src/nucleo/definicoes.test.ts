@@ -8,6 +8,6 @@ describe('arquivosDaBase', () => {
     expect(arquivos['manifesto.json']).toContain('"versaoFormato": 1')
     expect(arquivos['divisoes.json']).toContain('"serie-a"')
     expect(Object.keys(arquivos).filter((c) => c.startsWith('clubes/'))).toHaveLength(40)
-    expect(arquivos['clubes/pampa.json']).toContain('Pampa Sport Club')
+    expect(arquivos['clubes/flamengo.json']).toContain('Flamengo')
   })
 })

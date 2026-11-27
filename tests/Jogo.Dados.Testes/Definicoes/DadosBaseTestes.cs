@@ -1,4 +1,5 @@
 using Jogo.Dados.Definicoes;
+using Jogo.Dados.Reais;
 using Jogo.Simulacao.Geracao;
 
 namespace Jogo.Dados.Testes.Definicoes;
@@ -13,9 +14,10 @@ public class DadosBaseTestes
     {
         var (manifesto, mundo) = LeitorDefinicoes.Carregar(PastaBase);
 
-        Assert.Equal("Foot Manager BR · Base", manifesto.Nome);
+        Assert.Equal("Foot Manager BR · Brasileirão 2026", manifesto.Nome);
         Assert.Equal(40, mundo.Clubes.Count);
-        Assert.Equal(2027, mundo.TemporadaAtual);
+        Assert.Equal(2026, mundo.TemporadaAtual);
+        Assert.Contains(mundo.Clubes, c => c.Nome == "Flamengo");
     }
 
     /// <summary>
@@ -26,7 +28,8 @@ public class DadosBaseTestes
     public void DadosBase_IguaisAoGeradorComSeed2027()
     {
         using var pasta = new PastaTemporaria();
-        var mundo = GeradorDeMundo.Gerar(2027, 2027, CatalogoBase.Clubes);
+        var reais = LeitorDadosReais.Carregar(Path.Combine(RaizDoRepositorio(), "tools", "Jogo.GeradorDados", "reais"));
+        var mundo = GeradorDeMundoReal.Gerar(2027, 2026, reais);
         EscritorDefinicoes.Salvar(mundo, LeitorDefinicoes.Carregar(PastaBase).Manifesto, pasta.Caminho);
 
         var gerados = Directory.GetFiles(pasta.Caminho, "*.json", SearchOption.AllDirectories)

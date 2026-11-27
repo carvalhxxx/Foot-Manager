@@ -42,8 +42,8 @@ public sealed record MetasCalibracao
 
     // Temporada (Série A, pontos corridos) ------------------------------------
 
-    /// <summary>Quantas vezes o clube mais forte (top 11 no início) é campeão: alta, mas não absoluta.</summary>
-    public (double Min, double Max) MaisForteCampeao { get; init; } = (0.25, 0.75);
+    /// <summary>Quantas vezes um dos 2 clubes mais fortes (top 11 no início) é campeão: alta, mas não absoluta (D-033).</summary>
+    public (double Min, double Max) CampeaoEntreOsDoisMaisFortes { get; init; } = (0.40, 0.85);
 
     /// <summary>Fração mínima de títulos ficando com um dos 4 mais fortes.</summary>
     public double CampeaoEntreOsQuatroMaisFortes { get; init; } = 0.70;
@@ -141,7 +141,7 @@ public static class Calibrador
             temporada.JogarAteOFim();
             var tabela = temporada.Tabela(serieA.Id);
 
-            maisForteCampeao += tabela[0].ClubeId == porForca[0] ? 1 : 0;
+            maisForteCampeao += porForca.Take(2).Contains(tabela[0].ClubeId) ? 1 : 0;
             entreQuatro += porForca.Take(4).Contains(tabela[0].ClubeId) ? 1 : 0;
             pontosCampeao += tabela[0].Pontos;
             pontosLanterna += tabela[^1].Pontos;
@@ -176,7 +176,7 @@ public static class Calibrador
 
         return
         [
-            new("Mais forte é campeão", Media(maisForteCampeao), metas.MaisForteCampeao.Min, metas.MaisForteCampeao.Max, "P0"),
+            new("Campeão entre os 2 mais fortes", Media(maisForteCampeao), metas.CampeaoEntreOsDoisMaisFortes.Min, metas.CampeaoEntreOsDoisMaisFortes.Max, "P0"),
             new("Campeão entre os 4 mais fortes", Media(entreQuatro), metas.CampeaoEntreOsQuatroMaisFortes, null, "P0"),
             new("Pontos do campeão", Media(pontosCampeao), metas.PontosDoCampeao.Min, metas.PontosDoCampeao.Max, "F1"),
             new("Pontos do lanterna", Media(pontosLanterna), metas.PontosDoLanterna.Min, metas.PontosDoLanterna.Max, "F1"),

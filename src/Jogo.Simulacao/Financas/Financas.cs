@@ -43,7 +43,7 @@ public sealed record RegrasFinanceiras
     /// </summary>
     public double ExpoentePatrocinio { get; init; } = 3.0;
 
-    public decimal FatorPatrocinio { get; init; } = 18m;
+    public decimal FatorPatrocinio { get; init; } = 8m;
 
     // Premiação por posição no fim da temporada ---------------------------------
 

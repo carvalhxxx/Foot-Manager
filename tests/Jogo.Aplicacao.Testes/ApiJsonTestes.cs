@@ -35,7 +35,7 @@ public class ApiJsonTestes
         return no["erros"]![0]!["mensagem"]!.GetValue<string>();
     }
 
-    private static ApiJson ComCarreira(string clube = "pampa")
+    private static ApiJson ComCarreira(string clube = "internacional")
     {
         var api = new ApiJson();
         Ok(api.CarregarDefinicoes(ArquivosDaBase));
@@ -50,7 +50,7 @@ public class ApiJsonTestes
 
         var dados = Ok(api.CarregarDefinicoes(ArquivosDaBase));
 
-        Assert.Equal(2027, dados["temporada"]!.GetValue<int>());
+        Assert.Equal(2026, dados["temporada"]!.GetValue<int>());
         Assert.Equal(2, dados["divisoes"]!.AsArray().Count);
         Assert.Equal(20, dados["divisoes"]![0]!["clubes"]!.AsArray().Count);
     }
@@ -61,7 +61,7 @@ public class ApiJsonTestes
         var api = new ApiJson();
 
         Falha(api.CarregarDefinicoes("{isto não é json"));
-        Falha(api.NovaCarreira("pampa", "abc"));
+        Falha(api.NovaCarreira("internacional", "abc"));
         Assert.Contains("Nenhuma carreira", Falha(api.Estado()), StringComparison.Ordinal);
     }
 
@@ -81,8 +81,8 @@ public class ApiJsonTestes
 
         var estado = Ok(api.Estado());
 
-        Assert.Equal((2027, 0, 38), (estado["ano"]!.GetValue<int>(), estado["rodadaAtual"]!.GetValue<int>(), estado["totalRodadas"]!.GetValue<int>()));
-        Assert.Equal("pampa", estado["clube"]!["id"]!.GetValue<string>());
+        Assert.Equal((2026, 0, 38), (estado["ano"]!.GetValue<int>(), estado["rodadaAtual"]!.GetValue<int>(), estado["totalRodadas"]!.GetValue<int>()));
+        Assert.Equal("internacional", estado["clube"]!["id"]!.GetValue<string>());
         Assert.Equal("serie-a", estado["divisaoId"]!.GetValue<string>());
         Assert.Equal(1, estado["proximoJogo"]!["rodada"]!.GetValue<int>());
         Assert.Empty(estado["ultimosResultados"]!.AsArray());
@@ -159,7 +159,7 @@ public class ApiJsonTestes
 
         Assert.Equal(1, rodada["rodada"]!.GetValue<int>());
         var minha = rodada["minhaPartida"]!;
-        Assert.True(minha["mandante"]!["id"]!.GetValue<string>() == "pampa" || minha["visitante"]!["id"]!.GetValue<string>() == "pampa");
+        Assert.True(minha["mandante"]!["id"]!.GetValue<string>() == "internacional" || minha["visitante"]!["id"]!.GetValue<string>() == "internacional");
         Assert.Contains(minha["eventos"]!.AsArray(), e => e!["tipo"]!.GetValue<string>() == "FimDeJogo");
         Assert.Equal(10, rodada["divisoes"]![0]!["jogos"]!.AsArray().Count);
         Assert.Equal(1, Ok(api.Estado())["rodadaAtual"]!.GetValue<int>());
@@ -211,18 +211,18 @@ public class ApiJsonTestes
     [Fact]
     public void Save_ExportarECarregarEmOutraInstancia()
     {
-        var api = ComCarreira("cerrado");
+        var api = ComCarreira("bahia");
         Ok(api.AvancarRodada());
         Ok(api.AvancarRodada());
 
         var save = Ok(api.ExportarSave());
-        Assert.Equal(("cerrado", 2027, 2, "Série A"),
+        Assert.Equal(("bahia", 2026, 2, "Série A"),
             (save["clubeId"]!.GetValue<string>(), save["ano"]!.GetValue<int>(), save["rodada"]!.GetValue<int>(), save["divisao"]!.GetValue<string>()));
 
         // Outra aba/aparelho: sem carregar definições, só o save.
         var outra = new ApiJson();
         var estado = Ok(outra.CarregarSave(save["conteudo"]!.GetValue<string>()));
-        Assert.Equal(("cerrado", 2), (estado["clube"]!["id"]!.GetValue<string>(), estado["rodadaAtual"]!.GetValue<int>()));
+        Assert.Equal(("bahia", 2), (estado["clube"]!["id"]!.GetValue<string>(), estado["rodadaAtual"]!.GetValue<int>()));
         Assert.Equal(2, Ok(outra.UltimaRodada())["rodada"]!.GetValue<int>());
         Assert.Equal(3, Ok(outra.AvancarRodada())["rodada"]!.GetValue<int>());
     }
@@ -319,7 +319,7 @@ public class ApiJsonTestes
     [Fact]
     public void TemporadaInteira_EncerrarEComecarAProxima()
     {
-        var api = ComCarreira("cerrado");
+        var api = ComCarreira("bahia");
         for (var r = 0; r < 38; r++)
         {
             Ok(api.AvancarRodada());
@@ -333,11 +333,11 @@ public class ApiJsonTestes
         Assert.Equal(10, tabela["artilharia"]!.AsArray().Count);
 
         var fim = Ok(api.EncerrarTemporada());
-        Assert.Equal((2027, 2028), (fim["ano"]!.GetValue<int>(), fim["proximoAno"]!.GetValue<int>()));
+        Assert.Equal((2026, 2027), (fim["ano"]!.GetValue<int>(), fim["proximoAno"]!.GetValue<int>()));
         Assert.Equal(4, fim["divisoes"]![0]!["rebaixados"]!.AsArray().Count);
 
         var estado = Ok(api.Estado());
-        Assert.Equal((2028, 0, false), (estado["ano"]!.GetValue<int>(), estado["rodadaAtual"]!.GetValue<int>(), estado["temporadaEncerrada"]!.GetValue<bool>()));
+        Assert.Equal((2027, 0, false), (estado["ano"]!.GetValue<int>(), estado["rodadaAtual"]!.GetValue<int>(), estado["temporadaEncerrada"]!.GetValue<bool>()));
         Assert.Contains("ainda não terminou", Falha(api.EncerrarTemporada()), StringComparison.Ordinal);
     }
 }

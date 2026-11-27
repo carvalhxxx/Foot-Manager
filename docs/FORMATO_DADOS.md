@@ -89,7 +89,7 @@ Regras:
     {
       "id": 1001,                      // número inteiro positivo, único em todo o mundo
       "nome": "Luizão",
-      "idade": 27,                     // 15 a 45
+      "idade": 27,                     // 15 a 50
       "posicao": "ATA",
       "posicoesSecundarias": ["SA"],   // opcional, no máximo 2, sem repetir a principal
       "atributos": {                   // todos de 1 a 20
@@ -132,7 +132,7 @@ Quando um patch tem problemas, o jogo lista **todos** de uma vez, cada um com ar
 
 ```
 clubes/porto-alegre-fc.json: Sigla "pa" inválida: use 3 letras maiúsculas sem acento.
-clubes/porto-alegre-fc.json → elenco[1]: idade deve estar entre 15 e 45.
+clubes/porto-alegre-fc.json → elenco[1]: idade deve estar entre 15 e 50.
 clubes/porto-alegre-fc.json → elenco[2].posicao: Posição "XYZ" desconhecida. Use uma de: GOL, ZAG, LD, ...
 (conjunto): A divisão "serie-b" cita o clube "goiania-ec", que não existe.
 ```

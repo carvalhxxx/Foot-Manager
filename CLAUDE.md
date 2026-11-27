@@ -9,7 +9,8 @@ Prioridade: lançar rápido na web (desktop e celular), sem servidor: tudo roda 
 ## Aviso legal (obrigatório)
 - Não usar os nomes "Brasfoot" ou "Elifoot", nem escudos, sons, dados ou código desses jogos.
 - **Não copiar código** de projetos GPL (OpenFoot Manager, Bygfoot). Ler para entender ideias é ok.
-- Clubes e jogadores **fictícios** por padrão. Cidades brasileiras reais podem ser usadas; nomes de clubes reais, não.
+- **Clubes e jogadores reais** (nomes, cidades, estádios, cores), por decisão do dono do projeto em 2026-11 (D-033), ciente do risco de marca e de direito de imagem. **Escudos, logotipos e fotos continuam proibidos**: o jogo só usa as cores dos clubes.
+- **Atributos são nossos**: estimados a partir de dados públicos (idade, posição, valor de mercado), nunca copiados de outro jogo (Brasfoot, Elifoot, FIFA/FC, Football Manager) ou de patches de comunidade.
 
 ## Stack
 - **Núcleo do jogo:** C# / .NET 10 (LTS), SDK fixado em `global.json`. Domínio, gerador, motor e simulação.
@@ -27,7 +28,7 @@ dotnet build FootManagerBR.slnx                 # build (warnings viram erro)
 dotnet test --solution FootManagerBR.slnx        # testes do núcleo
 dotnet run --project tools/Jogo.Calibracao       # calibração do motor, da temporada e de carreiras de 5 anos com mercado (sai com erro fora das metas)
 dotnet run --project tools/Jogo.Simulador -- --temporadas 3   # simula temporadas e mostra tabelas/artilharia
-dotnet run --project tools/Jogo.GeradorDados     # regera dados/definicoes (seed 2027)
+dotnet run --project tools/Jogo.GeradorDados     # regera dados/definicoes a partir dos dados reais (seed 2027, temporada 2026)
 
 # Site (rodar dentro de web/)
 npm install                                      # primeira vez
@@ -54,7 +55,7 @@ web/                 Interface React + TypeScript (Vite).
   src/saves/         Armazenamento dos saves (IndexedDB; versão em memória para testes), salvar e baixar arquivo.
 tools/Jogo.Calibracao    CLI que simula milhares de partidas e temporadas e confere as metas.
 tools/Jogo.Simulador     CLI que simula temporadas completas (Séries A e B) sem interface.
-tools/Jogo.GeradorDados  Gera o mundo inicial (40 clubes fictícios) em dados/definicoes.
+tools/Jogo.GeradorDados  Gera o mundo inicial (clubes e elencos reais de tools/Jogo.GeradorDados/reais/) em dados/definicoes.
 tests/               Um projeto de testes por camada + Jogo.Arquitetura.Testes.
 dados/definicoes/    Ligas, clubes e jogadores em JSON (formato aberto). Entram no site em tempo de build.
 docs/                ROADMAP.md (kanban), DECISOES.md, FORMATO_DADOS.md.

@@ -169,7 +169,7 @@ public static class Transferencias
                 continue;
             }
 
-            if (clube.Caixa <= 0 || !aleatorio.Chance(0.25) || clube.Elenco.Count >= ElencoMaximo - 2)
+            if (clube.Caixa <= 0 || !aleatorio.Chance(0.25) || clube.Elenco.Count >= ElencoMaximo)
             {
                 continue;
             }
@@ -190,18 +190,18 @@ public static class Transferencias
     private static Jogador? Reforco(Mundo mundo, Clube clube, string clubeDoJogador, int rodadasDisputadas)
     {
         var posicao = GeradorDeMundo.ElencoBase.Distinct()
-            .Select(p => (Posicao: p, Melhor: clube.Elenco.Where(j => j.PosicaoPrincipal == p).Select(j => j.ForcaGeral).DefaultIfEmpty(0).Max()))
+            .Select(p => (Posicao: p, Melhor: clube.Elenco.Where(j => j.JogaNaPosicao(p)).Select(j => j.ForcaNaPosicao(p)).DefaultIfEmpty(0).Max()))
             .OrderBy(x => x.Melhor).ThenBy(x => x.Posicao)
             .First();
-        var orcamento = clube.Caixa * 0.5m;
+        var orcamento = clube.Caixa * 0.6m;
         var tetoSalarial = GeradorDeJogadores.Salario(posicao.Melhor + 8);
 
         return mundo.Clubes.Where(c => c.Id != clubeDoJogador && c != clube).SelectMany(c => c.Elenco)
             .Concat(mundo.AgentesLivres)
-            .Where(j => j.PosicaoPrincipal == posicao.Posicao && j.ForcaGeral >= posicao.Melhor + 3)
+            .Where(j => j.JogaNaPosicao(posicao.Posicao) && j.ForcaNaPosicao(posicao.Posicao) >= posicao.Melhor + 2)
             .Where(j => Preco(j, mundo.TemporadaAtual) <= orcamento && Valores.SalarioPedido(j) <= tetoSalarial)
             .Where(j => Impedimento(mundo, clube, j, rodadasDisputadas) is null)
-            .OrderByDescending(j => j.ForcaGeral).ThenBy(j => j.Id)
+            .OrderByDescending(j => j.ForcaNaPosicao(posicao.Posicao)).ThenBy(j => j.Id)
             .FirstOrDefault();
     }
 

@@ -1,0 +1,458 @@
+# Elencos reais, Série B 2026. Fonte: ogol.com.br (temporada 2026, lido em 27/11/2026), exceto onde indicado.
+# Formato: clube|nome|posição|idade|valor em euros (vazio = sem valor). Posição: GOL, DEF, MEI, ATA ou a posição exata.
+# Jovens de até 20 anos sem valor de mercado foram deixados de fora (base).
+# Novorizontino: fonte pt.wikipedia, só nomes (sem posição, idade e valor).
+novorizontino|Jordi|GOL||
+novorizontino|César Augusto|GOL||
+novorizontino|Patrick|ZAG||
+novorizontino|Rômulo|ZAG||
+novorizontino|Eduardo Brock|ZAG||
+novorizontino|Alvariño|ZAG||
+novorizontino|Airton|LD||
+novorizontino|Hélio Borges|LD||
+novorizontino|Jhilmar Lora|LD||
+novorizontino|Nicolas Careca|LE||
+novorizontino|Alemão|LE||
+novorizontino|Luís Oyama|VOL||
+novorizontino|Léo Naldi|VOL||
+novorizontino|Matheus Bianqui|MC||
+novorizontino|Tavinho|MC||
+novorizontino|Juninho|MO||
+novorizontino|Madson|PD||
+novorizontino|Robson|ATA||
+novorizontino|João Scapin|PE||
+novorizontino|Vinícius Paiva|PD||
+novorizontino|Diego Galo|ATA||
+novorizontino|Gabriel Bahia|ATA||
+juventude|Zé Henrique|GOL|22|
+juventude|Pedro Rocha|GOL|28|
+juventude|Ruan Carneiro|GOL|36|
+juventude|Jandrei|GOL|33|200000
+juventude|Luiz Eduardo|DEF|21|
+juventude|Titi|ZAG|38|50000
+juventude|Nathan Santos|LD|25|1200000
+juventude|Alan Ruschel|LE|37|
+juventude|Raí Ramos|LD|32|500000
+juventude|Aderlan|LD|36|100000
+juventude|Messias|ZAG|32|500000
+juventude|Rodrigo Sam|ZAG|31|350000
+juventude|Bernardo Toffolo|ZAG|21|
+juventude|Marcos Paulo|ZAG|23|
+juventude|Wadson|LE|26|
+juventude|Diogo Barbosa|LE|34|200000
+juventude|Patryck|LE|23|1300000
+juventude|Igor Formiga|LD|27|1900000
+juventude|Abner|ZAG|22|1000000
+juventude|Luan Martins|VOL|27|100000
+juventude|Pablo Roberto|MC|27|650000
+juventude|Gabriel Pires|MC|33|400000
+juventude|Iba Ly|VOL|23|
+juventude|Lucas Mineiro|VOL|30|950000
+juventude|Mandaca|MC|25|2000000
+juventude|Ray Breno|MEI|22|
+juventude|Raí Silva|MC|24|
+juventude|Léo Índio|MO|30|
+juventude|Allanzinho|PE|26|
+juventude|Manuel Castro|PD|31|950000
+juventude|Alan Kardec|ATA|37|100000
+juventude|Luis Amarilla|ATA|31|500000
+juventude|Alisson Safira|ATA|31|700000
+juventude|MP|ATA|25|550000
+juventude|Fábio Lima|PD|29|300000
+juventude|Juan Christian|PE|25|600000
+juventude|Ari Moura|PE|30|500000
+juventude|Gabriel Taliari|ATA|29|1500000
+vila-nova|Helton Leite|GOL|36|200000
+vila-nova|Dalberson|GOL|29|
+vila-nova|Airton|GOL|32|500000
+vila-nova|Tiago Pagnussat|ZAG|36|100000
+vila-nova|Anderson Jesus|ZAG|31|300000
+vila-nova|Hayner|LD|31|350000
+vila-nova|Douglas Mendes|ZAG|22|750000
+vila-nova|Breno Bora|DEF|24|
+vila-nova|Jonathan Costa|ZAG|31|
+vila-nova|Willian Formiga|LD|31|
+vila-nova|Igor Cariús|LE|33|
+vila-nova|Elias|LE|27|
+vila-nova|Pedro Romano|DEF|26|
+vila-nova|Weverton|ZAG|23|300000
+vila-nova|Caio Marcelo|LE|28|
+vila-nova|Enzo Bizzotto|MEI|23|
+vila-nova|Nathan Camargo|MC|21|200000
+vila-nova|João Vieira|VOL|29|
+vila-nova|Willian Maranhão|VOL|30|700000
+vila-nova|Dudu|MC|24|
+vila-nova|Higor Meritão|VOL|32|800000
+vila-nova|Marquinhos Gabriel|MO|36|150000
+vila-nova|Dodô|MO|32|50000
+vila-nova|Marco Antônio|MC|26|
+vila-nova|André Luís|ATA|29|550000
+vila-nova|Bruno Xavier|PE|30|250000
+vila-nova|Everton Galdino|PD|29|950000
+vila-nova|Rafa Silva|PE|34|250000
+vila-nova|Lincoln|PD|25|350000
+vila-nova|Dellatorre|ATA|34|350000
+vila-nova|Janderson|PE|27|900000
+vila-nova|Caíque Jesus|ATA|26|
+# Fortaleza: fonte pt.wikipedia (elenco atual, jul/2026), sem idade nem valor.
+fortaleza|João Ricardo|GOL||
+fortaleza|Vinicius Silvestre|GOL||
+fortaleza|Lucas Gazal|ZAG||
+fortaleza|Luan Freitas|ZAG||
+fortaleza|Tomás Cardona|ZAG||
+fortaleza|Bastos|ZAG||
+fortaleza|Neris|ZAG||
+fortaleza|Maílton|LD||
+fortaleza|Paulinho|LD||
+fortaleza|Kaio Henrique|LE||
+fortaleza|Maurício Mucuri|LE||
+fortaleza|Gabriel Fuentes|LE||
+fortaleza|Pierre|VOL||
+fortaleza|Jailson|VOL||
+fortaleza|Rodrigo Santos|VOL||
+fortaleza|Ryan|VOL||
+fortaleza|Ronald|MC||
+fortaleza|Lucas Crispim|MO||
+fortaleza|Lucas Emanoel|MC||
+fortaleza|Lucca Prior|MC||
+fortaleza|Rodriguinho|MO||
+fortaleza|Juan Miritello|ATA||
+fortaleza|Vitinho|PD||
+fortaleza|Pedro Henrique|PE||
+fortaleza|Nathan Fogaça|ATA||
+fortaleza|Juan Cantillo|PD||
+fortaleza|Welliton|ATA||
+fortaleza|Luiz Fernando|ATA||
+fortaleza|Bruninho|PE||
+fortaleza|Paulo Baya|PD||
+criciuma|Alisson|GOL|31|500000
+criciuma|Airton|GOL|32|500000
+criciuma|Georgemy|GOL|31|
+criciuma|Marcinho|LD|30|400000
+criciuma|Rômulo Júnior|DEF|22|500000
+criciuma|Rodrigo|ZAG|39|30000
+criciuma|Luciano Castán|ZAG|37|100000
+criciuma|Bruno Alves|ZAG|35|200000
+criciuma|César Martins|ZAG|33|400000
+criciuma|Marcelo Hermes|LE|31|1000000
+criciuma|Léo Mana|LD|22|
+criciuma|Willean Lepo|LD|29|
+criciuma|Octávio Henrique|DEF|21|
+criciuma|Erick Garcia|DEF|21|
+criciuma|Heitor Roca|DEF|28|
+criciuma|Jean Irmer|VOL|32|250000
+criciuma|Jhonata Robert|MO|27|2000000
+criciuma|Rómulo Otero|MO|34|200000
+criciuma|Steven Nufour|MEI|21|50000
+criciuma|Sandry|VOL|24|950000
+criciuma|Romarinho|PE|32|500000
+criciuma|Nicolas|ATA|37|50000
+criciuma|Yuri Tanque|ATA|28|350000
+criciuma|Cauê Santos|PD|24|350000
+criciuma|Waguininho|PE|36|50000
+criciuma|Benjamín Borasi|PD|29|250000
+atletico-go|Paulo Vítor|GOL|38|100000
+atletico-go|Vladimir|GOL|37|50000
+atletico-go|Léo|GOL|24|
+atletico-go|Paulo Henrique|GOL|32|
+atletico-go|Ewerthon|DEF|26|250000
+atletico-go|Warley|ZAG|27|300000
+atletico-go|Guilherme Lopes|LE|24|850000
+atletico-go|Geovane|ZAG|37|100000
+atletico-go|Guilherme Romão|LE|29|400000
+atletico-go|Matheus Ribeiro|LD|33|250000
+atletico-go|Gustavo Daniel|DEF|21|
+atletico-go|Felipe Guimarães|DEF|22|
+atletico-go|Tito|DEF|26|
+atletico-go|Adriano Martins|ZAG|29|
+atletico-go|Leandro Vilela|VOL|31|200000
+atletico-go|David Terans|MO|32|1000000
+atletico-go|Guilherme Marques|VOL|35|200000
+atletico-go|Matheusinho|MO|28|1200000
+atletico-go|Matheus Índio|MC|27|750000
+atletico-go|Marrony|PE|27|700000
+atletico-go|Gustavo Coutinho|ATA|27|1400000
+atletico-go|João Pedro|ATA|30|800000
+atletico-go|Daniel Lima|ATA|21|500000
+atletico-go|Jader|PD|23|700000
+atletico-go|Léo Jacó|ATA|21|400000
+atletico-go|Derek|ATA|28|400000
+atletico-go|Kevin Ramírez|PD|32|400000
+crb|Vitor Caetano|GOL|27|100000
+crb|Matheus Albino|GOL|31|400000
+crb|Fábio Henrique|GOL|24|
+crb|Lucas Lovat|LE|29|550000
+crb|Henri|ZAG|24|950000
+crb|Léo Campos|LD|34|50000
+crb|Bressan|ZAG|33|200000
+crb|Kevin|DEF|29|
+crb|Reverson|LE|29|
+crb|Lyncon|DEF|21|
+crb|Fábio Alemão|ZAG|30|
+crb|Hereda|LD|28|
+crb|Darlisson|DEF|22|
+crb|Weverton|ZAG|27|
+crb|Geovane|VOL|27|400000
+crb|De Lucca|MC|26|850000
+crb|Daniel|MO|30|1200000
+crb|Pedro Castro|VOL|33|200000
+crb|Luizão|VOL|28|250000
+crb|Dadá Belmonte|PE|29|300000
+crb|Douglas Baggio|PD|31|500000
+crb|Luiz Phellype|ATA|33|400000
+crb|Mikael|ATA|27|800000
+crb|William Pottker|PD|32|400000
+goias|Thiago Rodrigues|GOL|38|30000
+goias|Tadeu|GOL|34|950000
+goias|Ezequiel|GOL|23|
+goias|Rodrigo Soares|LD|33|750000
+goias|Lucas Ribeiro|ZAG|27|750000
+goias|Luiz Felipe|ZAG|33|300000
+goias|Ramon Menezes|LE|31|400000
+goias|Nicolas|LE|29|700000
+goias|Titi|ZAG|38|50000
+goias|Julio César|DEF|21|
+goias|Marcos Vinícius|DEF|29|
+goias|Luisão|ZAG|23|
+goias|Djalma Silva|LD|32|
+goias|Diego Caito|LD|22|
+goias|Juninho|VOL|39|50000
+goias|Gegê|VOL|32|200000
+goias|Filipe Machado|VOL|30|1000000
+goias|Lourenço|MO|29|2500000
+goias|Lucas Lima|MO|36|300000
+goias|Jean Carlos|MEI|21|
+goias|Anselmo Ramón|ATA|38|30000
+goias|Wellington Rato|PD|34|450000
+goias|Cadu|ATA|22|600000
+goias|Bruno Sávio|PE|32|150000
+goias|Jajá|PE|28|1500000
+sport|Denis|GOL|39|20000
+sport|Brenno|GOL|27|500000
+sport|Thiago Couto|GOL||
+sport|Zé Marcos|ZAG|28|1000000
+sport|Benevenuto|ZAG|30|900000
+sport|Habraão|ZAG|25|850000
+sport|Kayky Almeida|ZAG|21|800000
+sport|Patrick|ZAG|21|2000000
+sport|Raí Lopes|LD|26|350000
+sport|Matheus Alexandre|LD|27|700000
+sport|Madson|LD|34|200000
+sport|Claudinho|LD|26|1800000
+sport|Ramon Menezes|LE|31|400000
+sport|Felipinho|LE||
+sport|Fábio Matheus|MC|23|650000
+sport|Patrick de Paula|VOL|27|2500000
+sport|Zé Gabriel|VOL|27|550000
+sport|Willian Oliveira|VOL|33|300000
+sport|Fernando Sobral|VOL|31|1600000
+sport|Juan Alano|MC|30|900000
+sport|Zé Lucas|VOL|18|7500000
+sport|Yago Felipe|MC|31|1200000
+sport|Chrystian Barletta|PD|25|2500000
+sport|Dudu|PE|27|1000000
+sport|Kervin Andrade|MO|21|1500000
+sport|Pedro Perotti|ATA|29|950000
+sport|Neto Pessoa|ATA|32|300000
+sport|Diego Hernández|PE|26|1500000
+sport|Clayson|PE|31|650000
+sport|Gustavo Coutinho|ATA|27|1400000
+sport|Iury Castilho|ATA|31|700000
+sport|Carlos De Pena|MO|34|800000
+operario-pr|Elias Curzel|GOL|31|100000
+operario-pr|Talles Lima|GOL|29|100000
+operario-pr|Vágner Silva|GOL|40|50000
+operario-pr|Joseph|LD|31|100000
+operario-pr|Klaus|ZAG|32|250000
+operario-pr|Doka|LE|26|400000
+operario-pr|Miranda|ZAG|26|900000
+operario-pr|José Cuenú|ZAG|31|300000
+operario-pr|Gabriel Feliciano|LD|25|500000
+operario-pr|Nicolas Schulz|DEF|26|
+operario-pr|Maguinho|LE|34|
+operario-pr|André Dantas|DEF|27|
+operario-pr|Índio|VOL|34|100000
+operario-pr|Juan Zuluaga|VOL|33|400000
+operario-pr|Vinícius Diniz|MC|27|600000
+operario-pr|Matheus Trindade|VOL|30|400000
+operario-pr|Neto Paraíba|MC|34|50000
+operario-pr|Boschilia|MO|30|1500000
+operario-pr|Ángel Torres|PE|26|300000
+operario-pr|Hildeberto|PD|30|200000
+operario-pr|Pedro Vilhena|ATA|24|500000
+operario-pr|Vinicius Mingotti|ATA|26|500000
+operario-pr|Aylon|ATA|34|250000
+operario-pr|Pablo|ATA|34|350000
+operario-pr|Maxwell|PD|31|600000
+operario-pr|Léo Gaúcho|PE|25|350000
+operario-pr|Kauã Gomes|ATA|23|50000
+sao-bernardo|Alex Alves|GOL|40|
+sao-bernardo|Júnior Oliveira|GOL|36|
+sao-bernardo|Léo Lang|GOL|28|97000
+sao-bernardo|Caio Garcez|DEF|22|
+sao-bernardo|Hélder Maciel|DEF|36|
+sao-bernardo|Matheus Salustiano|ZAG|33|
+sao-bernardo|Pará|LD|31|
+sao-bernardo|Jota|DEF|21|
+sao-bernardo|Wellington Manzoli|DEF|25|
+sao-bernardo|Mário Sérgio|ZAG|32|150000
+sao-bernardo|Luizão|ZAG|24|400000
+sao-bernardo|Augusto|DEF|29|
+sao-bernardo|Foguinho|VOL|34|
+sao-bernardo|Romisson|VOL|30|
+sao-bernardo|Breninho|MEI|21|
+sao-bernardo|Lucas Fernandes|MO|29|750000
+sao-bernardo|Rodrigo Andrade|MC|29|500000
+sao-bernardo|Galdino|MEI|21|
+sao-bernardo|Hyoran|MO|33|500000
+sao-bernardo|Marcão|VOL|35|50000
+sao-bernardo|Felipe Garcia|ATA|36|
+sao-bernardo|Echaporã|ATA|26|
+sao-bernardo|Lucas Reis|ATA|25|
+sao-bernardo|Daniel Amorim|ATA|37|
+sao-bernardo|Fabrício Daniel|PE|29|
+sao-bernardo|Pedro Vitor|PD|28|500000
+sao-bernardo|Lucas Rian|ATA|26|250000
+sao-bernardo|Daniel Davi|ATA|21|
+botafogo-sp|Victor Souza|GOL|34|
+botafogo-sp|Jordan|GOL|28|
+botafogo-sp|Jonathan|ZAG|34|100000
+botafogo-sp|Patrick Brey|LE|29|
+botafogo-sp|Guilherme Mariano|DEF|26|
+botafogo-sp|Badaró|DEF|21|
+botafogo-sp|Gabriel Inocêncio|LD|32|
+botafogo-sp|Ericson|ZAG|27|
+botafogo-sp|Vilar|ZAG|26|
+botafogo-sp|Erik Rebello|MEI|21|
+botafogo-sp|Marco Antônio|MC|26|
+botafogo-sp|Thiago Moraes|VOL|28|130000
+botafogo-sp|Leandro Maciel|MO|30|600000
+botafogo-sp|Everton Morelli|VOL|29|
+botafogo-sp|Arthur Caíke|PE|34|300000
+botafogo-sp|Jadson|ATA|21|
+botafogo-sp|Wesley Santos|ATA|26|
+botafogo-sp|Hygor|PD|34|
+botafogo-sp|Guilherme Queiróz|ATA|36|
+botafogo-sp|Jefferson Nem|PE|30|
+botafogo-sp|Márcio Maranhão|ATA|27|
+athletic|Luan Polli|GOL|33|400000
+athletic|Glauco|GOL|31|100000
+athletic|Sidimar|ZAG|34|100000
+athletic|Diogo Batista|ZAG|23|400000
+athletic|Zeca|LE|32|500000
+athletic|Douglas Pelé|DEF|27|
+athletic|Jhonatan Silva|DEF|27|
+athletic|Fabrício Isidoro|VOL|34|50000
+athletic|Felipe Negrucci|MC|22|500000
+athletic|Kauan Lindes|MEI|22|
+athletic|Alexandre Pena|MEI|21|
+athletic|Gustavão|ATA|21|100000
+athletic|Bruninho|ATA|23|
+athletic|Max|ATA|24|
+athletic|Dixon Vera|ATA|23|
+athletic|Ronaldo Tavares|ATA|29|850000
+athletic|Carlinhos|PE|29|900000
+athletic|Wilinton Aponzá|PD|26|200000
+cuiaba|Jean|GOL|26|
+cuiaba|João Carlos|GOL|38|20000
+cuiaba|Igor Inocêncio|ZAG|28|300000
+cuiaba|Tarcísio|DEF|23|
+cuiaba|Lorenzo|ZAG|19|150000
+cuiaba|Raylan|DEF|26|
+cuiaba|João Balbino|MEI|21|
+cuiaba|Wesley Dias|VOL|31|150000
+cuiaba|Calebe|MEI|23|
+cuiaba|Ramon|ATA|26|
+cuiaba|Jean Dias|ATA|36|
+cuiaba|Eliel|ATA|23|
+nautico|Muriel Becker|GOL|39|
+nautico|Léo|GOL|22|
+nautico|Felipe Santana|DEF|21|
+nautico|Matheus Ribeiro|LD|33|250000
+nautico|Mateus Silva|ZAG|31|
+nautico|Arnaldo|LE|34|
+nautico|Reginaldo|ZAG|33|100000
+nautico|Betão|ZAG|27|
+nautico|Guilherme Ramos|MEI|21|
+nautico|Luiz Felipe|MC|28|
+nautico|Caio Soares|MEI|21|
+nautico|Auremir|VOL|35|
+nautico|Wenderson|VOL|28|
+nautico|Léo Índio|MO|30|
+nautico|Samuel Félix|MEI|22|
+nautico|Rodrigo Leal|ATA|22|
+nautico|Victor Andrade|PE|31|200000
+nautico|Benjamín Borasi|PD|29|250000
+nautico|Júnior Todinho|PE|32|
+nautico|Danielzinho|PD|26|
+nautico|Kauã Maranhão|ATA|22|
+nautico|Paulo Sérgio|ATA|37|
+nautico|Luiz Cláudio|ATA|21|
+ceara|Richard|GOL|35|100000
+ceara|Matheus Nogueira|GOL|29|300000
+ceara|Bruno Ferreira|GOL|32|250000
+ceara|Thalisson|ZAG|24|400000
+ceara|Luizão|ZAG|34|550000
+ceara|Sávio|LE|31|350000
+ceara|Sánchez|LD|31|30000
+ceara|Luiz Otávio|ZAG|38|50000
+ceara|Bryan Borges|LD|30|300000
+ceara|Matheus Araújo|MC|24|1500000
+ceara|Pavani|VOL|30|350000
+ceara|Richardson|VOL|35|100000
+ceara|Caio|MEI|19|50000
+ceara|Vinícius Zanocelo|VOL|25|2000000
+ceara|Melk|MEI|20|350000
+ceara|Rian Santana|ATA|25|
+ceara|Saulo Mineiro|PD|29|1000000
+ceara|Lucca|ATA|23|600000
+ceara|Renzo López|ATA|32|650000
+ceara|Wendel Silva|PE|26|2000000
+ceara|Nicolás Ferreira|PE|24|600000
+londrina|Luan Ribeiro|GOL|29|
+londrina|Zanella|GOL|22|
+londrina|Kozlinski|GOL|35|100000
+londrina|Weverton|DEF|27|
+londrina|Nino Paraíba|LD|40|
+londrina|André Dhominique|LD|23|600000
+londrina|Kauê Leonardo|DEF|21|
+londrina|Wallace|ZAG|38|
+londrina|Gabriel Lacerda|ZAG|27|250000
+londrina|Heron|ZAG|26|350000
+londrina|Rafael Monteiro|LE||
+londrina|Victor Feitosa|VOL|30|
+londrina|Juninho|MC|27|
+londrina|Tárik|MO|33|
+londrina|Lucas Marques|VOL|31|250000
+londrina|André Cardoso|MEI|23|
+londrina|João Vitor|MC|28|
+londrina|Murilo Chico|MEI|21|
+londrina|João Tavares|VOL|22|
+londrina|Guilherme Cachoeira|ATA|24|
+londrina|Igor Bahia|ATA|33|
+londrina|Vitinho|PE|23|
+londrina|William Pottker|PD|32|400000
+londrina|Gilberto|ATA|37|150000
+londrina|Raí Nascimento|ATA|28|
+ponte-preta|Guilherme Viana|GOL|23|
+ponte-preta|Vinicius Ferrari|GOL|23|
+ponte-preta|Thiago Coelho|GOL|31|
+ponte-preta|Diogo Silva|GOL|40|
+ponte-preta|Gabriel Braga|DEF|22|
+ponte-preta|Diego Leão|DEF|21|
+ponte-preta|Sergio Palacios|DEF|21|
+ponte-preta|Kawann|DEF|21|
+ponte-preta|Guilherme Martins|DEF|21|
+ponte-preta|Thalys|DEF|26|
+ponte-preta|Élvis|MO|36|
+ponte-preta|Rodrigo Souza|VOL|39|
+ponte-preta|André Lima|MC|26|
+ponte-preta|Karl|MO|33|150000
+ponte-preta|Gustavo Telles|MEI|21|
+ponte-preta|Danilo Peu|ATA|23|
+ponte-preta|Brandão|ATA|22|
+ponte-preta|Jonathan Cafú|PE|35|50000
+ponte-preta|Nicolas Araújo|ATA|21|
+ponte-preta|Vitor Ribeiro|ATA|27|
+ponte-preta|David Da Hora|PD|26|400000
+# Avaí e América-MG: nenhuma fonte acessível com o elenco atual; o gerador completa com jogadores gerados.

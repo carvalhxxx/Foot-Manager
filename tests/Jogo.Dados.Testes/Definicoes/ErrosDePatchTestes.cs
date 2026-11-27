@@ -44,7 +44,7 @@ public sealed class ErrosDePatchTestes : IDisposable
         EditarJson("clubes/porto-alegre-fc.json", j =>
         {
             j["sigla"] = "pa";
-            j["elenco"]![1]!["idade"] = 50;
+            j["elenco"]![1]!["idade"] = 51;
             j["elenco"]![2]!["posicao"] = "XYZ";
         });
 
@@ -60,11 +60,11 @@ public sealed class ErrosDePatchTestes : IDisposable
     [Fact]
     public void ErroNoJogador_ApontaAPosicaoNoElencoSemTextoTecnico()
     {
-        EditarJson("clubes/porto-alegre-fc.json", j => j["elenco"]![1]!["idade"] = 50);
+        EditarJson("clubes/porto-alegre-fc.json", j => j["elenco"]![1]!["idade"] = 51);
 
         var erro = Assert.Single(CarregarComErros());
         Assert.Equal("elenco[1]", erro.Local);
-        Assert.Equal("idade deve estar entre 15 e 45.", erro.Mensagem);
+        Assert.Equal("idade deve estar entre 15 e 50.", erro.Mensagem);
     }
 
     [Fact]

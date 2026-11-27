@@ -1,0 +1,43 @@
+# Clubes reais das Séries A e B de 2026 (fonte da composição e dos estádios: Wikipédia, 26/11/2026).
+# Torcida e reputação (1 a 100) são estimativas nossas para o jogo. Só cores; nada de escudo.
+# id|nome|sigla|cidade|uf|cor primária|cor secundária|estádio|capacidade|divisão|torcida|reputação
+flamengo|Flamengo|FLA|Rio de Janeiro|RJ|#C8102E|#111111|Maracanã|78838|1|100|95
+palmeiras|Palmeiras|PAL|São Paulo|SP|#006437|#FFFFFF|Nubank Parque|43713|1|90|94
+cruzeiro|Cruzeiro|CRU|Belo Horizonte|MG|#003DA5|#FFFFFF|Mineirão|62000|1|86|86
+fluminense|Fluminense|FLU|Rio de Janeiro|RJ|#7A1E3A|#00613C|Maracanã|78838|1|78|85
+athletico-pr|Athletico Paranaense|CAP|Curitiba|PR|#C8102E|#111111|Arena da Baixada|42372|1|68|78
+bahia|Bahia|BAH|Salvador|BA|#0057B8|#E30613|Arena Fonte Nova|50025|1|76|80
+atletico-mg|Atlético Mineiro|CAM|Belo Horizonte|MG|#111111|#FFFFFF|Arena MRV|46000|1|85|86
+bragantino|Red Bull Bragantino|RBB|Bragança Paulista|SP|#FFFFFF|#D0021B|Cícero de Souza Marques|12000|1|40|74
+santos|Santos|SAN|Santos|SP|#FFFFFF|#111111|Vila Belmiro|16068|1|80|82
+sao-paulo|São Paulo|SAO|São Paulo|SP|#FFFFFF|#E30613|Morumbis|66795|1|90|88
+vasco|Vasco da Gama|VAS|Rio de Janeiro|RJ|#111111|#FFFFFF|São Januário|20419|1|85|82
+coritiba|Coritiba|CFC|Curitiba|PR|#00543C|#FFFFFF|Couto Pereira|40502|1|58|66
+vitoria|Vitória|VIT|Salvador|BA|#E30613|#111111|Barradão|30793|1|62|66
+botafogo|Botafogo|BOT|Rio de Janeiro|RJ|#111111|#FFFFFF|Nilton Santos|44661|1|74|85
+corinthians|Corinthians|COR|São Paulo|SP|#FFFFFF|#111111|Neo Química Arena|47252|1|98|90
+gremio|Grêmio|GRE|Porto Alegre|RS|#0D80BF|#111111|Arena do Grêmio|55662|1|86|84
+mirassol|Mirassol|MIR|Mirassol|SP|#F5C400|#006437|Maião|15023|1|25|66
+internacional|Internacional|INT|Porto Alegre|RS|#E30613|#FFFFFF|Beira-Rio|50128|1|84|84
+remo|Remo|REM|Belém|PA|#002F6C|#FFFFFF|Mangueirão|53635|1|62|58
+chapecoense|Chapecoense|CHA|Chapecó|SC|#00843D|#FFFFFF|Arena Condá|20089|1|42|56
+novorizontino|Novorizontino|NOV|Novo Horizonte|SP|#F5C400|#111111|Jorjão|16000|2|22|58
+juventude|Juventude|JUV|Caxias do Sul|RS|#00843D|#FFFFFF|Alfredo Jaconi|19924|2|40|58
+vila-nova|Vila Nova|VIL|Goiânia|GO|#E30613|#FFFFFF|Onésio Brasileiro Alvarenga|6500|2|42|52
+fortaleza|Fortaleza|FOR|Fortaleza|CE|#0033A0|#E30613|Castelão|57876|2|76|70
+criciuma|Criciúma|CRI|Criciúma|SC|#F5C400|#111111|Heriberto Hülse|19225|2|42|54
+atletico-go|Atlético Goianiense|ACG|Goiânia|GO|#E30613|#111111|Antônio Accioly|12500|2|44|56
+crb|CRB|CRB|Maceió|AL|#E30613|#FFFFFF|Rei Pelé|17126|2|44|50
+goias|Goiás|GOI|Goiânia|GO|#00843D|#FFFFFF|Estádio da Serrinha|14450|2|55|58
+sport|Sport|SPT|Recife|PE|#E30613|#111111|Ilha do Retiro|32983|2|72|64
+operario-pr|Operário-PR|OPE|Ponta Grossa|PR|#111111|#FFFFFF|Germano Krüger|10632|2|30|48
+sao-bernardo|São Bernardo|SBE|São Bernardo do Campo|SP|#F5C400|#111111|1º de Maio|15159|2|18|42
+botafogo-sp|Botafogo-SP|BFC|Ribeirão Preto|SP|#E30613|#FFFFFF|Santa Cruz|29292|2|30|46
+athletic|Athletic|ATH|São João del-Rei|MG|#111111|#FFFFFF|Joaquim Portugal|6000|2|15|40
+cuiaba|Cuiabá|CUI|Cuiabá|MT|#00843D|#F5C400|Arena Pantanal|44000|2|30|54
+nautico|Náutico|NAU|Recife|PE|#E30613|#FFFFFF|Aflitos|22856|2|50|50
+ceara|Ceará|CEA|Fortaleza|CE|#111111|#FFFFFF|Castelão|57876|2|72|64
+avai|Avaí|AVA|Florianópolis|SC|#0057B8|#FFFFFF|Ressacada|17826|2|46|52
+londrina|Londrina|LON|Londrina|PR|#00A3E0|#FFFFFF|Estádio do Café|31000|2|35|46
+america-mg|América Mineiro|AME|Belo Horizonte|MG|#00843D|#111111|Arena Independência|23018|2|40|56
+ponte-preta|Ponte Preta|PON|Campinas|SP|#111111|#FFFFFF|Moisés Lucarelli|19728|2|40|48

@@ -1,7 +1,7 @@
 {
   "versaoFormato": 1,
-  "nome": "Foot Manager BR · Base",
+  "nome": "Foot Manager BR · Brasileirão 2026",
   "autor": "Equipe Foot Manager BR",
-  "descricao": "Clubes e jogadores fictícios gerados com a seed 2027.",
-  "temporadaInicial": 2027
+  "descricao": "Clubes e elencos reais das Séries A e B de 2026 (fontes públicas, novembro de 2026). Atributos estimados pelo jogo.",
+  "temporadaInicial": 2026
 }

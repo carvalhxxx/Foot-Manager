@@ -1,17 +1,18 @@
-// Gera o mundo inicial do jogo base e grava como definições JSON.
+// Gera o mundo inicial do jogo base (clubes e jogadores reais, D-033) e grava como definições JSON.
 //
 // Uso:
-//   dotnet run --project tools/Jogo.GeradorDados -- [--seed 2027] [--temporada 2027] [--saida dados/definicoes]
+//   dotnet run --project tools/Jogo.GeradorDados -- [--seed 2027] [--temporada 2026] [--saida dados/definicoes]
 //
-// Mesma seed = mesmos arquivos, byte a byte.
+// Entradas: tools/Jogo.GeradorDados/reais/clubes.txt e elencos-*.txt (dados públicos pesquisados).
+// Os atributos são estimados pelo gerador; mesma seed = mesmos arquivos, byte a byte.
 
 using System.Globalization;
 using Jogo.Dados.Definicoes;
-using Jogo.Dominio.Jogadores;
+using Jogo.Dados.Reais;
 using Jogo.Simulacao.Geracao;
 
 var seed = 2027UL;
-var temporada = 2027;
+var temporada = 2026;
 var saida = Path.Combine("dados", "definicoes");
 
 for (var i = 0; i < args.Length; i++)
@@ -34,26 +35,28 @@ for (var i = 0; i < args.Length; i++)
     }
 }
 
-var mundo = GeradorDeMundo.Gerar(seed, temporada, CatalogoBase.Clubes);
+var pastaReais = Path.Combine(PastaDoProjeto(), "tools", "Jogo.GeradorDados", "reais");
+var clubes = LeitorDadosReais.Carregar(pastaReais);
+var mundo = GeradorDeMundoReal.Gerar(seed, temporada, clubes);
 var manifesto = new Manifesto(
-    "Foot Manager BR · Base",
+    "Foot Manager BR · Brasileirão 2026",
     "Equipe Foot Manager BR",
-    $"Clubes e jogadores fictícios gerados com a seed {seed}.");
+    "Clubes e elencos reais das Séries A e B de 2026 (fontes públicas, novembro de 2026). Atributos estimados pelo jogo.");
 
 EscritorDefinicoes.Salvar(mundo, manifesto, saida);
 
-// Resumo para conferência rápida.
 Console.WriteLine($"Mundo gerado (seed {seed}, temporada {temporada}) em {Path.GetFullPath(saida)}");
 foreach (var divisao in mundo.Divisoes)
 {
     Console.WriteLine();
-    Console.WriteLine($"{divisao.Nome}");
-    Console.WriteLine($"  {"Clube",-30} {"Elenco",6} {"Top 11",7} {"Média",6} {"Caixa (R$ mi)",14}");
+    Console.WriteLine(divisao.Nome);
+    Console.WriteLine($"  {"Clube",-24} {"Reais",5} {"Elenco",6} {"Top 11",7} {"Caixa (R$ mi)",14}  Melhor");
     foreach (var clube in divisao.ClubeIds.Select(mundo.Clube).OrderByDescending(Top11))
     {
-        var media = clube.Elenco.Average(j => j.ForcaGeral);
+        var reais = clubes.First(c => c.Id == clube.Id).Elenco.Select(j => j.Nome).ToHashSet(StringComparer.Ordinal);
+        var melhor = clube.Elenco.MaxBy(j => j.ForcaGeral)!;
         Console.WriteLine(string.Create(CultureInfo.GetCultureInfo("pt-BR"),
-            $"  {clube.Nome,-30} {clube.Elenco.Count,6} {Top11(clube),7:F1} {media,6:F1} {clube.Caixa / 1_000_000m,14:F1}"));
+            $"  {clube.Nome,-24} {clube.Elenco.Count(j => reais.Contains(j.Nome)),5} {clube.Elenco.Count,6} {Top11(clube),7:F1} {clube.Caixa / 1_000_000m,14:F1}  {melhor.Nome} ({melhor.ForcaGeral})"));
     }
 }
 
@@ -61,3 +64,14 @@ return 0;
 
 static double Top11(Jogo.Dominio.Clubes.Clube clube) =>
     clube.Elenco.OrderByDescending(j => j.ForcaGeral).Take(11).Average(j => j.ForcaGeral);
+
+static string PastaDoProjeto()
+{
+    var pasta = new DirectoryInfo(AppContext.BaseDirectory);
+    while (pasta is not null && !File.Exists(Path.Combine(pasta.FullName, "FootManagerBR.slnx")))
+    {
+        pasta = pasta.Parent;
+    }
+
+    return pasta?.FullName ?? Directory.GetCurrentDirectory();
+}
