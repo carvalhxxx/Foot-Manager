@@ -13,10 +13,6 @@ _(nada)_
 
 ## Backlog (MVP · Fase 1)
 
-### E6 · UI mínima (web) · G
-- **Objetivo:** telas Início, Elenco, Tática, Partida (resultado + eventos), Classificação e botão grande "Avançar rodada" com atalho de teclado, em React, funcionando no desktop e no celular.
-- **Aceite:** é possível jogar uma temporada inteira pela interface.
-
 ### E7 · Partida ao vivo · M
 - **Objetivo:** narração minuto a minuto, placar da rodada em tempo real, substituições e troca de mentalidade durante o jogo.
 - **Aceite:** decisões no meio da partida alteram o andamento; a mesma seed com as mesmas decisões gera o mesmo jogo.
@@ -43,6 +39,12 @@ _(nada)_
 Mobile, saves na nuvem, ligas online entre amigos, modelo freemium/assinatura.
 
 ## Feito
+
+### E6 · UI mínima (web) · G
+- Jogável no navegador: escolher clube, Início (próximo jogo, posição, últimos resultados, ajustes na escalação), Elenco, Tática (formação, mentalidade, titulares, reservas, escalação automática), Partida (placar, lances, posse, estatísticas, outros jogos), Classificação (Séries A e B, zonas, artilharia) e fim de temporada com virada de ano.
+- Botão "Avançar rodada" sempre visível, com atalho Espaço; cerca de 0,5 s por rodada no navegador.
+- `Carreira` no C# (tática do jogador, troca automática de lesionados e suspensos com aviso) e nova camada `Jogo.Aplicacao` (casos de uso + `ApiJson`), testada sem navegador; `Jogo.Wasm` virou só a casca.
+- Testada pelo navegador: temporada inteira de 38 rodadas, rebaixamento e início do ano seguinte na Série B, celular (375 px, sem rolagem lateral) e tema escuro. Decisão D-024.
 
 ### E5 · Simulação de temporada · M
 - Calendário de pontos corridos (turno e returno espelhados, 19 jogos em casa, no máximo 3 seguidos no mesmo mando).

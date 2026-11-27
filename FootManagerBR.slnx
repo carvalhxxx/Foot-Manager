@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/Jogo.Aplicacao/Jogo.Aplicacao.csproj" />
     <Project Path="src/Jogo.Dados/Jogo.Dados.csproj" />
     <Project Path="src/Jogo.Dominio/Jogo.Dominio.csproj" />
     <Project Path="src/Jogo.Motor/Jogo.Motor.csproj" />
@@ -7,6 +8,7 @@
     <Project Path="src/Jogo.Wasm/Jogo.Wasm.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/Jogo.Aplicacao.Testes/Jogo.Aplicacao.Testes.csproj" />
     <Project Path="tests/Jogo.Arquitetura.Testes/Jogo.Arquitetura.Testes.csproj" />
     <Project Path="tests/Jogo.Dados.Testes/Jogo.Dados.Testes.csproj" />
     <Project Path="tests/Jogo.Dominio.Testes/Jogo.Dominio.Testes.csproj" />

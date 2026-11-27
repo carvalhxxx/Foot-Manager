@@ -98,7 +98,10 @@ public sealed class Temporada
     }
 
     /// <summary>Joga a próxima rodada em todas as divisões e aplica o pós-jogo aos elencos.</summary>
-    public RelatorioRodada JogarRodada()
+    /// <param name="escalacoesFixas">
+    /// Escalações escolhidas fora da IA (o clube do jogador), por id de clube. O bônus de entrosamento é recalculado aqui.
+    /// </param>
+    public RelatorioRodada JogarRodada(IReadOnlyDictionary<string, TimeEscalado>? escalacoesFixas = null)
     {
         if (Encerrada)
         {
@@ -118,8 +121,8 @@ public sealed class Temporada
                 var jogo = agenda[i];
                 var mandante = _mundo.Clube(jogo.MandanteId);
                 var visitante = _mundo.Clube(jogo.VisitanteId);
-                var escalacaoMandante = Escalar(mandante);
-                var escalacaoVisitante = Escalar(visitante);
+                var escalacaoMandante = EscalacaoDaRodada(mandante, escalacoesFixas);
+                var escalacaoVisitante = EscalacaoDaRodada(visitante, escalacoesFixas);
 
                 var resultado = MotorDePartida.SimularRapido(escalacaoMandante, escalacaoVisitante,
                     new GeradorAleatorio(Semente(competicao.Divisao.Id, rodada, i + 1)), configuracao: Configuracao);
@@ -167,6 +170,11 @@ public sealed class Temporada
             JogarRodada();
         }
     }
+
+    private TimeEscalado EscalacaoDaRodada(Clube clube, IReadOnlyDictionary<string, TimeEscalado>? fixas) =>
+        fixas is not null && fixas.TryGetValue(clube.Id, out var fixa)
+            ? fixa.ComEntrosamento(PosJogo.BonusEntrosamento(fixa.Titulares, Regras))
+            : Escalar(clube);
 
     /// <summary>Escalação da IA: sem lesionados e suspensos, com o bônus de entrosamento dos titulares.</summary>
     public TimeEscalado Escalar(Clube clube)

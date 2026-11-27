@@ -1,77 +1,81 @@
-import type { ResumoMundo } from '../nucleo/contrato'
+import { Escudo } from '../componentes/Escudo'
+import type { Estado } from '../nucleo/contrato'
 import { textos } from '../textos'
 
 interface Props {
-  mundo: ResumoMundo
-  versao: string
+  estado: Estado
 }
 
-const formatoForca = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
-const formatoInteiro = new Intl.NumberFormat('pt-BR')
-
-export function Inicio({ mundo, versao }: Props) {
+export function Inicio({ estado }: Props) {
   const t = textos.inicio
-  const totalClubes = mundo.divisoes.reduce((soma, d) => soma + d.clubes.length, 0)
+  const proximo = estado.proximoJogo
 
   return (
     <>
-      <header className="cabecalho">
-        <h1>{t.titulo}</h1>
-        <p>{t.subtitulo}</p>
+      <header className="cabecalho cabecalho-clube">
+        <Escudo corPrimaria={estado.clube.corPrimaria} corSecundaria={estado.clube.corSecundaria} tamanho="grande" />
+        <div>
+          <h1>{estado.clube.nome}</h1>
+          <p>
+            {t.temporada(estado.ano)} · {estado.divisaoNome} · {t.rodada(estado.rodadaAtual, estado.totalRodadas)}
+          </p>
+        </div>
       </header>
 
-      <dl className="numeros">
-        <Numero rotulo={t.temporada} valor={String(mundo.temporada)} />
-        <Numero rotulo={t.clubes} valor={formatoInteiro.format(totalClubes)} />
-        <Numero rotulo={t.jogadores} valor={formatoInteiro.format(mundo.totalJogadores)} />
-        <Numero rotulo={t.versaoNucleo} valor={versao.split('+')[0]} />
-      </dl>
+      {estado.temporadaEncerrada && <p className="aviso-destaque">{t.fimDaTemporada}</p>}
 
-      <div className="divisoes">
-        {mundo.divisoes.map((divisao) => (
-          <section key={divisao.id} className="cartao">
-            <h2>{divisao.nome}</h2>
-            <table className="tabela">
-              <thead>
-                <tr>
-                  <th scope="col">{t.colunaClube}</th>
-                  <th scope="col">{t.colunaCidade}</th>
-                  <th scope="col" className="numero" title={t.dicaForca}>
-                    {t.colunaForca}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {divisao.clubes.map((clube) => (
-                  <tr key={clube.id}>
-                    <td>
-                      <span
-                        className="escudo"
-                        style={{ background: clube.corPrimaria, borderColor: clube.corSecundaria }}
-                        aria-hidden="true"
-                      />
-                      {clube.nome}
-                    </td>
-                    <td className="secundario">
-                      {clube.cidade}/{clube.uf}
-                    </td>
-                    <td className="numero">{formatoForca.format(clube.forcaTop11)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      <div className="painel">
+        {proximo && (
+          <section className="cartao">
+            <h2>{t.proximoJogo}</h2>
+            <p className="proximo-jogo">
+              <Escudo corPrimaria={proximo.adversario.corPrimaria} corSecundaria={proximo.adversario.corSecundaria} />
+              <strong>{proximo.adversario.nome}</strong>
+            </p>
+            <p className="secundario">
+              {textos.partida.rodada(proximo.rodada)} · {proximo.emCasa ? t.emCasa : t.fora}
+            </p>
           </section>
-        ))}
-      </div>
-    </>
-  )
-}
+        )}
 
-function Numero({ rotulo, valor }: { rotulo: string; valor: string }) {
-  return (
-    <div className="numero-destaque">
-      <dt>{rotulo}</dt>
-      <dd>{valor}</dd>
-    </div>
+        <section className="cartao">
+          <h2>{t.posicao}</h2>
+          <p className="numero-grande">{estado.rodadaAtual === 0 ? '–' : `${estado.posicao}º`}</p>
+          <p className="secundario">
+            {estado.divisaoNome} · {t.pontos(estado.pontos)}
+          </p>
+        </section>
+
+        <section className="cartao">
+          <h2>{t.ultimos}</h2>
+          {estado.ultimosResultados.length === 0 ? (
+            <p className="secundario">{t.semJogos}</p>
+          ) : (
+            <ul className="ultimos">
+              {estado.ultimosResultados.map((r) => {
+                const tipo = r.golsPro > r.golsContra ? 'vitoria' : r.golsPro === r.golsContra ? 'empate' : 'derrota'
+                return (
+                  <li key={r.rodada} className={`resultado resultado-${tipo}`} title={`${textos.partida.rodada(r.rodada)}`}>
+                    <span className="resultado-letra">{t[tipo]}</span>
+                    {r.golsPro}–{r.golsContra} {r.emCasa ? 'x' : '@'} {r.adversarioSigla}
+                  </li>
+                )
+              })}
+            </ul>
+          )}
+        </section>
+      </div>
+
+      {estado.ajustesNaEscalacao.length > 0 && (
+        <section className="cartao aviso-ajustes" role="note">
+          <h2>{t.ajustes}</h2>
+          <ul>
+            {estado.ajustesNaEscalacao.map((a) => (
+              <li key={a}>{a}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </>
   )
 }

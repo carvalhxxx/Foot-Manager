@@ -1,71 +1,53 @@
 using System.Reflection;
 using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
-using System.Text.Json;
-using Jogo.Dados.Definicoes;
-using Jogo.Dominio;
-using Jogo.Dominio.Clubes;
+using Jogo.Aplicacao;
 
 namespace Jogo.Wasm;
 
 /// <summary>
-/// API do núcleo exposta ao JavaScript. Regras:
-/// - entra e sai só texto JSON (contrato espelhado em web/src/nucleo/contrato.ts);
-/// - nenhuma exceção atravessa a fronteira: erros viram { ok: false, erros: [...] };
-/// - o estado do jogo vive aqui dentro, uma partida por aba do navegador.
+/// Funções do núcleo expostas ao JavaScript. Só repassam para <see cref="ApiJson"/>, que é testada fora do navegador.
+/// O estado do jogo vive aqui dentro: uma carreira por aba.
 /// </summary>
 [SupportedOSPlatform("browser")]
 public static partial class NucleoJs
 {
-    private static Mundo? _mundo;
+    private static readonly ApiJson Api = new();
 
     [JSExport]
     internal static string Versao() =>
         typeof(NucleoJs).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "?";
 
-    /// <summary>
-    /// Carrega as definições (mapa "caminho relativo" → conteúdo do arquivo) e devolve o resumo do mundo.
-    /// </summary>
     [JSExport]
-    internal static string CarregarDefinicoes(string arquivosJson)
-    {
-        try
-        {
-            var arquivos = JsonSerializer.Deserialize(arquivosJson, ContratoJson.Default.DictionaryStringString)
-                ?? throw new ArgumentException("Nenhum arquivo recebido.");
+    internal static string CarregarDefinicoes(string arquivosJson) => Api.CarregarDefinicoes(arquivosJson);
 
-            var (manifesto, mundo) = LeitorDefinicoes.Carregar(new FonteMemoria(arquivos));
-            _mundo = mundo;
-            return Ok(Resumir(manifesto, mundo));
-        }
-        catch (DefinicoesInvalidasException ex)
-        {
-            return Falha([.. ex.Erros.Select(e => new ErroJs(e.Arquivo, e.Local, e.Mensagem))]);
-        }
-        catch (Exception ex) when (ex is ArgumentException or JsonException)
-        {
-            return Falha([new ErroJs("", "", ex.Message)]);
-        }
-    }
+    [JSExport]
+    internal static string NovaCarreira(string clubeId, string seed) => Api.NovaCarreira(clubeId, seed);
 
-    private static ResumoMundoJs Resumir(Manifesto manifesto, Mundo mundo) => new(
-        manifesto.Nome,
-        mundo.TemporadaAtual,
-        mundo.Clubes.Sum(c => c.Elenco.Count),
-        [.. mundo.Divisoes.Select(d => new DivisaoJs(
-            d.Id,
-            d.Nome,
-            [.. d.ClubeIds.Select(mundo.Clube).Select(ResumirClube).OrderByDescending(c => c.ForcaTop11)]))]);
+    [JSExport]
+    internal static string Estado() => Api.Estado();
 
-    private static ClubeResumoJs ResumirClube(Clube c) => new(
-        c.Id, c.Nome, c.Sigla, c.Cidade, c.Uf, c.Cores.Primaria, c.Cores.Secundaria,
-        Math.Round(c.Elenco.OrderByDescending(j => j.ForcaGeral).Take(11).Average(j => j.ForcaGeral), 1),
-        c.Elenco.Count,
-        c.Torcida);
+    [JSExport]
+    internal static string Elenco() => Api.Elenco();
 
-    private static string Ok(ResumoMundoJs dados) =>
-        JsonSerializer.Serialize(new RespostaResumoJs(true, dados, null), ContratoJson.Default.RespostaResumoJs);
+    [JSExport]
+    internal static string Tatica() => Api.Tatica();
 
-    private static string Falha(ErroJs[] erros) =>
-        JsonSerializer.Serialize(new RespostaResumoJs(false, null, erros), ContratoJson.Default.RespostaResumoJs);
+    [JSExport]
+    internal static string DefinirTatica(string definicaoJson) => Api.DefinirTatica(definicaoJson);
+
+    [JSExport]
+    internal static string EscalacaoAutomatica() => Api.EscalacaoAutomatica();
+
+    [JSExport]
+    internal static string AvancarRodada() => Api.AvancarRodada();
+
+    [JSExport]
+    internal static string UltimaRodada() => Api.UltimaRodada();
+
+    [JSExport]
+    internal static string Classificacao(string divisaoId) => Api.Classificacao(divisaoId);
+
+    [JSExport]
+    internal static string EncerrarTemporada() => Api.EncerrarTemporada();
 }

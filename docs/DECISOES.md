@@ -101,6 +101,10 @@ Formato curto: contexto → decisão → consequência. Quando houver decisões 
 - **Decisão:** em simulações independentes da Série A, partindo do mundo base: o clube mais forte é campeão entre 25% e 75% das vezes; o campeão está entre os 4 mais fortes em pelo menos 70% das vezes; o campeão faz entre 68 e 88 pontos; o lanterna, entre 18 e 40.
 - **Consequência:** com 30 temporadas, os valores atuais são 67%, 93%, 84 pontos e 27 pontos. Amostras pequenas (10 temporadas) oscilam bastante, por isso a CLI usa 30.
 
+### D-024 · Camada de aplicação e interface do jogo (2026-11-26)
+- **Decisão:** os casos de uso da interface ficam em `Jogo.Aplicacao` (`ServicoDeJogo` com DTOs, `ApiJson` com texto JSON entrando e saindo), e o `Jogo.Wasm` só repassa as chamadas. A `Carreira` (em `Jogo.Simulacao`) guarda o clube do jogador e a tática; antes de cada rodada, troca titulares lesionados ou suspensos pelo melhor disponível e avisa o que mudou. O estado do jogo mora no C#; a interface relê os dados depois de cada ação, sem cópia própria. A força mostrada na Tática é a efetiva (com a penalidade de improviso). O atalho para avançar é a barra de espaço.
+- **Consequência:** a fronteira inteira (inclusive uma temporada completa e a virada de ano) é testada com xUnit, sem navegador. A interface é testada com um núcleo falso. Uma rodada leva cerca de 0,5 s no WebAssembly (sem AOT); se incomodar, o caminho é compilar com AOT (`wasm-tools`).
+
 ## Propostas (aguardando confirmação)
 
 ### P-006 · Saves no navegador em vez de SQLite

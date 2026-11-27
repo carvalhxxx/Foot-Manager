@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Casos de uso do jogo para a interface: monta DTOs prontos para a tela e recebe comandos.
+    Sem WebAssembly: testável com xUnit. O Jogo.Wasm só expõe esta API ao JavaScript.
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\Jogo.Dominio\Jogo.Dominio.csproj" />
+    <ProjectReference Include="..\Jogo.Motor\Jogo.Motor.csproj" />
+    <ProjectReference Include="..\Jogo.Simulacao\Jogo.Simulacao.csproj" />
+    <ProjectReference Include="..\Jogo.Dados\Jogo.Dados.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Jogo.Aplicacao.Testes" />
+  </ItemGroup>
+</Project>

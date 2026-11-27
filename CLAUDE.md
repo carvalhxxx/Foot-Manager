@@ -13,10 +13,11 @@ Prioridade: lançar rápido na web (desktop e celular), sem servidor: tudo roda 
 
 ## Stack
 - **Núcleo do jogo:** C# / .NET 10 (LTS), SDK fixado em `global.json`. Domínio, gerador, motor e simulação.
-- **Ponte:** `src/Jogo.Wasm` compila o núcleo para WebAssembly e expõe funções ao JavaScript com `[JSExport]`, trocando JSON.
+- **Aplicação:** `src/Jogo.Aplicacao` tem os casos de uso da interface (carreira, tática, rodada, tabelas) e o contrato JSON. É C# comum, testado com xUnit.
+- **Ponte:** `src/Jogo.Wasm` compila para WebAssembly e só repassa `Jogo.Aplicacao.ApiJson` ao JavaScript com `[JSExport]`.
 - **Interface:** React 19 + TypeScript + Vite em `web/`. Lint com oxlint, testes com Vitest + Testing Library.
 - Testes C#: xUnit v3 no Microsoft.Testing.Platform; testes de arquitetura com Mono.Cecil.
-- Saves: no navegador (ver `docs/DECISOES.md`, P-006). Ainda não implementado.
+- Saves: no navegador (ver `docs/DECISOES.md`, P-006). Ainda não implementado: recarregar a página perde a carreira.
 - CI/CD: GitHub Actions (`.github/workflows/ci.yml`). Núcleo testado em Linux e Windows; site publicado no GitHub Pages a cada push na `main`.
 
 ## Comandos
@@ -41,11 +42,13 @@ src/Jogo.Dominio     Entidades e regras puras. Sem dependências.
 src/Jogo.Motor       Motor de partida. Puro, determinístico com seed. → Dominio
 src/Jogo.Simulacao   Rodadas, calendário, IA, mercado, fim de temporada, geração do mundo. → Dominio, Motor
 src/Jogo.Dados       Leitura/gravação das definições JSON (de pasta ou da memória). → Dominio
-src/Jogo.Wasm        Ponte WebAssembly ↔ JavaScript ([JSExport], JSON). → Dominio, Simulacao, Dados
+src/Jogo.Aplicacao   Casos de uso + DTOs + ApiJson (texto JSON entra e sai). → Dominio, Motor, Simulacao, Dados
+src/Jogo.Wasm        Casca WebAssembly: [JSExport] que repassa para ApiJson. → Aplicacao
 web/                 Interface React + TypeScript (Vite).
-  src/nucleo/        Carregamento do runtime .NET e contrato com o núcleo (contrato.ts espelha ContratoJson.cs).
-  src/telas/         Uma tela por arquivo.
-  src/textos.ts      Todos os textos da interface.
+  src/nucleo/        Carregamento do runtime .NET e contrato com o núcleo (contrato.ts espelha Jogo.Aplicacao/Contrato.cs).
+  src/telas/         Uma tela por arquivo; recebem dados prontos por props.
+  src/JogoEmAndamento.tsx  Casca do jogo: menu, botão "Avançar rodada" (atalho Espaço) e troca de telas.
+  src/textos.ts      Todos os textos da interface (inclusive a descrição dos eventos da partida).
 tools/Jogo.Calibracao    CLI que simula milhares de partidas e temporadas e confere as metas.
 tools/Jogo.Simulador     CLI que simula temporadas completas (Séries A e B) sem interface.
 tools/Jogo.GeradorDados  Gera o mundo inicial (40 clubes fictícios) em dados/definicoes.
@@ -60,7 +63,8 @@ docs/                ROADMAP.md (kanban), DECISOES.md, FORMATO_DADOS.md.
 - Datas do jogo vêm do estado do jogo (calendário), nunca do relógio do computador.
 - Cada camada só referencia as camadas abaixo dela (ver tabela acima).
 - **Regras do jogo moram no C#.** A interface só exibe e envia comandos; nada de cálculo de jogo em TypeScript.
-- Fronteira C# ↔ JS: só JSON; nenhuma exceção atravessa (erros viram `{ ok: false, erros }`). Mudou `ContratoJson.cs`? Atualize `web/src/nucleo/contrato.ts`.
+- Fronteira C# ↔ JS: só JSON; nenhuma exceção atravessa (erros viram `{ ok: false, erros }`). Mudou `Jogo.Aplicacao/Contrato.cs`? Atualize `web/src/nucleo/contrato.ts`.
+- O estado do jogo mora no C# (`ServicoDeJogo`). A interface não guarda cópia: depois de cada ação, relê o que precisa.
 - Sem over-engineering: nada de microserviços, CQRS, event sourcing ou contêiner de DI no MVP.
 
 ## Convenções de código

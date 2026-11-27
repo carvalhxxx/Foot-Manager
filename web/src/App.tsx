@@ -1,80 +1,85 @@
 import { useCallback, useEffect, useState } from 'react'
-import { iniciarJogo, type ResultadoInicio } from './nucleo/iniciar'
-import { Inicio } from './telas/Inicio'
+import { JogoEmAndamento } from './JogoEmAndamento'
+import type { ResumoMundo } from './nucleo/contrato'
+import { descreverErros, iniciarJogo, novaSeed, type ResultadoInicio } from './nucleo/iniciar'
+import type { Nucleo } from './nucleo/nucleo'
+import { EscolherClube } from './telas/EscolherClube'
 import { useTema } from './tema'
 import { textos } from './textos'
 
-type Estado =
-  | { fase: 'carregando' }
-  | { fase: 'pronto'; resultado: Extract<ResultadoInicio, { ok: true }> }
-  | { fase: 'erro'; mensagens: string[] }
+type Fase =
+  | { tipo: 'carregando' }
+  | { tipo: 'erro'; mensagens: string[] }
+  | { tipo: 'escolhendo'; nucleo: Nucleo; mundo: ResumoMundo }
+  | { tipo: 'jogando'; nucleo: Nucleo; mundo: ResumoMundo }
 
 interface Props {
   /** Injetável para testes; em produção carrega o núcleo C# de verdade. */
   iniciar?: () => Promise<ResultadoInicio>
+  /** Injetável para testes. */
+  gerarSeed?: () => string
 }
 
-export default function App({ iniciar = iniciarJogo }: Props) {
+export default function App({ iniciar = iniciarJogo, gerarSeed = novaSeed }: Props) {
   const [tema, alternarTema] = useTema()
-  const [estado, setEstado] = useState<Estado>({ fase: 'carregando' })
+  const [fase, setFase] = useState<Fase>({ tipo: 'carregando' })
 
   const buscar = useCallback(() => {
     iniciar()
-      .then((resultado) =>
-        setEstado(
-          resultado.ok
-            ? { fase: 'pronto', resultado }
-            : {
-                fase: 'erro',
-                mensagens: resultado.erros.map((e) =>
-                  [e.arquivo, e.local].filter(Boolean).join(' → ') + (e.arquivo ? ': ' : '') + e.mensagem,
-                ),
-              },
-        ),
+      .then((r) =>
+        setFase(r.ok ? { tipo: 'escolhendo', nucleo: r.nucleo, mundo: r.mundo } : { tipo: 'erro', mensagens: descreverErros(r.erros) }),
       )
       .catch((erro: unknown) =>
-        setEstado({ fase: 'erro', mensagens: [erro instanceof Error ? erro.message : textos.erro.inesperado] }),
+        setFase({ tipo: 'erro', mensagens: [erro instanceof Error ? erro.message : textos.erro.inesperado] }),
       )
   }, [iniciar])
 
   useEffect(buscar, [buscar])
 
   const tentarDeNovo = () => {
-    setEstado({ fase: 'carregando' })
+    setFase({ tipo: 'carregando' })
     buscar()
   }
 
+  const escolher = (clubeId: string) => {
+    if (fase.tipo !== 'escolhendo') {
+      return
+    }
+    const r = fase.nucleo.novaCarreira(clubeId, gerarSeed())
+    setFase(r.ok ? { ...fase, tipo: 'jogando' } : { tipo: 'erro', mensagens: descreverErros(r.erros) })
+  }
+
+  const botaoTema = (
+    <button type="button" className="menu-tema" onClick={alternarTema}>
+      {tema === 'escuro' ? textos.tema.alternarParaClaro : textos.tema.alternarParaEscuro}
+    </button>
+  )
+
+  if (fase.tipo === 'jogando') {
+    return <JogoEmAndamento nucleo={fase.nucleo} mundo={fase.mundo} botaoTema={botaoTema} />
+  }
+
   return (
-    <div className="casca">
-      <aside className="menu">
-        <div className="marca">
-          <span className="marca-bola" aria-hidden="true">
-            ⚽
-          </span>
-          {textos.nomeDoJogo}
-        </div>
-        <nav>
-          <button type="button" className="menu-item ativo" aria-current="page">
-            {textos.menu.inicio}
-          </button>
-        </nav>
-        <button type="button" className="menu-tema" onClick={alternarTema}>
-          {tema === 'escuro' ? textos.tema.alternarParaClaro : textos.tema.alternarParaEscuro}
-        </button>
-      </aside>
+    <div className="casca casca-simples">
+      <header className="barra-topo">
+        <span className="marca">
+          <span aria-hidden="true">⚽</span> {textos.nomeDoJogo}
+        </span>
+        {botaoTema}
+      </header>
 
       <main className="conteudo">
-        {estado.fase === 'carregando' && (
+        {fase.tipo === 'carregando' && (
           <p className="aviso" role="status">
             {textos.carregando}
           </p>
         )}
 
-        {estado.fase === 'erro' && (
+        {fase.tipo === 'erro' && (
           <section className="erro" role="alert">
             <h1>{textos.erro.titulo}</h1>
             <ul>
-              {estado.mensagens.map((m) => (
+              {fase.mensagens.map((m) => (
                 <li key={m}>{m}</li>
               ))}
             </ul>
@@ -84,7 +89,7 @@ export default function App({ iniciar = iniciarJogo }: Props) {
           </section>
         )}
 
-        {estado.fase === 'pronto' && <Inicio mundo={estado.resultado.mundo} versao={estado.resultado.versao} />}
+        {fase.tipo === 'escolhendo' && <EscolherClube mundo={fase.mundo} aoEscolher={escolher} />}
       </main>
     </div>
   )

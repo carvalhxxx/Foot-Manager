@@ -1,15 +1,48 @@
-import type { Resposta, ResumoMundo } from './contrato'
+import type {
+  Classificacao,
+  DefinicaoTatica,
+  Estado,
+  FimDeTemporada,
+  Jogador,
+  Resposta,
+  ResumoMundo,
+  Rodada,
+  Tatica,
+} from './contrato'
 
-/** Funções do núcleo C# já com tipos de TypeScript. */
+/**
+ * Tudo o que a interface pode pedir ao núcleo C#. As telas recebem esta interface por parâmetro,
+ * então os testes usam uma versão falsa, sem WebAssembly.
+ */
 export interface Nucleo {
   versao(): string
   carregarDefinicoes(arquivos: Record<string, string>): Resposta<ResumoMundo>
+  novaCarreira(clubeId: string, seed: string): Resposta<Estado>
+  estado(): Resposta<Estado>
+  elenco(): Resposta<Jogador[]>
+  tatica(): Resposta<Tatica>
+  definirTatica(definicao: DefinicaoTatica): Resposta<Tatica>
+  escalacaoAutomatica(): Resposta<Tatica>
+  avancarRodada(): Resposta<Rodada>
+  ultimaRodada(): Resposta<Rodada>
+  classificacao(divisaoId: string): Resposta<Classificacao>
+  encerrarTemporada(): Resposta<FimDeTemporada>
 }
 
-// Formato bruto exportado por src/Jogo.Wasm/NucleoJs.cs ([JSExport]).
+// Formato bruto exportado por src/Jogo.Wasm/NucleoJs.cs ([JSExport]): só strings.
 interface ApiBruta {
   Versao(): string
   CarregarDefinicoes(arquivosJson: string): string
+  NovaCarreira(clubeId: string, seed: string): string
+  Estado(): string
+  Elenco(): string
+  Tatica(): string
+  DefinirTatica(definicaoJson: string): string
+  EscalacaoAutomatica(): string
+  AvancarRodada(): string
+  UltimaRodada(): string
+  Classificacao(divisaoId: string): string
+  EncerrarTemporada(): string
 }
 
 interface RuntimeDotnet {
@@ -34,12 +67,7 @@ export function carregarNucleo(): Promise<Nucleo> {
     const runtime = await dotnet.create()
     const assembly = runtime.getConfig().mainAssemblyName ?? 'Jogo.Wasm'
     const api = (await runtime.getAssemblyExports(assembly)).Jogo.Wasm.NucleoJs
-
-    return {
-      versao: () => api.Versao(),
-      carregarDefinicoes: (arquivos) =>
-        JSON.parse(api.CarregarDefinicoes(JSON.stringify(arquivos))) as Resposta<ResumoMundo>,
-    }
+    return embrulhar(api)
   })()
 
   // Se falhar, permite tentar de novo depois.
@@ -48,4 +76,25 @@ export function carregarNucleo(): Promise<Nucleo> {
   })
 
   return carregamento
+}
+
+function ler<T>(json: string): Resposta<T> {
+  return JSON.parse(json) as Resposta<T>
+}
+
+function embrulhar(api: ApiBruta): Nucleo {
+  return {
+    versao: () => api.Versao(),
+    carregarDefinicoes: (arquivos) => ler(api.CarregarDefinicoes(JSON.stringify(arquivos))),
+    novaCarreira: (clubeId, seed) => ler(api.NovaCarreira(clubeId, seed)),
+    estado: () => ler(api.Estado()),
+    elenco: () => ler(api.Elenco()),
+    tatica: () => ler(api.Tatica()),
+    definirTatica: (definicao) => ler(api.DefinirTatica(JSON.stringify(definicao))),
+    escalacaoAutomatica: () => ler(api.EscalacaoAutomatica()),
+    avancarRodada: () => ler(api.AvancarRodada()),
+    ultimaRodada: () => ler(api.UltimaRodada()),
+    classificacao: (divisaoId) => ler(api.Classificacao(divisaoId)),
+    encerrarTemporada: () => ler(api.EncerrarTemporada()),
+  }
 }
