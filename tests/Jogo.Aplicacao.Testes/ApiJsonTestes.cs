@@ -199,6 +199,25 @@ public class ApiJsonTestes
     }
 
     [Fact]
+    public void Financas_ExtratoEPrecoDoIngresso()
+    {
+        var api = ComCarreira();
+        Ok(api.AvancarRodada());
+
+        var financas = Ok(api.Financas());
+        Assert.Contains(financas["extrato"]!.AsArray(), l => l!["categoria"]!.GetValue<string>() == "Salarios");
+        Assert.True(financas["folhaMensal"]!.GetValue<decimal>() > 0);
+        Assert.False(financas["precoPersonalizado"]!.GetValue<bool>());
+
+        var novo = Ok(api.DefinirPrecoIngresso("75.5"));
+        Assert.Equal((75.5m, true), (novo["precoIngresso"]!.GetValue<decimal>(), novo["precoPersonalizado"]!.GetValue<bool>()));
+
+        var sugerido = Ok(api.DefinirPrecoIngresso(""));
+        Assert.False(sugerido["precoPersonalizado"]!.GetValue<bool>());
+        Assert.Contains("entre R$ 1", Falha(api.DefinirPrecoIngresso("0")), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void Save_DuranteJogoAoVivo_FalhaComMensagem()
     {
         var api = ComCarreira();

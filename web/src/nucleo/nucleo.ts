@@ -5,6 +5,7 @@ import type {
   DefinicaoTatica,
   Estado,
   FimDeTemporada,
+  Financas,
   Jogador,
   Resposta,
   ResumoMundo,
@@ -35,6 +36,9 @@ export interface Nucleo {
   avancarAoVivo(minutos: number): Resposta<AoVivo>
   decidirAoVivo(decisao: Decisao): Resposta<AoVivo>
   concluirAoVivo(): Resposta<Rodada>
+  financas(): Resposta<Financas>
+  /** Preço do ingresso; undefined volta ao preço sugerido. */
+  definirPrecoIngresso(preco: number | undefined): Resposta<Financas>
   exportarSave(): Resposta<SaveExportado>
   carregarSave(conteudo: string): Resposta<Estado>
 }
@@ -58,6 +62,8 @@ interface ApiBruta {
   AvancarAoVivo(minutos: number): string
   DecidirAoVivo(decisaoJson: string): string
   ConcluirAoVivo(): string
+  Financas(): string
+  DefinirPrecoIngresso(preco: string): string
   ExportarSave(): string
   CarregarSave(conteudo: string): string
 }
@@ -118,6 +124,8 @@ function embrulhar(api: ApiBruta): Nucleo {
     avancarAoVivo: (minutos) => ler(api.AvancarAoVivo(minutos)),
     decidirAoVivo: (decisao) => ler(api.DecidirAoVivo(JSON.stringify(decisao))),
     concluirAoVivo: () => ler(api.ConcluirAoVivo()),
+    financas: () => ler(api.Financas()),
+    definirPrecoIngresso: (preco) => ler(api.DefinirPrecoIngresso(preco === undefined ? '' : String(preco))),
     exportarSave: () => ler(api.ExportarSave()),
     carregarSave: (conteudo) => ler(api.CarregarSave(conteudo)),
   }

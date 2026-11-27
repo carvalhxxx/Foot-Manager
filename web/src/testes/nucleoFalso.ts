@@ -4,6 +4,7 @@ import type {
   ClubeResumo,
   Decisao,
   EventoPartida,
+  Financas,
   Classificacao,
   Estado,
   FimDeTemporada,
@@ -141,6 +142,7 @@ export const fimDeTemporada: FimDeTemporada = {
   aposentados: 20,
   revelacoes: 40,
   proximoAno: 2028,
+  meuResultadoFinanceiro: 4_500_000,
 }
 
 function classificacao(divisaoId: string): Classificacao {
@@ -156,6 +158,26 @@ function classificacao(divisaoId: string): Classificacao {
   }
 }
 
+function financasFalsas(preco: number | undefined): Financas {
+  return {
+    caixa: 46_000_000,
+    resultadoDaTemporada: 1_250_000,
+    extrato: [
+      { categoria: 'Bilheteria', valor: 2_000_000 },
+      { categoria: 'Salarios', valor: -750_000 },
+    ],
+    folhaMensal: 2_900_000,
+    cotaTvAnual: 4_400_000,
+    patrocinioAnual: 12_000_000,
+    precoIngresso: preco ?? 31,
+    precoSugerido: 31,
+    precoPersonalizado: preco !== undefined,
+    capacidade: 53_000,
+    ultimoPublico: 31_000,
+    ultimaRenda: 961_000,
+  }
+}
+
 /** Jogo ao vivo de mentira: gol aos 23', intervalo aos 45' e fim aos 93'. */
 const FIM_DO_JOGO_FALSO = 93
 
@@ -164,6 +186,7 @@ export function criarNucleoFalso(opcoes: { totalRodadas?: number } = {}) {
   const totalRodadas = opcoes.totalRodadas ?? 38
   let rodadaAtual = 0
   let taticaAtual = tatica
+  let precoIngresso: number | undefined
   let aoVivo: { minuto: number; mentalidade: string; formacao: string; emCampo: number[]; reservas: number[]; trocas: number } | undefined
 
   const fotoAoVivo = (pausa?: AoVivoDto['pausa']): AoVivoDto => {
@@ -296,6 +319,14 @@ export function criarNucleoFalso(opcoes: { totalRodadas?: number } = {}) {
       aoVivo = undefined
       rodadaAtual++
       return ok({ ...rodada, rodada: rodadaAtual })
+    }),
+    financas: vi.fn(() => ok(financasFalsas(precoIngresso))),
+    definirPrecoIngresso: vi.fn((preco: number | undefined) => {
+      if (preco !== undefined && (preco < 1 || preco > 1000)) {
+        return { ok: false as const, erros: [{ arquivo: '', local: '', mensagem: 'O ingresso deve custar entre R$ 1 e R$ 1.000.' }] }
+      }
+      precoIngresso = preco
+      return ok(financasFalsas(precoIngresso))
     }),
     // Save falso: o conteúdo só guarda a rodada.
     exportarSave: vi.fn(() =>

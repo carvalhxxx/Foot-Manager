@@ -67,6 +67,12 @@ public static partial class NucleoJs
     internal static string ConcluirAoVivo() => Api.ConcluirAoVivo();
 
     [JSExport]
+    internal static string Financas() => Api.Financas();
+
+    [JSExport]
+    internal static string DefinirPrecoIngresso(string preco) => Api.DefinirPrecoIngresso(preco);
+
+    [JSExport]
     internal static string ExportarSave() => Api.ExportarSave();
 
     [JSExport]

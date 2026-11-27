@@ -160,6 +160,24 @@ public sealed record AoVivoDto(
 /// <summary>Decisão do jogador durante o jogo: "substituicao", "mentalidade" ou "formacao".</summary>
 public sealed record DecisaoDto(string Tipo, int? SaiId = null, int? EntraId = null, string? Mentalidade = null, string? Formacao = null);
 
+// ------------------------------------------------------------------ finanças
+
+public sealed record LancamentoDto(string Categoria, decimal Valor);
+
+public sealed record FinancasDto(
+    decimal Caixa,
+    decimal ResultadoDaTemporada,
+    IReadOnlyList<LancamentoDto> Extrato,
+    decimal FolhaMensal,
+    decimal CotaTvAnual,
+    decimal PatrocinioAnual,
+    decimal PrecoIngresso,
+    decimal PrecoSugerido,
+    bool PrecoPersonalizado,
+    int Capacidade,
+    int? UltimoPublico,
+    decimal? UltimaRenda);
+
 // ------------------------------------------------------------------ saves
 
 /// <summary>Save pronto para guardar: o conteúdo (texto opaco) e um resumo para a lista de saves.</summary>
@@ -183,7 +201,7 @@ public sealed record ResumoDivisaoDto(string Nome, string Campeao, IReadOnlyList
 
 public sealed record FimDeTemporadaDto(
     int Ano, IReadOnlyList<ResumoDivisaoDto> Divisoes, int MinhaPosicao, string MinhaDivisao,
-    string? Movimento, int Aposentados, int Revelacoes, int ProximoAno);
+    string? Movimento, int Aposentados, int Revelacoes, int ProximoAno, decimal MeuResultadoFinanceiro);
 
 [JsonSourceGenerationOptions(
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
@@ -193,6 +211,7 @@ public sealed record FimDeTemporadaDto(
 [JsonSerializable(typeof(DecisaoDto))]
 [JsonSerializable(typeof(Resposta<AoVivoDto>))]
 [JsonSerializable(typeof(Resposta<SaveDto>))]
+[JsonSerializable(typeof(Resposta<FinancasDto>))]
 [JsonSerializable(typeof(Resposta<ResumoMundoDto>))]
 [JsonSerializable(typeof(Resposta<EstadoDto>))]
 [JsonSerializable(typeof(Resposta<IReadOnlyList<JogadorDto>>))]

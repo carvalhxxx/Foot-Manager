@@ -267,6 +267,28 @@ export type Decisao =
   | { tipo: 'mentalidade'; mentalidade: string }
   | { tipo: 'formacao'; formacao: string }
 
+// ---------------------------------------------------------------- finanças
+
+export interface Lancamento {
+  categoria: string
+  valor: number
+}
+
+export interface Financas {
+  caixa: number
+  resultadoDaTemporada: number
+  extrato: Lancamento[]
+  folhaMensal: number
+  cotaTvAnual: number
+  patrocinioAnual: number
+  precoIngresso: number
+  precoSugerido: number
+  precoPersonalizado: boolean
+  capacidade: number
+  ultimoPublico?: number
+  ultimaRenda?: number
+}
+
 // ---------------------------------------------------------------- saves
 
 /** Save pronto para guardar: o conteúdo é texto opaco (só o C# lê) + um resumo para a lista. */
@@ -333,4 +355,5 @@ export interface FimDeTemporada {
   aposentados: number
   revelacoes: number
   proximoAno: number
+  meuResultadoFinanceiro: number
 }

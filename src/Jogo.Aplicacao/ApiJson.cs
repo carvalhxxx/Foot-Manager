@@ -62,6 +62,13 @@ public sealed class ApiJson
 
     public string ConcluirAoVivo() => Json(_servico.ConcluirAoVivo());
 
+    public string Financas() => Json(_servico.Financas());
+
+    /// <summary>Preço em texto ("" volta ao sugerido): evita perder precisão de decimal no caminho JS → C#.</summary>
+    public string DefinirPrecoIngresso(string preco) => Proteger(
+        () => Json(_servico.DefinirPrecoIngresso(string.IsNullOrWhiteSpace(preco) ? null : decimal.Parse(preco, CultureInfo.InvariantCulture))),
+        ContratoJson.Default.RespostaFinancasDto);
+
     public string ExportarSave() => Json(_servico.ExportarSave());
 
     public string CarregarSave(string conteudo) => Json(_servico.CarregarSave(conteudo));
@@ -75,6 +82,7 @@ public sealed class ApiJson
     private static string Json(Resposta<ClassificacaoDto> r) => JsonSerializer.Serialize(r, ContratoJson.Default.RespostaClassificacaoDto);
     private static string Json(Resposta<FimDeTemporadaDto> r) => JsonSerializer.Serialize(r, ContratoJson.Default.RespostaFimDeTemporadaDto);
     private static string Json(Resposta<AoVivoDto> r) => JsonSerializer.Serialize(r, ContratoJson.Default.RespostaAoVivoDto);
+    private static string Json(Resposta<FinancasDto> r) => JsonSerializer.Serialize(r, ContratoJson.Default.RespostaFinancasDto);
     private static string Json(Resposta<SaveDto> r) => JsonSerializer.Serialize(r, ContratoJson.Default.RespostaSaveDto);
 
     /// <summary>Converte entrada malformada em resposta de erro, em vez de deixar a exceção chegar ao JavaScript.</summary>

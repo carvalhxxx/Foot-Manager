@@ -5,18 +5,20 @@ Cada entrega termina com testes passando, commit claro e este arquivo atualizado
 
 ## Em andamento
 
-_(nada)_
+### E8 · Mercado, contratos e finanças · G
+- **Objetivo:** comprar, vender e dispensar (com a IA também negociando), janelas de transferência, contratos e renovação, bilheteria com preço do ingresso, patrocínio, TV, premiação e salários.
+- **Observação:** hoje os elencos só mudam por evolução, aposentadoria e base, e os contratos são renovados automaticamente. Por isso o clube mais forte domina várias temporadas seguidas. O mercado é o que vai trazer rotatividade entre os grandes.
+- **Aceite:** uma temporada simulada fecha o caixa de forma coerente para todos os clubes.
+- **Etapas:**
+  1. ~~8a · Finanças~~ ✔ bilheteria com preço do ingresso, TV, patrocínio, salários por rodada, premiação, tela Finanças, calibração (D-027);
+  2. 8b · Contratos: valor de mercado, renovação, dispensa, agentes livres;
+  3. 8c · Mercado: janelas, comprar e vender, IA negociando.
 
 ## Refinando
 
 _(nada)_
 
 ## Backlog (MVP · Fase 1)
-
-### E8 · Mercado, contratos e finanças · G
-- **Objetivo:** comprar, vender e dispensar (com a IA também negociando), janelas de transferência, contratos e renovação, bilheteria com preço do ingresso, patrocínio, TV, premiação e salários.
-- **Observação:** hoje os elencos só mudam por evolução, aposentadoria e base, e os contratos são renovados automaticamente. Por isso o clube mais forte domina várias temporadas seguidas. O mercado é o que vai trazer rotatividade entre os grandes.
-- **Aceite:** uma temporada simulada fecha o caixa de forma coerente para todos os clubes.
 
 ## Fase 2 (depois do lançamento do MVP)
 - **2.0 Calendário real:** datas, meses, jogos no meio de semana (pré-requisito do resto).

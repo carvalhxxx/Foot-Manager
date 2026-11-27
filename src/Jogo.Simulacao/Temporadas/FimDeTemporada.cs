@@ -3,6 +3,7 @@ using Jogo.Dominio.Aleatoriedade;
 using Jogo.Dominio.Clubes;
 using Jogo.Dominio.Competicoes;
 using Jogo.Dominio.Jogadores;
+using Jogo.Simulacao.Financas;
 using Jogo.Simulacao.Geracao;
 
 namespace Jogo.Simulacao.Temporadas;
@@ -22,7 +23,8 @@ public sealed record ResultadoTemporada(
     int Ano,
     IReadOnlyList<ResumoDivisao> Divisoes,
     IReadOnlyList<int> Aposentados,
-    IReadOnlyList<int> Revelacoes);
+    IReadOnlyList<int> Revelacoes,
+    IReadOnlyDictionary<string, IReadOnlyDictionary<CategoriaFinanceira, decimal>> Extratos);
 
 /// <summary>
 /// Fecha a temporada: acesso e rebaixamento, evolução, aposentadorias, revelações da base,
@@ -49,6 +51,18 @@ public static class FimDeTemporada
         }
 
         var aleatorio = new GeradorAleatorio(seed ^ GeradorDeMundo.HashEstavel($"fim/{temporada.Ano}"));
+        PagarPremiacao(temporada, mundo);
+
+        // O extrato da temporada vai para o resultado e é zerado para o ano seguinte.
+        var extratos = mundo.Clubes.ToDictionary(
+            c => c.Id,
+            c => (IReadOnlyDictionary<CategoriaFinanceira, decimal>)new SortedDictionary<CategoriaFinanceira, decimal>(c.Extrato.ToDictionary()),
+            StringComparer.Ordinal);
+        foreach (var clube in mundo.Clubes)
+        {
+            clube.ComecarNovaTemporadaFinanceira();
+        }
+
         var resumos = Movimentar(temporada, mundo);
         var aposentados = new List<int>();
         var revelacoes = new List<int>();
@@ -76,7 +90,20 @@ public static class FimDeTemporada
         }
 
         mundo.AvancarTemporada();
-        return new ResultadoTemporada(temporada.Ano, resumos, aposentados, revelacoes);
+        return new ResultadoTemporada(temporada.Ano, resumos, aposentados, revelacoes, extratos);
+    }
+
+    private static void PagarPremiacao(Temporada temporada, Mundo mundo)
+    {
+        foreach (var divisao in mundo.Divisoes)
+        {
+            var tabela = temporada.Tabela(divisao.Id);
+            foreach (var linha in tabela)
+            {
+                mundo.Clube(linha.ClubeId).Lancar(CategoriaFinanceira.Premiacao,
+                    Financas.Financas.Premio(linha.Posicao, tabela.Count, divisao, temporada.RegrasFinanceiras));
+            }
+        }
     }
 
     private static List<ResumoDivisao> Movimentar(Temporada temporada, Mundo mundo)

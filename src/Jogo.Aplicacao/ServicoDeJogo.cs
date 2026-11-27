@@ -143,6 +143,36 @@ public sealed class ServicoDeJogo
     public Resposta<RodadaDto> UltimaRodada() => ComCarreira(c =>
         c.UltimaRodada is { } rodada ? ParaDto(c, rodada) : new RodadaDto(0, null, []));
 
+    // ------------------------------------------------------------------ finanças
+
+    public Resposta<FinancasDto> Financas() => ComCarreira(FinancasDe);
+
+    /// <summary>Define o preço do ingresso dos jogos em casa (nulo volta ao preço sugerido).</summary>
+    public Resposta<FinancasDto> DefinirPrecoIngresso(decimal? preco) => ComCarreira(c =>
+    {
+        c.Clube.DefinirPrecoIngresso(preco);
+        return FinancasDe(c);
+    });
+
+    private static FinancasDto FinancasDe(Carreira c)
+    {
+        var clube = c.Clube;
+        var regras = c.Temporada.RegrasFinanceiras;
+        return new FinancasDto(
+            clube.Caixa,
+            clube.Extrato.Values.Sum(),
+            [.. clube.Extrato.Select(kv => new LancamentoDto(kv.Key.ToString(), kv.Value))],
+            Simulacao.Financas.Financas.FolhaMensal(clube),
+            Simulacao.Financas.Financas.CotaTvAnual(clube, c.MinhaCompeticao.Divisao, regras),
+            Simulacao.Financas.Financas.PatrocinioAnual(clube, regras),
+            Simulacao.Financas.Financas.PrecoDoIngresso(clube, regras),
+            Simulacao.Financas.Financas.PrecoSugerido(clube, regras),
+            clube.PrecoIngresso is not null,
+            clube.Estadio.Capacidade,
+            clube.UltimoJogoEmCasa?.Publico,
+            clube.UltimoJogoEmCasa?.Renda);
+    }
+
     // ------------------------------------------------------------------ saves
 
     /// <summary>Gera o save da carreira atual (não dá durante uma rodada ao vivo).</summary>
@@ -363,7 +393,8 @@ public sealed class ServicoDeJogo
             movimento,
             resultado.Aposentados.Count,
             resultado.Revelacoes.Count,
-            c.Mundo.TemporadaAtual);
+            c.Mundo.TemporadaAtual,
+            resultado.Extratos[c.Clube.Id].Values.Sum());
     });
 
     // ------------------------------------------------------------------ apoio

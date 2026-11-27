@@ -49,7 +49,10 @@ public class CalibradorTemporadaTestes
     {
         var metas = Calibrador.Temporadas(() => GeradorDeMundo.Gerar(2027, 2027, CatalogoBase.Clubes), 3, 5);
 
-        Assert.Equal(5, metas.Count);
+        Assert.Equal(8, metas.Count);
+        Assert.InRange(metas.Single(m => m.Nome == "Clubes no vermelho").Valor, 0, 0.2);
+        Assert.True(metas.Single(m => m.Nome.StartsWith("Resultado dos grandes", StringComparison.Ordinal)).Valor
+                    > metas.Single(m => m.Nome.StartsWith("Resultado dos pequenos", StringComparison.Ordinal)).Valor);
         Assert.InRange(metas.Single(m => m.Nome == "Pontos do campeão").Valor, 60, 100);
         Assert.InRange(metas.Single(m => m.Nome == "Pontos do lanterna").Valor, 5, 45);
         Assert.Equal(1.0, metas.Single(m => m.Nome == "Campeão entre os 4 mais fortes").Valor, 6);

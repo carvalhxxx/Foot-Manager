@@ -49,6 +49,15 @@ internal sealed class ClubeSave
     public int Reputacao { get; set; }
     public decimal Caixa { get; set; }
     public List<JogadorSave>? Elenco { get; set; }
+
+    // Versão 2 em diante (ausentes nos saves da versão 1) ---------------------
+
+    /// <summary>Extrato da temporada: categoria → valor.</summary>
+    public Dictionary<string, decimal>? Extrato { get; set; }
+
+    public decimal? PrecoIngresso { get; set; }
+    public int? UltimoPublico { get; set; }
+    public decimal? UltimaRenda { get; set; }
 }
 
 internal sealed class JogadorSave

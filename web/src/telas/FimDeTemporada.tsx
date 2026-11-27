@@ -1,5 +1,5 @@
 import type { FimDeTemporada as FimDto } from '../nucleo/contrato'
-import { textos } from '../textos'
+import { formatoDinheiro, textos } from '../textos'
 
 interface Props {
   fim: FimDto
@@ -54,6 +54,7 @@ export function FimDeTemporada({ fim, aoContinuar }: Props) {
         ))}
       </div>
 
+      <p className="secundario">{t.resultadoFinanceiro(formatoDinheiro.format(fim.meuResultadoFinanceiro))}</p>
       <p className="secundario">{t.viradaDeAno(fim.aposentados, fim.revelacoes)}</p>
       <button type="button" className="botao botao-grande" onClick={aoContinuar}>
         {t.comecar(fim.proximoAno)}

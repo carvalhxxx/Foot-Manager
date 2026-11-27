@@ -4,6 +4,7 @@ using Jogo.Dominio.Clubes;
 using Jogo.Dominio.Competicoes;
 using Jogo.Dominio.Jogadores;
 using Jogo.Motor;
+using Jogo.Simulacao.Financas;
 using Jogo.Simulacao.Geracao;
 using Jogo.Simulacao.Ia;
 
@@ -45,13 +46,19 @@ public sealed class Temporada
     private readonly Mundo _mundo;
     private readonly ulong _seed;
 
-    public Temporada(Mundo mundo, ulong seed, RegrasTemporada? regras = null, ConfiguracaoMotor? configuracao = null)
+    public Temporada(
+        Mundo mundo,
+        ulong seed,
+        RegrasTemporada? regras = null,
+        ConfiguracaoMotor? configuracao = null,
+        RegrasFinanceiras? financas = null)
     {
         ArgumentNullException.ThrowIfNull(mundo);
 
         _mundo = mundo;
         _seed = seed;
         Regras = regras ?? RegrasTemporada.Padrao;
+        RegrasFinanceiras = financas ?? RegrasFinanceiras.Padrao;
         Configuracao = configuracao ?? ConfiguracaoMotor.Padrao;
         Ano = mundo.TemporadaAtual;
 
@@ -62,6 +69,7 @@ public sealed class Temporada
 
     public int Ano { get; }
     public RegrasTemporada Regras { get; }
+    public RegrasFinanceiras RegrasFinanceiras { get; }
     public ConfiguracaoMotor Configuracao { get; }
     public IReadOnlyList<CompeticaoDaTemporada> Competicoes { get; }
 
@@ -111,6 +119,28 @@ public sealed class Temporada
         }
 
         RodadaAtual = rodadaAtual;
+    }
+
+    /// <summary>Fração dos pontos do clube nos últimos 5 jogos antes da rodada (0,5 se ainda não jogou).</summary>
+    private static double AproveitamentoRecente(CompeticaoDaTemporada competicao, string clubeId, int rodada)
+    {
+        var ultimos = competicao.Disputados
+            .Where(d => d.Placar.Jogo.Rodada < rodada && (d.Placar.Jogo.MandanteId == clubeId || d.Placar.Jogo.VisitanteId == clubeId))
+            .TakeLast(5)
+            .ToArray();
+        if (ultimos.Length == 0)
+        {
+            return 0.5;
+        }
+
+        var pontos = ultimos.Sum(d =>
+        {
+            var (pro, contra) = d.Placar.Jogo.MandanteId == clubeId
+                ? (d.Placar.GolsMandante, d.Placar.GolsVisitante)
+                : (d.Placar.GolsVisitante, d.Placar.GolsMandante);
+            return pro > contra ? 3 : pro == contra ? 1 : 0;
+        });
+        return pontos / (3.0 * ultimos.Length);
     }
 
     /// <summary>Relatório de uma rodada já disputada, montado a partir dos jogos registrados.</summary>
@@ -252,7 +282,16 @@ public sealed class Temporada
             PosJogo.Aplicar(clube, escalacao, resultado, equipe, Regras);
         }
 
-        // 3. Recuperação física até a próxima rodada.
+        // 3. Dinheiro: bilheteria de quem jogou em casa; TV, patrocínio e salários de todos.
+        foreach (var j in emAndamento.Jogos)
+        {
+            Financas.Financas.ProcessarJogoEmCasa(j.Mandante, j.Visitante,
+                AproveitamentoRecente(j.Competicao, j.Mandante.Id, emAndamento.Rodada), RegrasFinanceiras);
+            Financas.Financas.ProcessarRodada(j.Mandante, j.Competicao.Divisao, j.Competicao.Calendario.Count, RegrasFinanceiras);
+            Financas.Financas.ProcessarRodada(j.Visitante, j.Competicao.Divisao, j.Competicao.Calendario.Count, RegrasFinanceiras);
+        }
+
+        // 4. Recuperação física até a próxima rodada.
         foreach (var jogador in _mundo.Clubes.SelectMany(c => c.Elenco))
         {
             jogador.AjustarCondicao(Regras.RecuperacaoBase + (jogador.Atributos.Resistencia / 2));

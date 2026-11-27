@@ -50,6 +50,17 @@ public sealed record MetasCalibracao
 
     public (double Min, double Max) PontosDoCampeao { get; init; } = (68, 88);
     public (double Min, double Max) PontosDoLanterna { get; init; } = (18, 40);
+
+    // Finanças (uma temporada sem mercado) --------------------------------------
+
+    /// <summary>Resultado médio (receitas − despesas, em milhões) dos clubes de reputação ≥ 80.</summary>
+    public (double Min, double Max) ResultadoDosGrandes { get; init; } = (0, 15);
+
+    /// <summary>Resultado médio (em milhões) dos clubes de reputação &lt; 46: apertado, perto do zero.</summary>
+    public (double Min, double Max) ResultadoDosPequenos { get; init; } = (-2, 3);
+
+    /// <summary>Fração máxima de clubes com caixa negativo no fim da temporada.</summary>
+    public double ClubesNoVermelhoMaximo { get; init; } = 0.10;
 }
 
 /// <summary>
@@ -97,8 +108,10 @@ public static class Calibrador
         ArgumentNullException.ThrowIfNull(criarMundo);
         metas ??= MetasCalibracao.Padrao;
 
-        int maisForteCampeao = 0, entreQuatro = 0;
+        int maisForteCampeao = 0, entreQuatro = 0, clubesNoVermelho = 0, clubes = 0;
         double pontosCampeao = 0, pontosLanterna = 0, golsPorJogo = 0;
+        var resultadosGrandes = new List<double>();
+        var resultadosPequenos = new List<double>();
 
         for (var i = 0; i < temporadas; i++)
         {
@@ -115,6 +128,30 @@ public static class Calibrador
             pontosCampeao += tabela[0].Pontos;
             pontosLanterna += tabela[^1].Pontos;
             golsPorJogo += (double)tabela.Sum(l => l.GolsPro) / tabela.Sum(l => l.Jogos) * 2;
+
+            // Resultado da temporada inclui a premiação pela posição final (paga no fim de temporada).
+            var premios = mundo.Divisoes.SelectMany(d =>
+                {
+                    var t = temporada.Tabela(d.Id);
+                    return t.Select(l => (l.ClubeId, Premio: Financas.Financas.Premio(l.Posicao, t.Count, d, temporada.RegrasFinanceiras)));
+                })
+                .ToDictionary(x => x.ClubeId, x => x.Premio, StringComparer.Ordinal);
+
+            foreach (var clube in mundo.Clubes)
+            {
+                var resultado = (double)(clube.Extrato.Values.Sum() + premios[clube.Id]) / 1_000_000;
+                if (clube.Reputacao >= 80)
+                {
+                    resultadosGrandes.Add(resultado);
+                }
+                else if (clube.Reputacao < 46)
+                {
+                    resultadosPequenos.Add(resultado);
+                }
+
+                clubesNoVermelho += clube.Caixa < 0 ? 1 : 0;
+                clubes++;
+            }
         }
 
         double Media(double total) => total / temporadas;
@@ -126,6 +163,9 @@ public static class Calibrador
             new("Pontos do campeão", Media(pontosCampeao), metas.PontosDoCampeao.Min, metas.PontosDoCampeao.Max, "F1"),
             new("Pontos do lanterna", Media(pontosLanterna), metas.PontosDoLanterna.Min, metas.PontosDoLanterna.Max, "F1"),
             new("Gols por jogo na temporada", Media(golsPorJogo), null, null, "F2"),
+            new("Resultado dos grandes (R$ mi)", resultadosGrandes.DefaultIfEmpty(0).Average(), metas.ResultadoDosGrandes.Min, metas.ResultadoDosGrandes.Max, "F1"),
+            new("Resultado dos pequenos (R$ mi)", resultadosPequenos.DefaultIfEmpty(0).Average(), metas.ResultadoDosPequenos.Min, metas.ResultadoDosPequenos.Max, "F1"),
+            new("Clubes no vermelho", clubes == 0 ? 0 : (double)clubesNoVermelho / clubes, null, metas.ClubesNoVermelhoMaximo, "P0"),
         ];
     }
 

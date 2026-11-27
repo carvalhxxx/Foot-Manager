@@ -8,13 +8,14 @@ import { baixarSave, formatoHora, salvarCarreira } from './saves/salvar'
 import { AoVivo } from './telas/AoVivo'
 import { Classificacao } from './telas/Classificacao'
 import { Elenco } from './telas/Elenco'
+import { Financas } from './telas/Financas'
 import { FimDeTemporada } from './telas/FimDeTemporada'
 import { Inicio } from './telas/Inicio'
 import { Partida } from './telas/Partida'
 import { Tatica } from './telas/Tatica'
 import { textos } from './textos'
 
-type Tela = 'inicio' | 'elenco' | 'tatica' | 'partida' | 'classificacao' | 'aoVivo' | 'fim'
+type Tela = 'inicio' | 'elenco' | 'tatica' | 'partida' | 'classificacao' | 'financas' | 'aoVivo' | 'fim'
 
 const MENU: { tela: Tela; rotulo: string }[] = [
   { tela: 'inicio', rotulo: textos.menu.inicio },
@@ -22,6 +23,7 @@ const MENU: { tela: Tela; rotulo: string }[] = [
   { tela: 'tatica', rotulo: textos.menu.tatica },
   { tela: 'partida', rotulo: textos.menu.partida },
   { tela: 'classificacao', rotulo: textos.menu.classificacao },
+  { tela: 'financas', rotulo: textos.menu.financas },
 ]
 
 interface Props {
@@ -56,6 +58,7 @@ export function JogoEmAndamento({ nucleo, mundo, botaoTema, slotId, armazenament
   const [rodada, setRodada] = useState<Rodada | undefined>()
   const [fim, setFim] = useState<FimDto | undefined>()
   const [errosTatica, setErrosTatica] = useState<string[]>([])
+  const [errosFinancas, setErrosFinancas] = useState<string[]>([])
   const [divisaoVista, setDivisaoVista] = useState<string | undefined>()
   const [save, setSave] = useState<SituacaoSave | undefined>()
 
@@ -182,6 +185,21 @@ export function JogoEmAndamento({ nucleo, mundo, botaoTema, slotId, armazenament
           />
         )
       }
+      case 'financas':
+        return (
+          <Financas
+            financas={dados(nucleo.financas())}
+            erros={errosFinancas}
+            aoDefinirPreco={(preco) => {
+              const r = nucleo.definirPrecoIngresso(preco)
+              setErrosFinancas(r.ok ? [] : descreverErros(r.erros))
+              if (r.ok) {
+                salvar()
+              }
+              atualizar()
+            }}
+          />
+        )
       case 'aoVivo': {
         const tatica = dados(nucleo.tatica())
         return (

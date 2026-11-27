@@ -1114,3 +1114,42 @@ select {
     font-size: 0.85rem;
   }
 }
+
+/* ------------------------------------------------------------ finanças */
+
+.negativo {
+  color: var(--perigo);
+}
+
+.positivo {
+  color: var(--destaque);
+}
+
+.form-ingresso {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.campo-dinheiro {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.campo-dinheiro input {
+  width: 90px;
+  font: inherit;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--borda);
+  background: var(--superficie);
+  color: var(--texto);
+}
+
+.dica {
+  font-size: 0.85rem;
+}

@@ -75,6 +75,55 @@ public sealed class Clube
 
     public void MovimentarCaixa(decimal valor) => Caixa += valor;
 
+    // Finanças da temporada ----------------------------------------------------
+
+    private readonly SortedDictionary<CategoriaFinanceira, decimal> _extrato = [];
+
+    /// <summary>Totais da temporada atual por categoria (receitas positivas, despesas negativas).</summary>
+    public IReadOnlyDictionary<CategoriaFinanceira, decimal> Extrato => _extrato;
+
+    /// <summary>Preço do ingresso escolhido pelo clube; nulo = preço sugerido pelas regras.</summary>
+    public decimal? PrecoIngresso { get; private set; }
+
+    /// <summary>Público e renda do último jogo em casa (nulo antes do primeiro).</summary>
+    public (int Publico, decimal Renda)? UltimoJogoEmCasa { get; private set; }
+
+    /// <summary>Lança um valor no caixa e no extrato da temporada.</summary>
+    public void Lancar(CategoriaFinanceira categoria, decimal valor)
+    {
+        Caixa += valor;
+        _extrato[categoria] = _extrato.GetValueOrDefault(categoria) + valor;
+    }
+
+    public void DefinirPrecoIngresso(decimal? preco)
+    {
+        if (preco is { } p && (p < 1 || p > 1_000))
+        {
+            throw new ArgumentOutOfRangeException(nameof(preco), preco, "O ingresso deve custar entre R$ 1 e R$ 1.000.");
+        }
+
+        PrecoIngresso = preco;
+    }
+
+    public void RegistrarJogoEmCasa(int publico, decimal renda) => UltimoJogoEmCasa = (publico, renda);
+
+    /// <summary>Começo de temporada: zera o extrato (o caixa continua).</summary>
+    public void ComecarNovaTemporadaFinanceira() => _extrato.Clear();
+
+    /// <summary>Restaura o estado financeiro lido de um save.</summary>
+    public void RestaurarFinancas(IReadOnlyDictionary<CategoriaFinanceira, decimal> extrato, decimal? precoIngresso, (int Publico, decimal Renda)? ultimoJogoEmCasa)
+    {
+        ArgumentNullException.ThrowIfNull(extrato);
+        _extrato.Clear();
+        foreach (var (categoria, valor) in extrato)
+        {
+            _extrato[categoria] = valor;
+        }
+
+        DefinirPrecoIngresso(precoIngresso);
+        UltimoJogoEmCasa = ultimoJogoEmCasa;
+    }
+
     private static string ValidarSigla(string sigla)
     {
         var texto = Validacao.Texto(sigla, nameof(sigla));

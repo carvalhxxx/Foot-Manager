@@ -17,7 +17,8 @@ public sealed class SaveInvalidoException(string mensagem, Exception? causa = nu
 /// <summary>Converte uma <see cref="Carreira"/> em texto JSON e de volta, sem perder nada que afete o jogo.</summary>
 public static class ConversorSave
 {
-    public const int VersaoAtual = 1;
+    /// <summary>Versão 2: finanças do clube (extrato, ingresso, último jogo em casa). Saves da versão 1 continuam carregando.</summary>
+    public const int VersaoAtual = 2;
 
     private static readonly TipoAtributo[] Atributos = Enum.GetValues<TipoAtributo>();
 
@@ -127,6 +128,10 @@ public static class ConversorSave
         Estadio = c.Estadio.Nome, Capacidade = c.Estadio.Capacidade,
         Torcida = c.Torcida, Reputacao = c.Reputacao, Caixa = c.Caixa,
         Elenco = [.. c.Elenco.Select(ParaSave)],
+        Extrato = c.Extrato.ToDictionary(kv => kv.Key.ToString(), kv => kv.Value, StringComparer.Ordinal),
+        PrecoIngresso = c.PrecoIngresso,
+        UltimoPublico = c.UltimoJogoEmCasa?.Publico,
+        UltimaRenda = c.UltimoJogoEmCasa?.Renda,
     };
 
     private static JogadorSave ParaSave(Jogador j) => new()
@@ -157,6 +162,10 @@ public static class ConversorSave
             clube.AdicionarAoElenco(ParaDominio(j, clube.Id));
         }
 
+        clube.RestaurarFinancas(
+            (s.Extrato ?? []).ToDictionary(kv => Enum.Parse<CategoriaFinanceira>(kv.Key), kv => kv.Value),
+            s.PrecoIngresso,
+            s.UltimoPublico is { } publico ? (publico, s.UltimaRenda ?? 0) : null);
         return clube;
     }
 
