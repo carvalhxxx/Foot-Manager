@@ -43,7 +43,7 @@ describe('Rodada ao vivo', () => {
     expect(nucleo.avancarAoVivo).toHaveBeenCalledTimes(25)
     const narracao = screen.getByRole('heading', { name: t.narracao }).parentElement!
     expect(within(narracao).getByText(/Craque Silva/)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: textos.menu.inicio })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: textos.menu.elenco })).toBeInTheDocument()
   })
 
   it('pausa sozinho no intervalo, avisa e continua quando o jogador quiser', async () => {

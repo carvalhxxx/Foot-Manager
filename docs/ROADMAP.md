@@ -27,6 +27,9 @@ Mobile, saves na nuvem, ligas online entre amigos, modelo freemium/assinatura.
 
 ## Feito
 
+### Tela inicial com o elenco · P
+- Menu no topo, coluna da próxima partida à esquerda (adversário, mando, rodada, botões da rodada, posição, caixa, últimos resultados e avisos) e o elenco como tela principal, em tabela densa (D-034).
+
 ### Clubes e jogadores reais · M
 - As Séries A e B de 2026 com os 40 clubes reais (nomes, cidades, estádios e cores, sem escudos) e os elencos de novembro de 2026 (nome, idade e valor de mercado de fontes públicas). Atributos estimados pelo nosso gerador a partir do valor de mercado. Temporada inicial 2026. Calibração ajustada para os dados reais (D-033).
 - **Pendente:** elencos reais de Avaí e América-MG (sem fonte acessível; hoje gerados), idades e valores de São Paulo, Grêmio, Fortaleza e Novorizontino, e atacantes de Remo e Mirassol (a fonte cortou a lista).

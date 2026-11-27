@@ -146,7 +146,7 @@ export function Elenco({ jogadores, erros, aoRenovar, aoDispensar, consultarOfer
         />
       )}
       <div className="cartao rolagem">
-        <table className="tabela">
+        <table className="tabela tabela-elenco">
           <thead>
             <tr>
               <th scope="col">{t.pos}</th>
@@ -171,7 +171,7 @@ export function Elenco({ jogadores, erros, aoRenovar, aoDispensar, consultarOfer
                   <td>
                     <span className="sigla-posicao">{j.posicao}</span>
                   </td>
-                  <td>
+                  <td className="celula-nome">
                     <button type="button" className="link-jogador" aria-label={t.detalhes(j.nome)} onClick={() => setSelecionado(j.id)}>
                       {j.nome}
                     </button>
@@ -181,7 +181,7 @@ export function Elenco({ jogadores, erros, aoRenovar, aoDispensar, consultarOfer
                       </span>
                     )}
                     {j.posicoesSecundarias.length > 0 && (
-                      <span className="secundario"> · {j.posicoesSecundarias.join(', ')}</span>
+                      <span className="secundario ocultar-celular"> · {j.posicoesSecundarias.join(', ')}</span>
                     )}
                   </td>
                   <td className="numero">{j.idade}</td>

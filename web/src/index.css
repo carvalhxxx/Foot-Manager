@@ -1395,3 +1395,183 @@ select {
 .acoes-funcao {
   margin-bottom: 12px;
 }
+
+/* Casca com menu no topo: barra do clube + menu, coluna da partida à esquerda e elenco no centro. */
+.casca.casca-topo {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.barra-menu {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 20px;
+  background: var(--superficie);
+  border-bottom: 1px solid var(--borda);
+}
+
+.barra-menu nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  flex: 1;
+}
+
+.barra-menu .menu-item {
+  padding: 8px 12px;
+}
+
+.barra-menu .menu-rodape {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.barra-menu .menu-tema {
+  padding: 6px 10px;
+  font-size: 0.85rem;
+}
+
+.marca-detalhe {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--texto-suave);
+}
+
+.corpo-jogo {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 20px;
+  padding: 20px;
+  align-items: start;
+  flex: 1;
+}
+
+.corpo-jogo.corpo-sem-painel {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.corpo-jogo .conteudo {
+  padding: 0;
+  max-width: none;
+}
+
+.coluna-partida {
+  position: sticky;
+  top: 76px;
+}
+
+.painel-partida {
+  display: grid;
+  gap: 12px;
+}
+
+.painel-partida .cartao {
+  margin: 0;
+}
+
+.cartao-proximo .proximo-jogo {
+  gap: 12px;
+}
+
+.cartao-proximo .proximo-jogo > span {
+  display: grid;
+  gap: 2px;
+}
+
+.proximo-nome {
+  font-size: 1.15rem;
+}
+
+.acoes-painel {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.acoes-painel .botao {
+  width: 100%;
+  justify-content: center;
+}
+
+.resumo-painel {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 12px;
+  margin: 0 0 12px;
+}
+
+.resumo-painel dt {
+  color: var(--texto-suave);
+}
+
+.resumo-painel dd {
+  margin: 0;
+  text-align: right;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.subtitulo-painel {
+  font-size: 0.9rem;
+  margin: 0 0 8px;
+}
+
+@media (max-width: 1100px) {
+  .barra-menu {
+    flex-wrap: wrap;
+  }
+
+  .barra-menu nav {
+    order: 3;
+    flex: 1 1 100%;
+  }
+
+  .barra-menu .menu-rodape {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 900px) {
+  .corpo-jogo {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 16px;
+  }
+
+  .coluna-partida {
+    position: static;
+  }
+}
+
+@media (max-width: 720px) {
+  .barra-menu {
+    position: static;
+    padding: 10px 16px;
+  }
+
+  .barra-menu .menu-rodape {
+    flex-wrap: wrap;
+  }
+}
+
+/* Elenco denso: uma linha por jogador (o nome não quebra). */
+.tabela-elenco td,
+.tabela-elenco th {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  white-space: nowrap;
+}
+
+.tabela-elenco .celula-nome {
+  white-space: nowrap;
+}
+
+.tabela-elenco .link-jogador {
+  white-space: nowrap;
+}

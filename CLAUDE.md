@@ -48,7 +48,7 @@ src/Jogo.Wasm        Casca WebAssembly: [JSExport] que repassa para ApiJson. →
 web/                 Interface React + TypeScript (Vite).
   src/nucleo/        Carregamento do runtime .NET e contrato com o núcleo (contrato.ts espelha Jogo.Aplicacao/Contrato.cs).
   src/telas/         Uma tela por arquivo; recebem dados prontos por props.
-  src/JogoEmAndamento.tsx  Casca do jogo: menu, "Jogar rodada" (ao vivo, atalho Espaço), "Simular rápido" e troca de telas.
+  src/JogoEmAndamento.tsx  Casca do jogo: menu no topo, coluna da próxima partida (telas/PainelPartida.tsx) com "Jogar rodada" (atalho Espaço) e "Simular rápido", e troca de telas (a inicial é o Elenco).
   src/telas/AoVivo.tsx     Jogo ao vivo: relógio, velocidades, pausas, decisões e placar da rodada.
   src/textos.ts      Todos os textos da interface (inclusive a descrição dos eventos da partida).
   src/narracao.ts    Narração ao vivo: vários textos por tipo de lance (texto de interface, não regra de jogo).

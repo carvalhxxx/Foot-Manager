@@ -6,7 +6,7 @@ import type { EventoPartida } from './nucleo/contrato'
 export const textos = {
   nomeDoJogo: 'Foot Manager BR',
   menu: {
-    inicio: 'Início',
+    navegacao: 'Menu do jogo',
     elenco: 'Elenco',
     tatica: 'Tática',
     partida: 'Partida',
@@ -122,6 +122,9 @@ export const textos = {
     temporada: (ano: number) => `Temporada ${ano}`,
     rodada: (atual: number, total: number) => `Rodada ${atual} de ${total}`,
     proximoJogo: 'Próximo jogo',
+    forcaAdversario: (forca: string) => `Força do adversário: ${forca}`,
+    rodadaLabel: 'Rodada',
+    caixa: 'Caixa',
     emCasa: 'em casa',
     fora: 'fora',
     contra: 'contra',

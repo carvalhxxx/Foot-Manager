@@ -31,8 +31,11 @@ describe('App', () => {
     const nucleo = await entrarNoJogo()
 
     expect(nucleo.novaCarreira).toHaveBeenCalledWith('pampa', '123')
-    expect(screen.getByRole('heading', { name: 'Pampa Sport Club' })).toBeInTheDocument()
-    expect(screen.getByText(textos.inicio.proximoJogo)).toBeInTheDocument()
+    // A tela inicial é o elenco; a coluna ao lado mostra o próximo jogo.
+    expect(screen.getByRole('heading', { name: textos.elenco.titulo })).toBeInTheDocument()
+    expect(screen.getByText('Craque Silva')).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: textos.inicio.proximoJogo })).toHaveTextContent('Cerrado FC')
+    expect(screen.getByText(/Pampa Sport Club/)).toBeInTheDocument()
     expect(screen.getByText('Cerrado FC')).toBeInTheDocument()
     expect(screen.getByRole('note')).toHaveTextContent('Machucado Souza (lesionado)')
   })

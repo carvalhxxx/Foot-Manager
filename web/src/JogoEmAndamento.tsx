@@ -10,16 +10,15 @@ import { Classificacao } from './telas/Classificacao'
 import { Elenco } from './telas/Elenco'
 import { Financas } from './telas/Financas'
 import { FimDeTemporada } from './telas/FimDeTemporada'
-import { Inicio } from './telas/Inicio'
 import { Mercado } from './telas/Mercado'
+import { PainelPartida } from './telas/PainelPartida'
 import { Partida } from './telas/Partida'
 import { Tatica } from './telas/Tatica'
 import { textos } from './textos'
 
-type Tela = 'inicio' | 'elenco' | 'tatica' | 'partida' | 'classificacao' | 'mercado' | 'financas' | 'aoVivo' | 'fim'
+type Tela = 'elenco' | 'tatica' | 'partida' | 'classificacao' | 'mercado' | 'financas' | 'aoVivo' | 'fim'
 
 const MENU: { tela: Tela; rotulo: string }[] = [
-  { tela: 'inicio', rotulo: textos.menu.inicio },
   { tela: 'elenco', rotulo: textos.menu.elenco },
   { tela: 'tatica', rotulo: textos.menu.tatica },
   { tela: 'partida', rotulo: textos.menu.partida },
@@ -53,7 +52,7 @@ function elementoEditavel(alvo: EventTarget | null): boolean {
 type SituacaoSave = { tipo: 'salvo'; em: Date } | { tipo: 'erro'; mensagem: string }
 
 export function JogoEmAndamento({ nucleo, mundo, botaoTema, slotId, armazenamento, aoSairParaOMenu }: Props) {
-  const [tela, setTela] = useState<Tela>('inicio')
+  const [tela, setTela] = useState<Tela>('elenco')
   // O estado mora no núcleo C#: cada mudança só pede uma nova renderização, e as telas releem os dados.
   const [, setVersao] = useState(0)
   const [simulando, setSimulando] = useState(false)
@@ -162,8 +161,6 @@ export function JogoEmAndamento({ nucleo, mundo, botaoTema, slotId, armazenament
 
   const conteudo = () => {
     switch (tela) {
-      case 'inicio':
-        return <Inicio estado={estado} />
       case 'elenco':
         return (
           <Elenco
@@ -278,7 +275,7 @@ export function JogoEmAndamento({ nucleo, mundo, botaoTema, slotId, armazenament
             aoContinuar={() => {
               setFim(undefined)
               setRodada(undefined)
-              setTela('inicio')
+              setTela('elenco')
               atualizar()
             }}
           />
@@ -294,14 +291,36 @@ export function JogoEmAndamento({ nucleo, mundo, botaoTema, slotId, armazenament
         ? textos.avancar.voltarAoJogo
         : textos.avancar.rodada
 
+  const acoesDaRodada = (
+    <>
+      <button type="button" className="botao botao-grande" onClick={acaoPrincipal} disabled={simulando}>
+        {rotuloPrincipal}
+        {!simulando && <kbd>{textos.avancar.atalho}</kbd>}
+      </button>
+      {!estado.temporadaEncerrada && !estado.rodadaAoVivo && (
+        <button type="button" className="botao botao-secundario" onClick={simularRapido} disabled={simulando}>
+          {textos.avancar.simularRapido}
+        </button>
+      )}
+    </>
+  )
+
+  // Ao vivo e no resumo do fim da temporada, a tela ocupa a largura toda.
+  const comPainel = tela !== 'fim' && tela !== 'aoVivo'
+
   return (
-    <div className="casca">
-      <aside className="menu">
+    <div className="casca casca-topo">
+      <header className="barra-menu">
         <div className="marca">
           <Escudo corPrimaria={estado.clube.corPrimaria} corSecundaria={estado.clube.corSecundaria} />
-          <span>{estado.clube.nome}</span>
+          <span>
+            {estado.clube.nome}
+            <span className="marca-detalhe">
+              {estado.divisaoNome} · {textos.inicio.temporada(estado.ano)}
+            </span>
+          </span>
         </div>
-        <nav>
+        <nav aria-label={textos.menu.navegacao}>
           {MENU.map((item) => (
             <button
               key={item.tela}
@@ -337,29 +356,16 @@ export function JogoEmAndamento({ nucleo, mundo, botaoTema, slotId, armazenament
           </button>
           {botaoTema}
         </div>
-      </aside>
+      </header>
 
-      <main className="conteudo">
-        {tela !== 'fim' && tela !== 'aoVivo' && (
-          <div className="barra-avancar">
-            <span className="secundario">
-              {textos.inicio.temporada(estado.ano)} · {textos.inicio.rodada(estado.rodadaAtual, estado.totalRodadas)}
-            </span>
-            <div className="acoes-rodada">
-              {!estado.temporadaEncerrada && !estado.rodadaAoVivo && (
-                <button type="button" className="botao botao-secundario" onClick={simularRapido} disabled={simulando}>
-                  {textos.avancar.simularRapido}
-                </button>
-              )}
-              <button type="button" className="botao botao-grande" onClick={acaoPrincipal} disabled={simulando}>
-                {rotuloPrincipal}
-                {!simulando && <kbd>{textos.avancar.atalho}</kbd>}
-              </button>
-            </div>
-          </div>
+      <div className={comPainel ? 'corpo-jogo' : 'corpo-jogo corpo-sem-painel'}>
+        {comPainel && (
+          <aside className="coluna-partida">
+            <PainelPartida estado={estado} caixa={dados(nucleo.financas()).caixa} acoes={acoesDaRodada} />
+          </aside>
         )}
-        {conteudo()}
-      </main>
+        <main className="conteudo">{conteudo()}</main>
+      </div>
     </div>
   )
 }
