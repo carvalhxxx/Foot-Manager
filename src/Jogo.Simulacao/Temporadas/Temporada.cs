@@ -16,6 +16,18 @@ public sealed record JogoDisputado(PlacarJogo Placar, ResultadoPartida Resultado
 /// <summary>Os jogos de uma rodada, por divisão.</summary>
 public sealed record RelatorioRodada(int Rodada, IReadOnlyDictionary<string, IReadOnlyList<JogoDisputado>> JogosPorDivisao);
 
+/// <summary>
+/// Um confronto do playoff de acesso (ida e volta). Gols somados nos dois jogos; empate no agregado
+/// classifica o melhor colocado na fase de pontos corridos (D-035). Vencedor nulo enquanto não acabou.
+/// </summary>
+public sealed record ConfrontoPlayoff(
+    string MelhorId, int MelhorPosicao, string PiorId, int PiorPosicao,
+    PlacarJogo? Ida, PlacarJogo? Volta, string? VencedorId)
+{
+    public int GolsMelhor => (Ida?.GolsVisitante ?? 0) + (Volta?.GolsMandante ?? 0);
+    public int GolsPior => (Ida?.GolsMandante ?? 0) + (Volta?.GolsVisitante ?? 0);
+}
+
 /// <summary>Um goleador da competição.</summary>
 public sealed record Artilheiro(int JogadorId, string ClubeId, int Gols, int Jogos);
 
@@ -23,18 +35,34 @@ public sealed record Artilheiro(int JogadorId, string ClubeId, int Gols, int Jog
 public sealed class CompeticaoDaTemporada
 {
     private readonly List<JogoDisputado> _disputados = [];
+    private readonly List<IReadOnlyList<JogoAgendado>> _calendario;
 
     internal CompeticaoDaTemporada(Divisao divisao, IReadOnlyList<IReadOnlyList<JogoAgendado>> calendario)
     {
         Divisao = divisao;
-        Calendario = calendario;
+        _calendario = [.. calendario];
+        RodadasRegulares = calendario.Count;
     }
 
     public Divisao Divisao { get; }
-    public IReadOnlyList<IReadOnlyList<JogoAgendado>> Calendario { get; }
+
+    /// <summary>Rodadas de pontos corridos e, depois de terminadas, as do playoff (se houver).</summary>
+    public IReadOnlyList<IReadOnlyList<JogoAgendado>> Calendario => _calendario;
+
+    /// <summary>Rodadas da fase de pontos corridos (as que contam para a tabela).</summary>
+    public int RodadasRegulares { get; }
+
+    /// <summary>Rodadas extras de playoff (ida e volta) que esta divisão terá.</summary>
+    public int RodadasDePlayoff => Divisao.TemPlayoff ? 2 : 0;
+
     public IReadOnlyList<JogoDisputado> Disputados => _disputados;
 
+    /// <summary>Os confrontos do playoff já foram definidos (a fase de pontos corridos acabou).</summary>
+    public bool PlayoffDefinido => _calendario.Count > RodadasRegulares;
+
     internal void Registrar(JogoDisputado jogo) => _disputados.Add(jogo);
+
+    internal void AdicionarRodada(IReadOnlyList<JogoAgendado> jogos) => _calendario.Add(jogos);
 }
 
 /// <summary>
@@ -64,7 +92,7 @@ public sealed class Temporada
 
         Competicoes = [.. mundo.Divisoes.Select(d => new CompeticaoDaTemporada(
             d, Temporadas.Calendario.PontosCorridos(d.ClubeIds, new GeradorAleatorio(Semente(d.Id, 0, 0)))))];
-        TotalRodadas = Competicoes.Max(c => c.Calendario.Count);
+        TotalRodadas = Competicoes.Max(c => c.RodadasRegulares + c.RodadasDePlayoff);
     }
 
     public int Ano { get; }
@@ -96,11 +124,18 @@ public sealed class Temporada
             throw new ArgumentOutOfRangeException(nameof(rodadaAtual), rodadaAtual, "Rodada fora do calendário.");
         }
 
-        foreach (var (divisaoId, jogo) in disputados)
+        var ordenados = disputados.OrderBy(d => d.Jogo.Placar.Jogo.Rodada).ToArray();
+        foreach (var (divisaoId, jogo) in ordenados)
         {
             var competicao = Competicao(divisaoId);
+            if (jogo.Placar.Jogo.Rodada > competicao.RodadasRegulares)
+            {
+                DefinirPlayoffSePronto(competicao);
+            }
+
             var agendado = jogo.Placar.Jogo;
-            if (agendado.Rodada > rodadaAtual || !competicao.Calendario[agendado.Rodada - 1].Contains(agendado))
+            if (agendado.Rodada > rodadaAtual || agendado.Rodada > competicao.Calendario.Count
+                || !competicao.Calendario[agendado.Rodada - 1].Contains(agendado))
             {
                 throw new InvalidOperationException(
                     $"O jogo {agendado.MandanteId} x {agendado.VisitanteId} (rodada {agendado.Rodada}) não bate com o calendário.");
@@ -111,6 +146,11 @@ public sealed class Temporada
 
         foreach (var competicao in Competicoes)
         {
+            if (rodadaAtual >= competicao.RodadasRegulares)
+            {
+                DefinirPlayoffSePronto(competicao);
+            }
+
             var esperados = competicao.Calendario.Take(rodadaAtual).Sum(r => r.Count);
             if (competicao.Disputados.Count != esperados)
             {
@@ -160,7 +200,69 @@ public sealed class Temporada
     public IReadOnlyList<LinhaTabela> Tabela(string divisaoId)
     {
         var competicao = Competicao(divisaoId);
-        return Classificacao.Calcular(competicao.Divisao.ClubeIds, competicao.Disputados.Select(j => j.Placar), _seed);
+        return Classificacao.Calcular(competicao.Divisao.ClubeIds,
+            competicao.Disputados.Where(j => j.Placar.Jogo.Rodada <= competicao.RodadasRegulares).Select(j => j.Placar), _seed);
+    }
+
+    /// <summary>
+    /// Confrontos do playoff de acesso da divisão (vazio se ela não tem playoff ou a fase de pontos
+    /// corridos ainda não acabou).
+    /// </summary>
+    public IReadOnlyList<ConfrontoPlayoff> Playoff(string divisaoId)
+    {
+        var competicao = Competicao(divisaoId);
+        if (!competicao.PlayoffDefinido)
+        {
+            return [];
+        }
+
+        var tabela = Tabela(divisaoId);
+        var ida = competicao.RodadasRegulares + 1;
+        return [.. competicao.Divisao.ConfrontosDoPlayoff.Select(c =>
+        {
+            var melhor = tabela[c.MelhorPosicao - 1].ClubeId;
+            var pior = tabela[c.PiorPosicao - 1].ClubeId;
+            PlacarJogo? Jogo(int rodada) => competicao.Disputados
+                .Select(d => d.Placar)
+                .FirstOrDefault(p => p.Jogo.Rodada == rodada && (p.Jogo.MandanteId == melhor || p.Jogo.VisitanteId == melhor));
+
+            var (jogoIda, jogoVolta) = (Jogo(ida), Jogo(ida + 1));
+            string? vencedor = null;
+            if (jogoIda is not null && jogoVolta is not null)
+            {
+                var golsMelhor = jogoIda.GolsVisitante + jogoVolta.GolsMandante;
+                var golsPior = jogoIda.GolsMandante + jogoVolta.GolsVisitante;
+                vencedor = golsPior > golsMelhor ? pior : melhor;
+            }
+
+            return new ConfrontoPlayoff(melhor, c.MelhorPosicao, pior, c.PiorPosicao, jogoIda, jogoVolta, vencedor);
+        })];
+    }
+
+    /// <summary>
+    /// Ao fim dos pontos corridos, cria as duas rodadas do playoff pela tabela final:
+    /// ida na casa do pior colocado, volta na casa do melhor.
+    /// </summary>
+    private void DefinirPlayoffSePronto(CompeticaoDaTemporada competicao)
+    {
+        if (!competicao.Divisao.TemPlayoff || competicao.PlayoffDefinido)
+        {
+            return;
+        }
+
+        var jogosRegulares = competicao.Calendario.Take(competicao.RodadasRegulares).Sum(r => r.Count);
+        if (competicao.Disputados.Count(d => d.Placar.Jogo.Rodada <= competicao.RodadasRegulares) < jogosRegulares)
+        {
+            return;
+        }
+
+        var tabela = Tabela(competicao.Divisao.Id);
+        var confrontos = competicao.Divisao.ConfrontosDoPlayoff
+            .Select(c => (Melhor: tabela[c.MelhorPosicao - 1].ClubeId, Pior: tabela[c.PiorPosicao - 1].ClubeId))
+            .ToArray();
+        var ida = competicao.RodadasRegulares + 1;
+        competicao.AdicionarRodada([.. confrontos.Select(c => new JogoAgendado(ida, c.Pior, c.Melhor))]);
+        competicao.AdicionarRodada([.. confrontos.Select(c => new JogoAgendado(ida + 1, c.Melhor, c.Pior))]);
     }
 
     public IReadOnlyList<Artilheiro> Artilharia(string divisaoId, int quantidade = 10)
@@ -287,8 +389,8 @@ public sealed class Temporada
         {
             Financas.Financas.ProcessarJogoEmCasa(j.Mandante, j.Visitante,
                 AproveitamentoRecente(j.Competicao, j.Mandante.Id, emAndamento.Rodada), RegrasFinanceiras);
-            Financas.Financas.ProcessarRodada(j.Mandante, j.Competicao.Divisao, j.Competicao.Calendario.Count, RegrasFinanceiras);
-            Financas.Financas.ProcessarRodada(j.Visitante, j.Competicao.Divisao, j.Competicao.Calendario.Count, RegrasFinanceiras);
+            Financas.Financas.ProcessarRodada(j.Mandante, j.Competicao.Divisao, j.Competicao.RodadasRegulares, RegrasFinanceiras);
+            Financas.Financas.ProcessarRodada(j.Visitante, j.Competicao.Divisao, j.Competicao.RodadasRegulares, RegrasFinanceiras);
         }
 
         // 4. Recuperação física até a próxima rodada.
@@ -299,6 +401,11 @@ public sealed class Temporada
 
         RodadaAtual = emAndamento.Rodada;
         EmAndamento = null;
+        foreach (var competicao in Competicoes.Where(c => c.RodadasRegulares == RodadaAtual))
+        {
+            DefinirPlayoffSePronto(competicao);
+        }
+
         return new RelatorioRodada(emAndamento.Rodada, jogosPorDivisao);
     }
 

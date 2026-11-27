@@ -378,7 +378,13 @@ public sealed class ServicoDeJogo
 
     private static string? MotivoDePausa(Carreira c, IReadOnlyList<EventoPartida> novos)
     {
-        var minhaEquipe = c.MeuJogoAoVivo!.Mandante.Id == c.Clube.Id ? Equipe.Mandante : Equipe.Visitante;
+        // Rodada sem jogo do meu clube (ex.: playoff da Série B para quem está na A): nada pede pausa.
+        if (c.MeuJogoAoVivo is not { } meu)
+        {
+            return null;
+        }
+
+        var minhaEquipe = meu.Mandante.Id == c.Clube.Id ? Equipe.Mandante : Equipe.Visitante;
         foreach (var e in novos)
         {
             switch (e.Tipo)
@@ -467,7 +473,16 @@ public sealed class ServicoDeJogo
                 return new LinhaTabelaDto(l.Posicao, clube.Id, clube.Nome, clube.Sigla, clube.Cores.Primaria, clube.Cores.Secundaria,
                     l.Jogos, l.Vitorias, l.Empates, l.Derrotas, l.GolsPro, l.GolsContra, l.Saldo, l.Pontos);
             })],
-            [.. c.Temporada.Artilharia(divisaoId, 10).Select(a => ParaDto(a, c.Mundo, nomes))]);
+            [.. c.Temporada.Artilharia(divisaoId, 10).Select(a => ParaDto(a, c.Mundo, nomes))],
+            competicao.Divisao.VagasDiretas,
+            [.. c.Temporada.Playoff(divisaoId).Select(p =>
+            {
+                var melhor = c.Mundo.Clube(p.MelhorId);
+                var pior = c.Mundo.Clube(p.PiorId);
+                return new ConfrontoPlayoffDto(p.MelhorPosicao, melhor.Nome, melhor.Sigla, p.PiorPosicao, pior.Nome, pior.Sigla,
+                    p.Ida?.GolsVisitante, p.Ida?.GolsMandante, p.Volta?.GolsMandante, p.Volta?.GolsVisitante,
+                    p.VencedorId is { } v ? c.Mundo.Clube(v).Nome : null);
+            })]);
     });
 
     public Resposta<FimDeTemporadaDto> EncerrarTemporada() => ComCarreira(c =>

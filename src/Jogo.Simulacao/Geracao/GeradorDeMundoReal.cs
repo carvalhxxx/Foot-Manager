@@ -17,6 +17,9 @@ public static class GeradorDeMundoReal
 {
     public const int ElencoMaximo = 30;
 
+    /// <summary>Vagas de acesso diretas nas divisões de baixo; as outras saem do playoff (D-035).</summary>
+    public const int VagasDiretasNoAcesso = 2;
+
     /// <summary>Força para um valor de mercado: 100 mil € ≈ 50, 1 mi € ≈ 61, 10 mi € ≈ 73, 60 mi € ≈ 80.</summary>
     public static int ForcaPeloValor(decimal valorEmEuros, int idade)
     {
@@ -50,7 +53,9 @@ public static class GeradorDeMundoReal
             var letra = (char)('a' + g.Key - 1);
             return new Divisao($"serie-{letra}", $"Série {char.ToUpperInvariant(letra)}", g.Key, g.Select(c => c.Id),
                 vagasAcesso: g.Key == 1 ? 0 : GeradorDeMundo.VagasAcessoERebaixamento,
-                vagasRebaixamento: g.Key == ultima ? 0 : GeradorDeMundo.VagasAcessoERebaixamento);
+                vagasRebaixamento: g.Key == ultima ? 0 : GeradorDeMundo.VagasAcessoERebaixamento,
+                // Série B 2026 (D-035): 2 sobem direto; 3º a 6º disputam as outras 2 vagas em playoff de ida e volta.
+                vagasDiretas: g.Key == 1 ? null : VagasDiretasNoAcesso);
         }).ToArray();
 
         return new Mundo(temporada, divisoes, lista);

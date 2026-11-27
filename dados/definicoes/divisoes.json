@@ -36,6 +36,7 @@
       "nivel": 2,
       "vagasAcesso": 4,
       "vagasRebaixamento": 0,
+      "vagasDiretas": 2,
       "clubes": [
         "novorizontino",
         "juventude",

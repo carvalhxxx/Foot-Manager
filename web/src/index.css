@@ -1575,3 +1575,17 @@ select {
 .tabela-elenco .link-jogador {
   white-space: nowrap;
 }
+
+/* Zona do playoff de acesso (entre o acesso direto e o meio da tabela). */
+.zona-playoff td:first-child {
+  border-left-color: #2b7bd6;
+}
+
+.legenda-item.zona-playoff {
+  border-color: #2b7bd6;
+}
+
+.playoff li {
+  display: grid;
+  gap: 2px;
+}

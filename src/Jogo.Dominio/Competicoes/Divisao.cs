@@ -12,7 +12,8 @@ public sealed class Divisao
         int nivel,
         IEnumerable<string> clubeIds,
         int vagasAcesso,
-        int vagasRebaixamento)
+        int vagasRebaixamento,
+        int? vagasDiretas = null)
     {
         ArgumentNullException.ThrowIfNull(clubeIds);
 
@@ -35,6 +36,12 @@ public sealed class Divisao
         VagasAcesso = Validacao.Faixa(vagasAcesso, 0, ids.Length / 2, nameof(vagasAcesso));
         VagasRebaixamento = Validacao.Faixa(vagasRebaixamento, 0, ids.Length / 2, nameof(vagasRebaixamento));
 
+        VagasDiretas = Validacao.Faixa(vagasDiretas ?? VagasAcesso, 0, VagasAcesso, nameof(vagasDiretas));
+        if (VagasDiretas + (2 * VagasNoPlayoff) > ids.Length - VagasRebaixamento)
+        {
+            throw new ArgumentException("O playoff de acesso precisa de mais clubes do que a divisão tem fora da zona de rebaixamento.", nameof(vagasDiretas));
+        }
+
         if (nivel == 1 && vagasAcesso != 0)
         {
             throw new ArgumentException("A primeira divisão não tem acesso.", nameof(vagasAcesso));
@@ -50,6 +57,21 @@ public sealed class Divisao
 
     /// <summary>Quantos sobem para a divisão de cima.</summary>
     public int VagasAcesso { get; }
+
+    /// <summary>Quantos sobem direto pela tabela; o resto das vagas de acesso sai do playoff.</summary>
+    public int VagasDiretas { get; }
+
+    /// <summary>Vagas decididas no playoff (cada uma é um confronto de ida e volta).</summary>
+    public int VagasNoPlayoff => VagasAcesso - VagasDiretas;
+
+    public bool TemPlayoff => VagasNoPlayoff > 0;
+
+    /// <summary>
+    /// Confrontos do playoff por posição na tabela: o melhor colocado contra o pior da faixa
+    /// (ex.: 2 vagas diretas e 2 no playoff → 3º x 6º e 4º x 5º).
+    /// </summary>
+    public IReadOnlyList<(int MelhorPosicao, int PiorPosicao)> ConfrontosDoPlayoff =>
+        [.. Enumerable.Range(0, VagasNoPlayoff).Select(i => (VagasDiretas + 1 + i, VagasDiretas + (2 * VagasNoPlayoff) - i))];
 
     /// <summary>Quantos descem para a divisão de baixo.</summary>
     public int VagasRebaixamento { get; }

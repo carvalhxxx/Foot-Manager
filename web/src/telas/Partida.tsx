@@ -22,8 +22,62 @@ export function Partida({ rodada, meuClubeId }: Props) {
   const [todos, setTodos] = useState(false)
   const p = rodada.minhaPartida
 
+  // Outros jogos e mercado da rodada: aparecem mesmo quando o time do jogador não jogou (ex.: playoff da Série B).
+  const restoDaRodada = (
+    <>
+        <section className="cartao">
+          <h2>{t.outrosJogos}</h2>
+          <div className="outros-jogos">
+            {rodada.divisoes.map((d) => (
+              <div key={d.divisaoId}>
+                <h3>{d.divisaoNome}</h3>
+                <ul>
+                  {d.jogos.map((j) => (
+                    <li
+                      key={j.mandanteId}
+                      className={j.mandanteId === meuClubeId || j.visitanteId === meuClubeId ? 'meu-jogo' : undefined}
+                    >
+                      <span title={j.mandanteNome}>{j.mandanteSigla}</span>
+                      <strong>
+                        {j.golsMandante} × {j.golsVisitante}
+                      </strong>
+                      <span title={j.visitanteNome}>{j.visitanteSigla}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {rodada.transferencias.length > 0 && (
+          <section className="cartao">
+            <h2>{t.mercado}</h2>
+            <ul className="lista-simples">
+              {rodada.transferencias.map((tr) => (
+                <li key={`${tr.jogador}-${tr.paraSigla}`}>
+                  <span title={tr.paraNome}>{t.transferencia(tr.jogador, tr.deSigla ?? t.agenteLivre, tr.paraSigla)}</span>
+                  {tr.valor > 0 && <span className="secundario"> · {formatoDinheiro.format(tr.valor)}</span>}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+    </>
+  )
+
   if (!p) {
-    return <p className="aviso">{t.semPartida}</p>
+    return rodada.divisoes.length === 0 ? (
+      <p className="aviso">{t.semPartida}</p>
+    ) : (
+      <>
+        <header className="cabecalho">
+          <h1>{t.rodada(rodada.rodada)}</h1>
+          <p>{t.semJogoMeu}</p>
+        </header>
+        {restoDaRodada}
+      </>
+    )
   }
 
   const nomeDoTime = (equipe: EventoPartida['equipe']) =>
@@ -91,44 +145,7 @@ export function Partida({ rodada, meuClubeId }: Props) {
         </section>
       </div>
 
-      <section className="cartao">
-        <h2>{t.outrosJogos}</h2>
-        <div className="outros-jogos">
-          {rodada.divisoes.map((d) => (
-            <div key={d.divisaoId}>
-              <h3>{d.divisaoNome}</h3>
-              <ul>
-                {d.jogos.map((j) => (
-                  <li
-                    key={j.mandanteId}
-                    className={j.mandanteId === meuClubeId || j.visitanteId === meuClubeId ? 'meu-jogo' : undefined}
-                  >
-                    <span title={j.mandanteNome}>{j.mandanteSigla}</span>
-                    <strong>
-                      {j.golsMandante} × {j.golsVisitante}
-                    </strong>
-                    <span title={j.visitanteNome}>{j.visitanteSigla}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {rodada.transferencias.length > 0 && (
-        <section className="cartao">
-          <h2>{t.mercado}</h2>
-          <ul className="lista-simples">
-            {rodada.transferencias.map((tr) => (
-              <li key={`${tr.jogador}-${tr.paraSigla}`}>
-                <span title={tr.paraNome}>{t.transferencia(tr.jogador, tr.deSigla ?? t.agenteLivre, tr.paraSigla)}</span>
-                {tr.valor > 0 && <span className="secundario"> · {formatoDinheiro.format(tr.valor)}</span>}
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      {restoDaRodada}
     </>
   )
 }

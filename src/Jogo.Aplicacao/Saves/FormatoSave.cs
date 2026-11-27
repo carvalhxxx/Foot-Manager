@@ -35,6 +35,9 @@ internal sealed class DivisaoSave
     public List<string>? Clubes { get; set; }
     public int VagasAcesso { get; set; }
     public int VagasRebaixamento { get; set; }
+
+    /// <summary>Ausente = todas as vagas de acesso são diretas (saves sem playoff).</summary>
+    public int? VagasDiretas { get; set; }
 }
 
 internal sealed class ClubeSave

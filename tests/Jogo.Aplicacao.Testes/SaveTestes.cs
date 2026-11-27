@@ -49,6 +49,33 @@ public class SaveTestes
         Assert.Equal(ConversorSave.Salvar(direto), ConversorSave.Salvar(retomada));
     }
 
+    /// <summary>A mesma garantia com o playoff de acesso: salvando entre a ida e a volta e atravessando a virada.</summary>
+    [Fact]
+    public void SalvarNoMeioDoPlayoff_ContinuaIgualAJogarDireto()
+    {
+        static Mundo ComPlayoff()
+        {
+            var mundo = NovoMundo();
+            mundo.ReorganizarDivisoes(mundo.Divisoes.Select(d => d.Nivel == 1
+                ? d
+                : new Dominio.Competicoes.Divisao(d.Id, d.Nome, d.Nivel, d.ClubeIds, d.VagasAcesso, d.VagasRebaixamento, vagasDiretas: 2)));
+            return mundo;
+        }
+
+        var direto = new Carreira(ComPlayoff(), "serra-gaucha", 11);
+        var comSave = new Carreira(ComPlayoff(), "serra-gaucha", 11);
+
+        JogarRodadas(direto, 42);
+        JogarRodadas(comSave, 39);
+        var retomada = ConversorSave.Carregar(ConversorSave.Salvar(comSave));
+        Assert.Equal(comSave.Temporada.Playoff("serie-b"), retomada.Temporada.Playoff("serie-b"));
+        JogarRodadas(retomada, 3);
+
+        Assert.Equal(2028, retomada.Mundo.TemporadaAtual);
+        Assert.Equal(2, retomada.Mundo.Divisoes[1].VagasDiretas);
+        Assert.Equal(ConversorSave.Salvar(direto), ConversorSave.Salvar(retomada));
+    }
+
     [Fact]
     public void SalvarCarregarSalvar_TextoIdentico()
     {

@@ -59,6 +59,7 @@ Um arquivo por clube facilita editar um time sem mexer no resto e revisar mudan�
       "nivel": 2,
       "vagasAcesso": 4,           // precisa ser igual ao rebaixamento da divisão de cima
       "vagasRebaixamento": 0,     // a última divisão não rebaixa
+      "vagasDiretas": 2,          // opcional: 2 sobem direto; as outras 2 vagas saem do playoff (3º x 6º, 4º x 5º)
       "clubes": ["ceara-atletico", "..."]
     }
   ]
@@ -69,6 +70,7 @@ Regras:
 - Número **par** de clubes por divisão (mínimo 2). Uma divisão de N clubes tem (N − 1) × 2 rodadas.
 - Cada clube aparece em **uma e só uma** divisão, e todo arquivo em `clubes/` precisa estar em alguma divisão.
 - Acesso e rebaixamento valem no máximo metade dos clubes da divisão.
+- `vagasDiretas` (opcional, padrão = `vagasAcesso`): quantas vagas de acesso vão direto pela tabela. Cada vaga restante vira um confronto de ida e volta logo depois da última rodada: o melhor colocado da faixa enfrenta o pior (com 2 diretas e 4 de acesso: 3º x 6º e 4º x 5º). A volta é na casa do melhor colocado e, com empate no agregado, ele se classifica.
 
 ## clubes/&lt;id&gt;.json
 

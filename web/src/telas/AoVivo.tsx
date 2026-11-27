@@ -110,8 +110,95 @@ export function AoVivo({ inicial, formacoes, mentalidades, marcacoes, concentrac
   const enviar = (decisao: Decisao) => aplicar(decidir(decisao), false)
 
   const p = dados.minhaPartida
+  const meuClubeId = p?.mandante.id
+
+  const controles = (
+        <div className="controles-ao-vivo">
+          {dados.rodadaEncerrada ? (
+            <button type="button" className="botao botao-grande" onClick={aoConcluir}>
+              {t.verResumo}
+            </button>
+          ) : (
+            <>
+              <button type="button" className="botao" onClick={alternar}>
+                {rodando ? `⏸ ${t.pausar}` : `▶ ${t.continuar}`}
+                <kbd>{textos.avancar.atalho}</kbd>
+              </button>
+              <div className="mentalidades" role="group" aria-label={t.velocidade}>
+                {(Object.keys(INTERVALO_POR_VELOCIDADE) as Velocidade[]).map((v) => (
+                  <button
+                    key={v}
+                    type="button"
+                    className={`pilula ${v === velocidade ? 'pilula-ativa' : ''}`}
+                    aria-pressed={v === velocidade}
+                    onClick={() => setVelocidade(v)}
+                  >
+                    {t.velocidades[v]}
+                  </button>
+                ))}
+              </div>
+              <button type="button" className="botao botao-secundario" onClick={pularParaOFim}>
+                {t.pularParaOFim}
+              </button>
+            </>
+          )}
+        </div>
+  )
+
+  const placarDaRodada = (
+        <section className="cartao">
+          <h2>{t.placarDaRodada}</h2>
+          <div className="outros-jogos placar-rodada-ao-vivo">
+            {dados.placares.map((d) => (
+              <div key={d.divisaoId}>
+                <h3>{d.divisaoNome}</h3>
+                <ul>
+                  {d.jogos.map((j) => (
+                    <li
+                      key={j.mandanteId}
+                      className={meuClubeId && (j.mandanteId === meuClubeId || j.visitanteId === meuClubeId) ? 'meu-jogo' : undefined}
+                    >
+                      <span>{j.mandanteSigla}</span>
+                      <strong>
+                        {j.golsMandante} × {j.golsVisitante}
+                      </strong>
+                      <span>{j.visitanteSigla}</span>
+                      <span className="minuto-placar">
+                        {j.encerrado ? t.encerrado : j.acrescimo > 0 ? `${j.minuto}+${j.acrescimo}'` : `${j.minuto}'`}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+  )
+
+  // Rodada em que o meu clube não joga (ex.: playoff da Série B para quem está na A): só os outros jogos.
   if (!p) {
-    return null
+    return (
+      <>
+        <header className="cabecalho">
+          <h1>{textos.partida.rodada(dados.rodada)}</h1>
+          <p>{t.semJogoMeu}</p>
+        </header>
+        {controles}
+        {aviso && (
+          <p className="aviso-destaque" role="status">
+            {aviso}
+          </p>
+        )}
+        {erros.length > 0 && (
+          <ul className="erro-lista" role="alert">
+            {erros.map((e) => (
+              <li key={e}>{e}</li>
+            ))}
+          </ul>
+        )}
+        {placarDaRodada}
+      </>
+    )
   }
 
   const nomes = { mandante: p.mandante.nome, visitante: p.visitante.nome }
@@ -149,36 +236,7 @@ export function AoVivo({ inicial, formacoes, mentalidades, marcacoes, concentrac
         </p>
       </section>
 
-      <div className="controles-ao-vivo">
-        {dados.rodadaEncerrada ? (
-          <button type="button" className="botao botao-grande" onClick={aoConcluir}>
-            {t.verResumo}
-          </button>
-        ) : (
-          <>
-            <button type="button" className="botao" onClick={alternar}>
-              {rodando ? `⏸ ${t.pausar}` : `▶ ${t.continuar}`}
-              <kbd>{textos.avancar.atalho}</kbd>
-            </button>
-            <div className="mentalidades" role="group" aria-label={t.velocidade}>
-              {(Object.keys(INTERVALO_POR_VELOCIDADE) as Velocidade[]).map((v) => (
-                <button
-                  key={v}
-                  type="button"
-                  className={`pilula ${v === velocidade ? 'pilula-ativa' : ''}`}
-                  aria-pressed={v === velocidade}
-                  onClick={() => setVelocidade(v)}
-                >
-                  {t.velocidades[v]}
-                </button>
-              ))}
-            </div>
-            <button type="button" className="botao botao-secundario" onClick={pularParaOFim}>
-              {t.pularParaOFim}
-            </button>
-          </>
-        )}
-      </div>
+      {controles}
 
       {aviso && (
         <p className="aviso-destaque" role="status">
@@ -335,33 +393,7 @@ export function AoVivo({ inicial, formacoes, mentalidades, marcacoes, concentrac
         </section>
       </div>
 
-      <section className="cartao">
-        <h2>{t.placarDaRodada}</h2>
-        <div className="outros-jogos placar-rodada-ao-vivo">
-          {dados.placares.map((d) => (
-            <div key={d.divisaoId}>
-              <h3>{d.divisaoNome}</h3>
-              <ul>
-                {d.jogos.map((j) => (
-                  <li
-                    key={j.mandanteId}
-                    className={j.mandanteId === p.mandante.id || j.visitanteId === p.mandante.id ? 'meu-jogo' : undefined}
-                  >
-                    <span>{j.mandanteSigla}</span>
-                    <strong>
-                      {j.golsMandante} × {j.golsVisitante}
-                    </strong>
-                    <span>{j.visitanteSigla}</span>
-                    <span className="minuto-placar">
-                      {j.encerrado ? t.encerrado : j.acrescimo > 0 ? `${j.minuto}+${j.acrescimo}'` : `${j.minuto}'`}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </section>
+      {placarDaRodada}
     </>
   )
 }

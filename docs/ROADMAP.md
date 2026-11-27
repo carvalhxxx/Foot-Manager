@@ -27,6 +27,9 @@ Mobile, saves na nuvem, ligas online entre amigos, modelo freemium/assinatura.
 
 ## Feito
 
+### Playoff de acesso na Série B · P
+- 1º e 2º sobem direto; 3º x 6º e 4º x 5º em ida e volta depois da rodada 38 (volta na casa do melhor; empate no agregado classifica o melhor colocado). Zonas e confrontos na Classificação; rodada ao vivo sem jogo do meu clube mostra os outros jogos (D-035).
+
 ### Tela inicial com o elenco · P
 - Menu no topo, coluna da próxima partida à esquerda (adversário, mando, rodada, botões da rodada, posição, caixa, últimos resultados e avisos) e o elenco como tela principal, em tabela densa (D-034).
 

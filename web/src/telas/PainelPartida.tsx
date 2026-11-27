@@ -37,7 +37,7 @@ export function PainelPartida({ estado, caixa, acoes }: Props) {
             <p className="secundario">{t.forcaAdversario(proximo.adversario.forcaTop11.toFixed(1))}</p>
           </>
         ) : (
-          <p className="secundario">{t.fimDaTemporada}</p>
+          <p className="secundario">{estado.temporadaEncerrada ? t.fimDaTemporada : t.semJogoAgora}</p>
         )}
         <div className="acoes-painel">{acoes}</div>
       </section>

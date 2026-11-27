@@ -187,6 +187,16 @@ function classificacao(divisaoId: string): Classificacao {
       { posicao: 1, clubeId: divisaoId === 'serie-a' ? 'pampa' : 'dunas', nome: divisaoId === 'serie-a' ? 'Pampa Sport Club' : 'Dunas FC', sigla: 'PAM', corPrimaria: '#000', corSecundaria: '#fff', jogos: 1, vitorias: 1, empates: 0, derrotas: 0, golsPro: 2, golsContra: 1, saldo: 1, pontos: 3 },
     ],
     artilharia: [{ jogador: 'Craque Silva', clubeSigla: 'PAM', gols: 1, jogos: 1 }],
+    vagasDiretas: divisaoId === 'serie-a' ? 0 : 2,
+    playoff:
+      divisaoId === 'serie-a'
+        ? []
+        : [
+            {
+              melhorPosicao: 3, melhorNome: 'Dunas FC', melhorSigla: 'DUN', piorPosicao: 6, piorNome: 'Jangadeiro EC', piorSigla: 'JAN',
+              idaGolsMelhor: 1, idaGolsPior: 1, voltaGolsMelhor: 2, voltaGolsPior: 0, vencedorNome: 'Dunas FC',
+            },
+          ],
   }
 }
 

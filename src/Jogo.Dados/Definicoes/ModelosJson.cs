@@ -28,6 +28,10 @@ internal sealed class DivisaoJson
     public int? Nivel { get; set; }
     public int? VagasAcesso { get; set; }
     public int? VagasRebaixamento { get; set; }
+
+    /// <summary>Opcional: quantas vagas de acesso são diretas (o resto vai para o playoff).</summary>
+    public int? VagasDiretas { get; set; }
+
     public List<string>? Clubes { get; set; }
 }
 

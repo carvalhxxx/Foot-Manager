@@ -363,6 +363,20 @@ export interface Artilheiro {
   jogos: number
 }
 
+export interface ConfrontoPlayoff {
+  melhorPosicao: number
+  melhorNome: string
+  melhorSigla: string
+  piorPosicao: number
+  piorNome: string
+  piorSigla: string
+  idaGolsMelhor?: number
+  idaGolsPior?: number
+  voltaGolsMelhor?: number
+  voltaGolsPior?: number
+  vencedorNome?: string
+}
+
 export interface Classificacao {
   divisaoId: string
   nome: string
@@ -370,6 +384,9 @@ export interface Classificacao {
   vagasRebaixamento: number
   linhas: LinhaTabela[]
   artilharia: Artilheiro[]
+  /** Vagas de acesso diretas; as demais saem do playoff. */
+  vagasDiretas: number
+  playoff: ConfrontoPlayoff[]
 }
 
 export interface ResumoDivisao {

@@ -225,9 +225,17 @@ public sealed record LinhaTabelaDto(
 
 public sealed record ArtilheiroDto(string Jogador, string ClubeSigla, int Gols, int Jogos);
 
+/// <summary>
+/// Confronto do playoff de acesso: o melhor colocado manda a volta. Gols nulos = jogo ainda não disputado.
+/// </summary>
+public sealed record ConfrontoPlayoffDto(
+    int MelhorPosicao, string MelhorNome, string MelhorSigla, int PiorPosicao, string PiorNome, string PiorSigla,
+    int? IdaGolsMelhor, int? IdaGolsPior, int? VoltaGolsMelhor, int? VoltaGolsPior, string? VencedorNome);
+
 public sealed record ClassificacaoDto(
     string DivisaoId, string Nome, int VagasAcesso, int VagasRebaixamento,
-    IReadOnlyList<LinhaTabelaDto> Linhas, IReadOnlyList<ArtilheiroDto> Artilharia);
+    IReadOnlyList<LinhaTabelaDto> Linhas, IReadOnlyList<ArtilheiroDto> Artilharia,
+    int VagasDiretas, IReadOnlyList<ConfrontoPlayoffDto> Playoff);
 
 public sealed record ResumoDivisaoDto(string Nome, string Campeao, IReadOnlyList<string> Promovidos, IReadOnlyList<string> Rebaixados, ArtilheiroDto? Artilheiro);
 

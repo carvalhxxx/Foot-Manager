@@ -51,6 +51,7 @@ public static class EscritorDefinicoes
                 Nivel = d.Nivel,
                 VagasAcesso = d.VagasAcesso,
                 VagasRebaixamento = d.VagasRebaixamento,
+                VagasDiretas = d.TemPlayoff ? d.VagasDiretas : null,
                 Clubes = [.. d.ClubeIds],
             })],
         }, contexto.DivisoesJson));

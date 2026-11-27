@@ -81,7 +81,7 @@ public class ApiJsonTestes
 
         var estado = Ok(api.Estado());
 
-        Assert.Equal((2026, 0, 38), (estado["ano"]!.GetValue<int>(), estado["rodadaAtual"]!.GetValue<int>(), estado["totalRodadas"]!.GetValue<int>()));
+        Assert.Equal((2026, 0, 40), (estado["ano"]!.GetValue<int>(), estado["rodadaAtual"]!.GetValue<int>(), estado["totalRodadas"]!.GetValue<int>()));
         Assert.Equal("internacional", estado["clube"]!["id"]!.GetValue<string>());
         Assert.Equal("serie-a", estado["divisaoId"]!.GetValue<string>());
         Assert.Equal(1, estado["proximoJogo"]!["rodada"]!.GetValue<int>());
@@ -316,11 +316,60 @@ public class ApiJsonTestes
         Assert.Contains("Não há rodada ao vivo", Falha(api.ConcluirAoVivo()), StringComparison.Ordinal);
     }
 
+    /// <summary>Na rodada do playoff da Série B, um clube da Série A não joga: o ao vivo mostra só os outros jogos.</summary>
+    [Fact]
+    public void AoVivo_RodadaSemJogoDoMeuClube_MostraOsOutrosJogos()
+    {
+        var api = ComCarreira("bahia");
+        for (var r = 0; r < 38; r++)
+        {
+            Ok(api.AvancarRodada());
+        }
+
+        var inicio = Ok(api.IniciarAoVivo());
+        Assert.Null(inicio["minhaPartida"]);
+        Assert.Equal("Série B", Assert.Single(inicio["placares"]!.AsArray())!["divisaoNome"]!.GetValue<string>());
+
+        var fim = Ok(api.AvancarAoVivo(200));
+        Assert.True(fim["rodadaEncerrada"]!.GetValue<bool>());
+        var rodada = Ok(api.ConcluirAoVivo());
+        Assert.Null(rodada["minhaPartida"]);
+        Assert.Equal(39, rodada["rodada"]!.GetValue<int>());
+    }
+
+    /// <summary>O mesmo depois de carregar um save feito entre a ida e a volta do playoff.</summary>
+    [Fact]
+    public void AoVivo_DepoisDeCarregarNoMeioDoPlayoff_Funciona()
+    {
+        var api = ComCarreira("bahia");
+        for (var r = 0; r < 39; r++)
+        {
+            Ok(api.AvancarRodada());
+        }
+
+        var outra = new ApiJson();
+        Ok(outra.CarregarDefinicoes(ArquivosDaBase));
+        Ok(outra.CarregarSave(Ok(api.ExportarSave())["conteudo"]!.GetValue<string>()));
+        Ok(outra.Estado());
+        Ok(outra.UltimaRodada());
+        Ok(outra.Classificacao("serie-b"));
+        Ok(outra.IniciarAoVivo());
+        Ok(outra.Estado());
+        Ok(outra.Tatica());
+        Ok(outra.AoVivo());
+        Ok(outra.Elenco());
+        Ok(outra.AvancarAoVivo(1));
+        Ok(outra.AvancarAoVivo(200));
+        Assert.Equal(40, Ok(outra.ConcluirAoVivo())["rodada"]!.GetValue<int>());
+        Assert.True(Ok(outra.Estado())["temporadaEncerrada"]!.GetValue<bool>());
+    }
+
     [Fact]
     public void TemporadaInteira_EncerrarEComecarAProxima()
     {
         var api = ComCarreira("bahia");
-        for (var r = 0; r < 38; r++)
+        // 38 rodadas de pontos corridos + ida e volta do playoff de acesso da Série B.
+        for (var r = 0; r < 40; r++)
         {
             Ok(api.AvancarRodada());
         }
@@ -335,6 +384,7 @@ public class ApiJsonTestes
         var fim = Ok(api.EncerrarTemporada());
         Assert.Equal((2026, 2027), (fim["ano"]!.GetValue<int>(), fim["proximoAno"]!.GetValue<int>()));
         Assert.Equal(4, fim["divisoes"]![0]!["rebaixados"]!.AsArray().Count);
+        Assert.Equal(4, fim["divisoes"]![1]!["promovidos"]!.AsArray().Count);
 
         var estado = Ok(api.Estado());
         Assert.Equal((2027, 0, false), (estado["ano"]!.GetValue<int>(), estado["rodadaAtual"]!.GetValue<int>(), estado["temporadaEncerrada"]!.GetValue<bool>()));

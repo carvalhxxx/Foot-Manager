@@ -181,6 +181,17 @@ describe('App', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('Escale exatamente 11 titulares.')
   })
 
+  it('classificação da Série B mostra o playoff de acesso', async () => {
+    await entrarNoJogo()
+    await userEvent.click(screen.getByRole('button', { name: textos.menu.classificacao }))
+    await userEvent.click(screen.getByRole('tab', { name: 'Série B' }))
+
+    const playoff = screen.getByRole('region', { name: textos.classificacao.playoff })
+    expect(playoff).toHaveTextContent('3º Dunas FC × 6º Jangadeiro EC')
+    expect(playoff).toHaveTextContent(textos.classificacao.classificado('Dunas FC'))
+    expect(document.querySelector('.legenda-item.zona-playoff')).toHaveTextContent(textos.classificacao.legendaPlayoff)
+  })
+
   it('classificação troca de divisão e destaca o clube do jogador', async () => {
     const nucleo = await entrarNoJogo()
     await userEvent.click(screen.getByRole('button', { name: textos.menu.classificacao }))

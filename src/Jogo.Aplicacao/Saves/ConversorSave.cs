@@ -42,7 +42,7 @@ public static class ConversorSave
             Divisoes = [.. mundo.Divisoes.Select(d => new DivisaoSave
             {
                 Id = d.Id, Nome = d.Nome, Nivel = d.Nivel, Clubes = [.. d.ClubeIds],
-                VagasAcesso = d.VagasAcesso, VagasRebaixamento = d.VagasRebaixamento,
+                VagasAcesso = d.VagasAcesso, VagasRebaixamento = d.VagasRebaixamento, VagasDiretas = d.TemPlayoff ? d.VagasDiretas : null,
             })],
             Clubes = [.. mundo.Clubes.Select(ParaSave)],
             AgentesLivres = [.. mundo.AgentesLivres.Select(ParaSave)],
@@ -95,7 +95,7 @@ public static class ConversorSave
         try
         {
             var clubes = save.Clubes.Select(ParaDominio).ToArray();
-            var divisoes = save.Divisoes.Select(d => new Divisao(d.Id!, d.Nome!, d.Nivel, d.Clubes ?? [], d.VagasAcesso, d.VagasRebaixamento));
+            var divisoes = save.Divisoes.Select(d => new Divisao(d.Id!, d.Nome!, d.Nivel, d.Clubes ?? [], d.VagasAcesso, d.VagasRebaixamento, d.VagasDiretas));
             var livres = (save.AgentesLivres ?? []).Select(j => ParaDominio(j, ""));
             var mundo = new Mundo(save.Ano, divisoes, clubes, livres);
 

@@ -137,7 +137,15 @@ public static class FimDeTemporada
 
         for (var i = 0; i < divisoes.Count; i++)
         {
-            promovidos[i] = [.. tabelas[i].Take(divisoes[i].VagasAcesso).Select(l => l.ClubeId)];
+            promovidos[i] = [.. tabelas[i].Take(divisoes[i].VagasDiretas).Select(l => l.ClubeId)];
+            if (divisoes[i].TemPlayoff)
+            {
+                var playoff = temporada.Playoff(divisoes[i].Id);
+                // Sem playoff jogado (não deveria acontecer), as vagas vão para os melhores colocados da faixa.
+                promovidos[i].AddRange(playoff.Count > 0
+                    ? playoff.Select(c => c.VencedorId ?? c.MelhorId)
+                    : divisoes[i].ConfrontosDoPlayoff.Select(c => tabelas[i][c.MelhorPosicao - 1].ClubeId));
+            }
             rebaixados[i] = [.. tabelas[i].TakeLast(divisoes[i].VagasRebaixamento).Select(l => l.ClubeId)];
         }
 
@@ -149,7 +157,7 @@ public static class FimDeTemporada
             var descem = i > 0 ? rebaixados[i - 1] : [];
             var sobem = i < divisoes.Count - 1 ? promovidos[i + 1] : [];
             var d = divisoes[i];
-            novas.Add(new Divisao(d.Id, d.Nome, d.Nivel, [.. ficam, .. sobem, .. descem], d.VagasAcesso, d.VagasRebaixamento));
+            novas.Add(new Divisao(d.Id, d.Nome, d.Nivel, [.. ficam, .. sobem, .. descem], d.VagasAcesso, d.VagasRebaixamento, d.VagasDiretas));
         }
 
         var resumos = divisoes.Select((d, i) =>

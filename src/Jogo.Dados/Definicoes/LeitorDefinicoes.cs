@@ -152,7 +152,7 @@ public static partial class LeitorDefinicoes
                 continue;
             }
 
-            var divisao = ctx.Criar(local, () => new Divisao(d.Id!, d.Nome!, nivel.Value, clubes, acesso.Value, rebaixamento.Value));
+            var divisao = ctx.Criar(local, () => new Divisao(d.Id!, d.Nome!, nivel.Value, clubes, acesso.Value, rebaixamento.Value, d.VagasDiretas));
             if (divisao is not null)
             {
                 divisoes.Add(divisao);
