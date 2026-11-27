@@ -18,10 +18,10 @@ async function entrarNoJogo(nucleo = criarNucleoFalso()) {
   return nucleo
 }
 
-/** Avança uma rodada pelo botão e espera o setTimeout que libera a tela antes de simular. */
+/** Simula uma rodada no modo rápido e espera o setTimeout que libera a tela antes de simular. */
 async function avancar() {
   vi.useFakeTimers({ shouldAdvanceTime: true })
-  await userEvent.click(screen.getByRole('button', { name: new RegExp(textos.avancar.rodada) }))
+  await userEvent.click(screen.getByRole('button', { name: textos.avancar.simularRapido }))
   await act(() => vi.runAllTimersAsync())
   vi.useRealTimers()
 }
@@ -48,7 +48,7 @@ describe('App', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent('clubes/pampa.json → elenco[1]: idade deve estar entre 15 e 45.')
   })
 
-  it('avançar a rodada mostra a partida com placar, lances e outros jogos', async () => {
+  it('simular rápido mostra a partida com placar, lances e outros jogos', async () => {
     const nucleo = await entrarNoJogo()
 
     await avancar()
@@ -63,15 +63,13 @@ describe('App', () => {
     expect(screen.getByText(/Fulano finaliza para fora/)).toBeInTheDocument()
   })
 
-  it('a barra de espaço avança a rodada', async () => {
+  it('a barra de espaço abre a rodada ao vivo', async () => {
     const nucleo = await entrarNoJogo()
 
-    vi.useFakeTimers({ shouldAdvanceTime: true })
     await userEvent.keyboard(' ')
-    await act(() => vi.runAllTimersAsync())
-    vi.useRealTimers()
 
-    expect(nucleo.avancarRodada).toHaveBeenCalledTimes(1)
+    expect(nucleo.iniciarAoVivo).toHaveBeenCalledTimes(1)
+    expect(screen.getByTestId('relogio')).toHaveTextContent("0'")
   })
 
   it('elenco mostra destaque e jogador lesionado', async () => {

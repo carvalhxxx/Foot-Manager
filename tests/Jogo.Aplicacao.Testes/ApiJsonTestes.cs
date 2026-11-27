@@ -141,6 +141,54 @@ public class ApiJsonTestes
     }
 
     [Fact]
+    public void AoVivo_PausaNoIntervaloDecideEConclui()
+    {
+        var api = ComCarreira();
+
+        var inicio = Ok(api.IniciarAoVivo());
+        Assert.Equal(1, inicio["rodada"]!.GetValue<int>());
+        Assert.Equal(0, inicio["minhaPartida"]!["minuto"]!.GetValue<int>());
+        Assert.True(Ok(api.Estado())["rodadaAoVivo"]!.GetValue<bool>());
+
+        // Pede muitos minutos: tem que parar sozinho no intervalo.
+        var intervalo = Ok(api.AvancarAoVivo(200));
+        Assert.Equal("intervalo", intervalo["pausa"]!.GetValue<string>());
+        Assert.Equal(45, intervalo["minhaPartida"]!["minuto"]!.GetValue<int>());
+        Assert.Equal(2, intervalo["placares"]!.AsArray().Count);
+
+        var minha = intervalo["minhaPartida"]!;
+        var sai = minha["emCampo"]!.AsArray().First(j => j!["posicao"]!.GetValue<string>() != "GOL")!["id"]!.GetValue<int>();
+        var entra = minha["reservas"]!.AsArray().First(j => j!["posicao"]!.GetValue<string>() != "GOL")!["id"]!.GetValue<int>();
+
+        var depois = Ok(api.DecidirAoVivo(JsonSerializer.Serialize(new { tipo = "substituicao", saiId = sai, entraId = entra })));
+        Assert.Equal(4, depois["minhaPartida"]!["substituicoesRestantes"]!.GetValue<int>());
+
+        var formacao = Ok(api.DecidirAoVivo(JsonSerializer.Serialize(new { tipo = "formacao", formacao = "3-5-2" })));
+        Assert.Equal("3-5-2", formacao["minhaPartida"]!["formacao"]!.GetValue<string>());
+
+        var mentalidade = Ok(api.DecidirAoVivo(JsonSerializer.Serialize(new { tipo = "mentalidade", mentalidade = "MuitoOfensiva" })));
+        Assert.Equal("MuitoOfensiva", mentalidade["minhaPartida"]!["mentalidade"]!.GetValue<string>());
+
+        Assert.Contains("desconhecida", Falha(api.DecidirAoVivo(JsonSerializer.Serialize(new { tipo = "magica" }))), StringComparison.Ordinal);
+        Assert.Contains("rodada em andamento", Falha(api.AvancarRodada()), StringComparison.Ordinal);
+
+        var rodada = Ok(api.ConcluirAoVivo());
+        Assert.Equal(1, rodada["rodada"]!.GetValue<int>());
+        Assert.Contains(rodada["minhaPartida"]!["eventos"]!.AsArray(), e => e!["tipo"]!.GetValue<string>() == "Substituicao");
+        var estado = Ok(api.Estado());
+        Assert.Equal((1, false), (estado["rodadaAtual"]!.GetValue<int>(), estado["rodadaAoVivo"]!.GetValue<bool>()));
+    }
+
+    [Fact]
+    public void AoVivo_SemRodadaIniciada_Falha()
+    {
+        var api = ComCarreira();
+
+        Assert.Contains("Não há rodada ao vivo", Falha(api.AvancarAoVivo(1)), StringComparison.Ordinal);
+        Assert.Contains("Não há rodada ao vivo", Falha(api.ConcluirAoVivo()), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void TemporadaInteira_EncerrarEComecarAProxima()
     {
         var api = ComCarreira("cerrado");

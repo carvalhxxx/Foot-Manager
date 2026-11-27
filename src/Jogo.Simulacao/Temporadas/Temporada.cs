@@ -97,24 +97,43 @@ public sealed class Temporada
             .Take(quantidade)];
     }
 
-    /// <summary>Joga a próxima rodada em todas as divisões e aplica o pós-jogo aos elencos.</summary>
+    /// <summary>Rodada que está sendo jogada ao vivo (nula fora da rodada).</summary>
+    public RodadaEmAndamento? EmAndamento { get; private set; }
+
+    /// <summary>Joga a próxima rodada inteira de uma vez (modo rápido) e aplica o pós-jogo aos elencos.</summary>
     /// <param name="escalacoesFixas">
     /// Escalações escolhidas fora da IA (o clube do jogador), por id de clube. O bônus de entrosamento é recalculado aqui.
     /// </param>
     public RelatorioRodada JogarRodada(IReadOnlyDictionary<string, TimeEscalado>? escalacoesFixas = null)
+    {
+        var rodada = IniciarRodada(escalacoesFixas);
+        rodada.AvancarAteOFim();
+        return ConcluirRodada();
+    }
+
+    /// <summary>
+    /// Começa a próxima rodada para ser jogada minuto a minuto (todos os jogos juntos).
+    /// </summary>
+    /// <param name="clubesManuais">Clubes cujas decisões no jogo vêm de fora (o jogador); os demais usam o treinador automático.</param>
+    public RodadaEmAndamento IniciarRodada(
+        IReadOnlyDictionary<string, TimeEscalado>? escalacoesFixas = null,
+        IReadOnlySet<string>? clubesManuais = null)
     {
         if (Encerrada)
         {
             throw new InvalidOperationException("A temporada já terminou.");
         }
 
+        if (EmAndamento is not null)
+        {
+            throw new InvalidOperationException("Já há uma rodada em andamento.");
+        }
+
         var rodada = RodadaAtual + 1;
-        var jogosPorDivisao = new Dictionary<string, IReadOnlyList<JogoDisputado>>(StringComparer.Ordinal);
-        var partidas = new List<(Clube Clube, TimeEscalado Escalacao, ResultadoPartida Resultado, Equipe Equipe)>();
+        var jogos = new List<JogoEmAndamento>();
 
         foreach (var competicao in Competicoes.Where(c => rodada <= c.Calendario.Count))
         {
-            var jogos = new List<JogoDisputado>();
             var agenda = competicao.Calendario[rodada - 1];
             for (var i = 0; i < agenda.Count; i++)
             {
@@ -124,21 +143,49 @@ public sealed class Temporada
                 var escalacaoMandante = EscalacaoDaRodada(mandante, escalacoesFixas);
                 var escalacaoVisitante = EscalacaoDaRodada(visitante, escalacoesFixas);
 
-                var resultado = MotorDePartida.SimularRapido(escalacaoMandante, escalacaoVisitante,
-                    new GeradorAleatorio(Semente(competicao.Divisao.Id, rodada, i + 1)), configuracao: Configuracao);
+                var partida = MotorDePartida.Iniciar(escalacaoMandante, escalacaoVisitante,
+                    new GeradorAleatorio(Semente(competicao.Divisao.Id, rodada, i + 1)), configuracao: Configuracao,
+                    mandanteAutomatico: clubesManuais?.Contains(mandante.Id) != true,
+                    visitanteAutomatico: clubesManuais?.Contains(visitante.Id) != true);
 
+                jogos.Add(new JogoEmAndamento(competicao, jogo, mandante, visitante, escalacaoMandante, escalacaoVisitante, partida));
+            }
+        }
+
+        EmAndamento = new RodadaEmAndamento(rodada, jogos);
+        return EmAndamento;
+    }
+
+    /// <summary>Fecha a rodada em andamento (todos os jogos precisam ter terminado) e aplica o pós-jogo.</summary>
+    public RelatorioRodada ConcluirRodada()
+    {
+        var emAndamento = EmAndamento ?? throw new InvalidOperationException("Não há rodada em andamento.");
+        if (!emAndamento.Encerrada)
+        {
+            throw new InvalidOperationException("Ainda há jogos em andamento nesta rodada.");
+        }
+
+        var jogosPorDivisao = new Dictionary<string, IReadOnlyList<JogoDisputado>>(StringComparer.Ordinal);
+        var partidas = new List<(Clube Clube, TimeEscalado Escalacao, ResultadoPartida Resultado, Equipe Equipe)>();
+
+        foreach (var grupo in emAndamento.Jogos.GroupBy(j => j.Competicao))
+        {
+            var jogos = new List<JogoDisputado>();
+            foreach (var j in grupo)
+            {
+                var resultado = ResultadoPartida.De(j.Partida);
                 var disputado = new JogoDisputado(
-                    new PlacarJogo(jogo, resultado.GolsMandante, resultado.GolsVisitante,
+                    new PlacarJogo(j.Jogo, resultado.GolsMandante, resultado.GolsVisitante,
                         resultado.EstatisticasMandante.Amarelos, resultado.EstatisticasVisitante.Amarelos,
                         resultado.EstatisticasMandante.Vermelhos, resultado.EstatisticasVisitante.Vermelhos),
                     resultado);
-                competicao.Registrar(disputado);
+                grupo.Key.Registrar(disputado);
                 jogos.Add(disputado);
-                partidas.Add((mandante, escalacaoMandante, resultado, Equipe.Mandante));
-                partidas.Add((visitante, escalacaoVisitante, resultado, Equipe.Visitante));
+                partidas.Add((j.Mandante, j.EscalacaoMandante, resultado, Equipe.Mandante));
+                partidas.Add((j.Visitante, j.EscalacaoVisitante, resultado, Equipe.Visitante));
             }
 
-            jogosPorDivisao[competicao.Divisao.Id] = jogos;
+            jogosPorDivisao[grupo.Key.Divisao.Id] = jogos;
         }
 
         // 1. Quem estava fora cumpre a rodada (antes de aplicar as novas lesões e suspensões).
@@ -159,8 +206,9 @@ public sealed class Temporada
             jogador.AjustarCondicao(Regras.RecuperacaoBase + (jogador.Atributos.Resistencia / 2));
         }
 
-        RodadaAtual = rodada;
-        return new RelatorioRodada(rodada, jogosPorDivisao);
+        RodadaAtual = emAndamento.Rodada;
+        EmAndamento = null;
+        return new RelatorioRodada(emAndamento.Rodada, jogosPorDivisao);
     }
 
     public void JogarAteOFim()

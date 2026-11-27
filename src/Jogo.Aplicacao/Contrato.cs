@@ -43,7 +43,8 @@ public sealed record EstadoDto(
     int Pontos,
     ProximoJogoDto? ProximoJogo,
     IReadOnlyList<ResultadoRecenteDto> UltimosResultados,
-    IReadOnlyList<string> AjustesNaEscalacao);
+    IReadOnlyList<string> AjustesNaEscalacao,
+    bool RodadaAoVivo);
 
 public sealed record AtributosDto(
     int Finalizacao, int Passe, int Desarme, int Drible, int Velocidade,
@@ -108,6 +109,57 @@ public sealed record RodadaDivisaoDto(string DivisaoId, string DivisaoNome, IRea
 
 public sealed record RodadaDto(int Rodada, PartidaDto? MinhaPartida, IReadOnlyList<RodadaDivisaoDto> Divisoes);
 
+// ------------------------------------------------------------------ ao vivo
+
+public sealed record JogadorEmCampoDto(int Id, string Nome, string Posicao, int Forca, int Condicao, int Amarelos, int Gols);
+
+public sealed record ReservaDto(int Id, string Nome, string Posicao, int Forca, int Condicao);
+
+/// <summary>Posição deixada por um lesionado, à espera de substituição.</summary>
+public sealed record VagaDto(int JogadorId, string Nome, string Posicao);
+
+public sealed record MinhaPartidaAoVivoDto(
+    ClubeResumoDto Mandante,
+    ClubeResumoDto Visitante,
+    bool SouMandante,
+    int GolsMandante,
+    int GolsVisitante,
+    int Tempo,
+    int Minuto,
+    int Acrescimo,
+    bool Encerrada,
+    int PosseMandante,
+    EstatisticasDto EstatisticasMandante,
+    EstatisticasDto EstatisticasVisitante,
+    string Formacao,
+    string Mentalidade,
+    int SubstituicoesRestantes,
+    IReadOnlyList<JogadorEmCampoDto> EmCampo,
+    IReadOnlyList<ReservaDto> Reservas,
+    IReadOnlyList<VagaDto> VagasAbertas,
+    IReadOnlyList<EventoDto> Eventos);
+
+public sealed record PlacarAoVivoDto(
+    string MandanteId, string MandanteSigla, int GolsMandante,
+    string VisitanteId, string VisitanteSigla, int GolsVisitante,
+    int Minuto, int Acrescimo, bool Encerrado);
+
+public sealed record RodadaDivisaoAoVivoDto(string DivisaoId, string DivisaoNome, IReadOnlyList<PlacarAoVivoDto> Jogos);
+
+/// <summary>
+/// Foto da rodada ao vivo. <see cref="Pausa"/> diz por que a simulação parou sozinha
+/// ("intervalo", "lesao", "expulsao" ou "fim"); nula se parou só porque os minutos pedidos acabaram.
+/// </summary>
+public sealed record AoVivoDto(
+    int Rodada,
+    bool RodadaEncerrada,
+    string? Pausa,
+    MinhaPartidaAoVivoDto? MinhaPartida,
+    IReadOnlyList<RodadaDivisaoAoVivoDto> Placares);
+
+/// <summary>Decisão do jogador durante o jogo: "substituicao", "mentalidade" ou "formacao".</summary>
+public sealed record DecisaoDto(string Tipo, int? SaiId = null, int? EntraId = null, string? Mentalidade = null, string? Formacao = null);
+
 // ------------------------------------------------------------------ tabelas
 
 public sealed record LinhaTabelaDto(
@@ -131,6 +183,8 @@ public sealed record FimDeTemporadaDto(
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 [JsonSerializable(typeof(Dictionary<string, string>))]
 [JsonSerializable(typeof(DefinicaoTaticaDto))]
+[JsonSerializable(typeof(DecisaoDto))]
+[JsonSerializable(typeof(Resposta<AoVivoDto>))]
 [JsonSerializable(typeof(Resposta<ResumoMundoDto>))]
 [JsonSerializable(typeof(Resposta<EstadoDto>))]
 [JsonSerializable(typeof(Resposta<IReadOnlyList<JogadorDto>>))]

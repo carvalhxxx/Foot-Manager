@@ -168,16 +168,88 @@ public sealed class Carreira
         return new EscalacaoDaRodada(escalacao, ajustes);
     }
 
-    /// <summary>Joga a próxima rodada com a escalação do jogador (ajustada se preciso).</summary>
+    /// <summary>Joga a próxima rodada de uma vez (modo rápido) com a escalação do jogador (ajustada se preciso).</summary>
     public RelatorioRodada AvancarRodada()
     {
         var (escalacao, _) = MontarEscalacao();
         UltimaRodada = Temporada.JogarRodada(new Dictionary<string, TimeEscalado>(StringComparer.Ordinal) { [Clube.Id] = escalacao });
-
-        // A tática passa a ser a escalação que de fato jogou (sem lesionados/suspensos da rodada anterior).
-        Tatica = Tatica with { Titulares = [.. escalacao.Titulares.Select(j => j.Id)], Reservas = [.. escalacao.Reservas.Select(j => j.Id)] };
+        FixarEscalacaoQueJogou(escalacao);
         return UltimaRodada;
     }
+
+    // ------------------------------------------------------------------ ao vivo
+
+    /// <summary>Rodada sendo jogada ao vivo (nula fora dela).</summary>
+    public RodadaEmAndamento? AoVivo => Temporada.EmAndamento;
+
+    /// <summary>O jogo do clube do jogador na rodada ao vivo.</summary>
+    public JogoEmAndamento? MeuJogoAoVivo => AoVivo?.JogoDo(Clube.Id);
+
+    /// <summary>Time do jogador dentro da partida ao vivo.</summary>
+    public TimeEmJogo? MeuTimeAoVivo =>
+        MeuJogoAoVivo is { } jogo ? (jogo.Mandante.Id == Clube.Id ? jogo.Partida.Mandante : jogo.Partida.Visitante) : null;
+
+    private TimeEscalado? _escalacaoAoVivo;
+
+    /// <summary>
+    /// Começa a rodada ao vivo: o jogador decide pelo seu time (sem treinador automático); os outros clubes seguem com a IA.
+    /// </summary>
+    public RodadaEmAndamento IniciarRodadaAoVivo()
+    {
+        var (escalacao, _) = MontarEscalacao();
+        _escalacaoAoVivo = escalacao;
+        return Temporada.IniciarRodada(
+            new Dictionary<string, TimeEscalado>(StringComparer.Ordinal) { [Clube.Id] = escalacao },
+            new HashSet<string>(StringComparer.Ordinal) { Clube.Id });
+    }
+
+    /// <summary>Avança um minuto em todos os jogos da rodada ao vivo e devolve os eventos novos do jogo do jogador.</summary>
+    public IReadOnlyList<EventoPartida> AvancarMinutoAoVivo()
+    {
+        var rodada = AoVivo ?? throw new InvalidOperationException("Não há rodada ao vivo.");
+        var partida = MeuJogoAoVivo?.Partida;
+        var antes = partida?.Eventos.Count ?? 0;
+        rodada.AvancarMinuto();
+        return partida is null ? [] : [.. partida.Eventos.Skip(antes)];
+    }
+
+    /// <summary>Aplica uma decisão do jogador no jogo dele.</summary>
+    public EventoPartida DecidirAoVivo(Decisao decisao)
+    {
+        var jogo = MeuJogoAoVivo ?? throw new InvalidOperationException("Não há jogo ao vivo.");
+        var equipe = jogo.Mandante.Id == Clube.Id ? Equipe.Mandante : Equipe.Visitante;
+        return MotorDePartida.AplicarDecisao(jogo.Partida, equipe, decisao);
+    }
+
+    /// <summary>
+    /// Troca a formação durante o jogo, reposicionando quem está em campo onde cada um rende mais.
+    /// Com jogadores a menos, as últimas posições da formação (as de ataque) ficam vazias.
+    /// </summary>
+    public EventoPartida TrocarFormacaoAoVivo(Formacao formacao)
+    {
+        ArgumentNullException.ThrowIfNull(formacao);
+        var time = MeuTimeAoVivo ?? throw new InvalidOperationException("Não há jogo ao vivo.");
+        var deLinha = time.EmCampo.Where(j => j.Posicao != Posicao.Goleiro).Select(j => j.Jogador).ToArray();
+        var posicoes = formacao.Posicoes.Take(deLinha.Length).ToArray();
+        var ordem = Escalador.Distribuir(deLinha, posicoes);
+        return DecidirAoVivo(new TrocaDeFormacao(formacao, [.. ordem.Select(j => j.Id)]));
+    }
+
+    /// <summary>Fecha a rodada ao vivo (todos os jogos precisam ter acabado) e aplica o pós-jogo.</summary>
+    public RelatorioRodada ConcluirRodadaAoVivo()
+    {
+        var escalacao = _escalacaoAoVivo ?? throw new InvalidOperationException("Não há rodada ao vivo.");
+        var mentalidadeFinal = MeuTimeAoVivo?.Mentalidade ?? Tatica.Mentalidade;
+        UltimaRodada = Temporada.ConcluirRodada();
+        _escalacaoAoVivo = null;
+        FixarEscalacaoQueJogou(escalacao);
+        Tatica = Tatica with { Mentalidade = mentalidadeFinal };
+        return UltimaRodada;
+    }
+
+    /// <summary>A tática passa a ser a escalação que de fato começou o jogo (sem lesionados/suspensos da rodada anterior).</summary>
+    private void FixarEscalacaoQueJogou(TimeEscalado escalacao) =>
+        Tatica = Tatica with { Titulares = [.. escalacao.Titulares.Select(j => j.Id)], Reservas = [.. escalacao.Reservas.Select(j => j.Id)] };
 
     /// <summary>Fecha a temporada (acesso, evolução, base...) e começa a próxima.</summary>
     public ResultadoTemporada EncerrarTemporada()

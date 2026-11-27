@@ -105,6 +105,10 @@ Formato curto: contexto → decisão → consequência. Quando houver decisões 
 - **Decisão:** os casos de uso da interface ficam em `Jogo.Aplicacao` (`ServicoDeJogo` com DTOs, `ApiJson` com texto JSON entrando e saindo), e o `Jogo.Wasm` só repassa as chamadas. A `Carreira` (em `Jogo.Simulacao`) guarda o clube do jogador e a tática; antes de cada rodada, troca titulares lesionados ou suspensos pelo melhor disponível e avisa o que mudou. O estado do jogo mora no C#; a interface relê os dados depois de cada ação, sem cópia própria. A força mostrada na Tática é a efetiva (com a penalidade de improviso). O atalho para avançar é a barra de espaço.
 - **Consequência:** a fronteira inteira (inclusive uma temporada completa e a virada de ano) é testada com xUnit, sem navegador. A interface é testada com um núcleo falso. Uma rodada leva cerca de 0,5 s no WebAssembly (sem AOT); se incomodar, o caminho é compilar com AOT (`wasm-tools`).
 
+### D-025 · Partida ao vivo (2026-11-26)
+- **Decisão:** a `Temporada` joga a rodada em três passos (`IniciarRodada`, `RodadaEmAndamento.AvancarMinuto`, `ConcluirRodada`); o modo rápido é só "avançar até o fim". Na rodada ao vivo, o time do jogador fica sem treinador automático e as decisões passam por `Carreira` (substituição, mentalidade, formação com reposicionamento pelo `Escalador.Distribuir`). A API devolve sempre a foto completa do jogo, e o C# indica quando pausar (intervalo, lesão ou expulsão do time do jogador, fim). A narração é texto de interface: fica em `web/src/narracao.ts`, com vários modelos por tipo de lance, escolhidos por um hash do lance (o mesmo lance sempre tem a mesma frase).
+- **Consequência:** cada jogo usa o seu gerador, então o ritmo não muda resultados: o modo rápido continua idêntico ao anterior. Na tela, uma trava síncrona impede que um minuto extra passe depois de uma pausa na velocidade 10×. Abrir a rodada leva cerca de 0,5 s (a IA escalando os 40 clubes); cada minuto é instantâneo.
+
 ## Propostas (aguardando confirmação)
 
 ### P-006 · Saves no navegador em vez de SQLite

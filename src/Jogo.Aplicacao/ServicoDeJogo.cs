@@ -87,11 +87,11 @@ public sealed class ServicoDeJogo
             })
             .ToArray();
 
-        var ajustes = c.Temporada.Encerrada ? [] : c.MontarEscalacao().Ajustes;
+        var ajustes = c.Temporada.Encerrada || c.AoVivo is not null ? [] : c.MontarEscalacao().Ajustes;
 
         return new EstadoDto(c.Temporada.Ano, c.Temporada.RodadaAtual, c.Temporada.TotalRodadas, c.Temporada.Encerrada,
             Resumir(c.Clube), competicao.Divisao.Id, competicao.Divisao.Nome, minhaLinha.Posicao, minhaLinha.Pontos,
-            proximo, ultimos, ajustes);
+            proximo, ultimos, ajustes, c.AoVivo is not null);
     });
 
     public Resposta<IReadOnlyList<JogadorDto>> Elenco() => ComCarreira<IReadOnlyList<JogadorDto>>(c =>
@@ -141,6 +141,153 @@ public sealed class ServicoDeJogo
 
     public Resposta<RodadaDto> UltimaRodada() => ComCarreira(c =>
         c.UltimaRodada is { } rodada ? ParaDto(c, rodada) : new RodadaDto(0, null, []));
+
+    // ------------------------------------------------------------------ ao vivo
+
+    /// <summary>Começa a rodada ao vivo (o jogador decide pelo seu time durante o jogo).</summary>
+    public Resposta<AoVivoDto> IniciarAoVivo() => ComCarreira(c =>
+    {
+        if (c.Temporada.Encerrada)
+        {
+            throw new InvalidOperationException("A temporada acabou: encerre-a para começar a próxima.");
+        }
+
+        if (c.AoVivo is null)
+        {
+            c.IniciarRodadaAoVivo();
+        }
+
+        return FotoAoVivo(c, null);
+    });
+
+    public Resposta<AoVivoDto> AoVivo() => ComCarreira(c =>
+        c.AoVivo is null ? throw new InvalidOperationException("Não há rodada ao vivo.") : FotoAoVivo(c, null));
+
+    /// <summary>
+    /// Avança até <paramref name="minutos"/> minutos. Para antes se algo pedir a atenção do jogador
+    /// no jogo dele (intervalo, lesão, expulsão, fim do jogo) ou se a rodada acabar.
+    /// </summary>
+    public Resposta<AoVivoDto> AvancarAoVivo(int minutos) => ComCarreira(c =>
+    {
+        var rodada = c.AoVivo ?? throw new InvalidOperationException("Não há rodada ao vivo.");
+        string? pausa = null;
+
+        for (var i = 0; i < Math.Clamp(minutos, 1, 300) && pausa is null && !rodada.Encerrada; i++)
+        {
+            var meuJogoJaAcabou = c.MeuJogoAoVivo?.Partida.Encerrada ?? true;
+            var novos = c.AvancarMinutoAoVivo();
+            pausa = MotivoDePausa(c, novos)
+                    ?? (!meuJogoJaAcabou && c.MeuJogoAoVivo!.Partida.Encerrada ? "fim" : null);
+        }
+
+        return FotoAoVivo(c, pausa ?? (rodada.Encerrada ? "fim" : null));
+    });
+
+    public Resposta<AoVivoDto> DecidirAoVivo(DecisaoDto decisao)
+    {
+        ArgumentNullException.ThrowIfNull(decisao);
+        return ComCarreira(c =>
+        {
+            switch (decisao.Tipo)
+            {
+                case "substituicao":
+                    c.DecidirAoVivo(new Substituicao(
+                        decisao.SaiId ?? throw new ArgumentException("Informe quem sai."),
+                        decisao.EntraId ?? throw new ArgumentException("Informe quem entra.")));
+                    break;
+                case "mentalidade":
+                    c.DecidirAoVivo(new TrocaDeMentalidade(LerMentalidade(decisao.Mentalidade)));
+                    break;
+                case "formacao":
+                    c.TrocarFormacaoAoVivo(FormacoesPadrao.Todas.FirstOrDefault(f => f.Nome == decisao.Formacao)
+                        ?? throw new ArgumentException($"Formação \"{decisao.Formacao}\" desconhecida."));
+                    break;
+                default:
+                    throw new ArgumentException($"Decisão \"{decisao.Tipo}\" desconhecida.");
+            }
+
+            return FotoAoVivo(c, null);
+        });
+    }
+
+    /// <summary>Termina o que faltar dos jogos e fecha a rodada ao vivo.</summary>
+    public Resposta<RodadaDto> ConcluirAoVivo() => ComCarreira(c =>
+    {
+        var rodada = c.AoVivo ?? throw new InvalidOperationException("Não há rodada ao vivo.");
+        rodada.AvancarAteOFim();
+        return ParaDto(c, c.ConcluirRodadaAoVivo());
+    });
+
+    private static string? MotivoDePausa(Carreira c, IReadOnlyList<EventoPartida> novos)
+    {
+        var minhaEquipe = c.MeuJogoAoVivo!.Mandante.Id == c.Clube.Id ? Equipe.Mandante : Equipe.Visitante;
+        foreach (var e in novos)
+        {
+            switch (e.Tipo)
+            {
+                case TipoEvento.Intervalo:
+                    return "intervalo";
+                case TipoEvento.Lesao when e.Equipe == minhaEquipe:
+                    return "lesao";
+                case TipoEvento.CartaoVermelho when e.Equipe == minhaEquipe:
+                    return "expulsao";
+            }
+        }
+
+        return null;
+    }
+
+    private static AoVivoDto FotoAoVivo(Carreira c, string? pausa)
+    {
+        var rodada = c.AoVivo!;
+        var nomes = NomesDosJogadores(c.Mundo);
+
+        MinhaPartidaAoVivoDto? minha = null;
+        if (c.MeuJogoAoVivo is { } jogo && c.MeuTimeAoVivo is { } time)
+        {
+            var p = jogo.Partida;
+            var (minuto, acrescimo) = p.Relogio;
+            var posseTotal = p.Mandante.Estatisticas.MinutosComPosse + p.Visitante.Estatisticas.MinutosComPosse;
+            minha = new MinhaPartidaAoVivoDto(
+                Resumir(jogo.Mandante),
+                Resumir(jogo.Visitante),
+                jogo.Mandante.Id == c.Clube.Id,
+                p.Mandante.Estatisticas.Gols,
+                p.Visitante.Estatisticas.Gols,
+                p.Tempo,
+                minuto,
+                acrescimo,
+                p.Encerrada,
+                posseTotal == 0 ? 50 : (int)Math.Round(100.0 * p.Mandante.Estatisticas.MinutosComPosse / posseTotal),
+                ParaDto(p.Mandante.Estatisticas),
+                ParaDto(p.Visitante.Estatisticas),
+                time.Formacao.Nome,
+                time.Mentalidade.ToString(),
+                p.Configuracao.MaximoSubstituicoes - time.SubstituicoesFeitas,
+                [.. time.EmCampo.Select(j => new JogadorEmCampoDto(j.Jogador.Id, j.Jogador.Nome, j.Posicao.Sigla(),
+                    (int)Math.Round(j.ForcaBase), (int)Math.Round(j.Condicao), j.Amarelos, j.Gols))],
+                [.. time.Reservas.Select(r => new ReservaDto(r.Id, r.Nome, r.PosicaoPrincipal.Sigla(), r.ForcaGeral, r.Condicao))],
+                [.. time.VagasEmAberto.Select(v => new VagaDto(v.JogadorId, nomes.GetValueOrDefault(v.JogadorId) ?? "", v.Posicao.Sigla()))],
+                [.. p.Eventos.Select(e => ParaDto(e, nomes))]);
+        }
+
+        var placares = rodada.Jogos
+            .GroupBy(j => j.Competicao)
+            .Select(g => new RodadaDivisaoAoVivoDto(g.Key.Divisao.Id, g.Key.Divisao.Nome, [.. g.Select(j =>
+            {
+                var (m, a) = j.Partida.Relogio;
+                return new PlacarAoVivoDto(j.Mandante.Id, j.Mandante.Sigla, j.Partida.Mandante.Estatisticas.Gols,
+                    j.Visitante.Id, j.Visitante.Sigla, j.Partida.Visitante.Estatisticas.Gols, m, a, j.Partida.Encerrada);
+            })]))
+            .ToArray();
+
+        return new AoVivoDto(rodada.Rodada, rodada.Encerrada, pausa, minha, placares);
+    }
+
+    private static Mentalidade LerMentalidade(string? nome) =>
+        Enum.TryParse<Mentalidade>(nome, out var m) && Enum.IsDefined(m)
+            ? m
+            : throw new ArgumentException($"Mentalidade \"{nome}\" desconhecida.");
 
     public Resposta<ClassificacaoDto> Classificacao(string divisaoId) => ComCarreira(c =>
     {
@@ -288,12 +435,14 @@ public sealed class ServicoDeJogo
         r.PosseMandante,
         ParaDto(r.EstatisticasMandante),
         ParaDto(r.EstatisticasVisitante),
-        [.. r.Eventos.Select(e => new EventoDto(
-            e.Minuto, e.Acrescimo, e.Tipo.ToString(), e.Equipe?.ToString(),
-            e.JogadorId is { } a ? nomes.GetValueOrDefault(a) : null,
-            e.OutroJogadorId is { } b ? nomes.GetValueOrDefault(b) : null,
-            e.Origem?.ToString(),
-            e.Detalhe))]);
+        [.. r.Eventos.Select(e => ParaDto(e, nomes))]);
+
+    private static EventoDto ParaDto(EventoPartida e, IReadOnlyDictionary<int, string> nomes) => new(
+        e.Minuto, e.Acrescimo, e.Tipo.ToString(), e.Equipe?.ToString(),
+        e.JogadorId is { } a ? nomes.GetValueOrDefault(a) : null,
+        e.OutroJogadorId is { } b ? nomes.GetValueOrDefault(b) : null,
+        e.Origem?.ToString(),
+        e.Detalhe);
 
     private static EstatisticasDto ParaDto(EstatisticasTime e) =>
         new(e.Finalizacoes, e.NoAlvo, e.Escanteios, e.Faltas, e.Amarelos, e.Vermelhos);

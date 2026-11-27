@@ -47,8 +47,10 @@ src/Jogo.Wasm        Casca WebAssembly: [JSExport] que repassa para ApiJson. →
 web/                 Interface React + TypeScript (Vite).
   src/nucleo/        Carregamento do runtime .NET e contrato com o núcleo (contrato.ts espelha Jogo.Aplicacao/Contrato.cs).
   src/telas/         Uma tela por arquivo; recebem dados prontos por props.
-  src/JogoEmAndamento.tsx  Casca do jogo: menu, botão "Avançar rodada" (atalho Espaço) e troca de telas.
+  src/JogoEmAndamento.tsx  Casca do jogo: menu, "Jogar rodada" (ao vivo, atalho Espaço), "Simular rápido" e troca de telas.
+  src/telas/AoVivo.tsx     Jogo ao vivo: relógio, velocidades, pausas, decisões e placar da rodada.
   src/textos.ts      Todos os textos da interface (inclusive a descrição dos eventos da partida).
+  src/narracao.ts    Narração ao vivo: vários textos por tipo de lance (texto de interface, não regra de jogo).
 tools/Jogo.Calibracao    CLI que simula milhares de partidas e temporadas e confere as metas.
 tools/Jogo.Simulador     CLI que simula temporadas completas (Séries A e B) sem interface.
 tools/Jogo.GeradorDados  Gera o mundo inicial (40 clubes fictícios) em dados/definicoes.

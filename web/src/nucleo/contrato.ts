@@ -64,6 +64,7 @@ export interface Estado {
   proximoJogo?: ProximoJogo
   ultimosResultados: ResultadoRecente[]
   ajustesNaEscalacao: string[]
+  rodadaAoVivo: boolean
 }
 
 export interface Atributos {
@@ -184,6 +185,87 @@ export interface Rodada {
   minhaPartida?: Partida
   divisoes: RodadaDivisao[]
 }
+
+// ---------------------------------------------------------------- ao vivo
+
+export interface JogadorEmCampo {
+  id: number
+  nome: string
+  posicao: string
+  forca: number
+  condicao: number
+  amarelos: number
+  gols: number
+}
+
+export interface Reserva {
+  id: number
+  nome: string
+  posicao: string
+  forca: number
+  condicao: number
+}
+
+export interface Vaga {
+  jogadorId: number
+  nome: string
+  posicao: string
+}
+
+export interface MinhaPartidaAoVivo {
+  mandante: ClubeResumo
+  visitante: ClubeResumo
+  souMandante: boolean
+  golsMandante: number
+  golsVisitante: number
+  tempo: number
+  minuto: number
+  acrescimo: number
+  encerrada: boolean
+  posseMandante: number
+  estatisticasMandante: Estatisticas
+  estatisticasVisitante: Estatisticas
+  formacao: string
+  mentalidade: string
+  substituicoesRestantes: number
+  emCampo: JogadorEmCampo[]
+  reservas: Reserva[]
+  vagasAbertas: Vaga[]
+  eventos: EventoPartida[]
+}
+
+export interface PlacarAoVivo {
+  mandanteId: string
+  mandanteSigla: string
+  golsMandante: number
+  visitanteId: string
+  visitanteSigla: string
+  golsVisitante: number
+  minuto: number
+  acrescimo: number
+  encerrado: boolean
+}
+
+export interface RodadaDivisaoAoVivo {
+  divisaoId: string
+  divisaoNome: string
+  jogos: PlacarAoVivo[]
+}
+
+export type MotivoPausa = 'intervalo' | 'lesao' | 'expulsao' | 'fim'
+
+export interface AoVivo {
+  rodada: number
+  rodadaEncerrada: boolean
+  pausa?: MotivoPausa
+  minhaPartida?: MinhaPartidaAoVivo
+  placares: RodadaDivisaoAoVivo[]
+}
+
+export type Decisao =
+  | { tipo: 'substituicao'; saiId: number; entraId: number }
+  | { tipo: 'mentalidade'; mentalidade: string }
+  | { tipo: 'formacao'; formacao: string }
 
 // ---------------------------------------------------------------- tabelas
 

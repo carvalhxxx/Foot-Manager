@@ -1,5 +1,7 @@
 import type {
+  AoVivo,
   Classificacao,
+  Decisao,
   DefinicaoTatica,
   Estado,
   FimDeTemporada,
@@ -27,6 +29,11 @@ export interface Nucleo {
   ultimaRodada(): Resposta<Rodada>
   classificacao(divisaoId: string): Resposta<Classificacao>
   encerrarTemporada(): Resposta<FimDeTemporada>
+  iniciarAoVivo(): Resposta<AoVivo>
+  aoVivo(): Resposta<AoVivo>
+  avancarAoVivo(minutos: number): Resposta<AoVivo>
+  decidirAoVivo(decisao: Decisao): Resposta<AoVivo>
+  concluirAoVivo(): Resposta<Rodada>
 }
 
 // Formato bruto exportado por src/Jogo.Wasm/NucleoJs.cs ([JSExport]): só strings.
@@ -43,6 +50,11 @@ interface ApiBruta {
   UltimaRodada(): string
   Classificacao(divisaoId: string): string
   EncerrarTemporada(): string
+  IniciarAoVivo(): string
+  AoVivo(): string
+  AvancarAoVivo(minutos: number): string
+  DecidirAoVivo(decisaoJson: string): string
+  ConcluirAoVivo(): string
 }
 
 interface RuntimeDotnet {
@@ -96,5 +108,10 @@ function embrulhar(api: ApiBruta): Nucleo {
     ultimaRodada: () => ler(api.UltimaRodada()),
     classificacao: (divisaoId) => ler(api.Classificacao(divisaoId)),
     encerrarTemporada: () => ler(api.EncerrarTemporada()),
+    iniciarAoVivo: () => ler(api.IniciarAoVivo()),
+    aoVivo: () => ler(api.AoVivo()),
+    avancarAoVivo: (minutos) => ler(api.AvancarAoVivo(minutos)),
+    decidirAoVivo: (decisao) => ler(api.DecidirAoVivo(JSON.stringify(decisao))),
+    concluirAoVivo: () => ler(api.ConcluirAoVivo()),
   }
 }

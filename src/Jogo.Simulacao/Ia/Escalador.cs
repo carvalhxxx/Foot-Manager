@@ -58,9 +58,27 @@ public static class Escalador
         return lista;
     }
 
-    private static Jogador[] EscolherTitulares(List<Jogador> disponiveis, Formacao formacao)
+    private static Jogador[] EscolherTitulares(List<Jogador> disponiveis, Formacao formacao) =>
+        Preencher(disponiveis, formacao.PosicoesComGoleiro);
+
+    /// <summary>
+    /// Distribui exatamente estes jogadores nestas posições, colocando cada um onde rende mais
+    /// (usado na troca de formação durante o jogo). A ordem do resultado acompanha <paramref name="posicoes"/>.
+    /// </summary>
+    public static IReadOnlyList<Jogador> Distribuir(IReadOnlyList<Jogador> jogadores, IReadOnlyList<Posicao> posicoes)
     {
-        var posicoes = formacao.PosicoesComGoleiro;
+        ArgumentNullException.ThrowIfNull(jogadores);
+        ArgumentNullException.ThrowIfNull(posicoes);
+        if (jogadores.Count != posicoes.Count)
+        {
+            throw new ArgumentException("A quantidade de jogadores precisa ser igual à de posições.", nameof(posicoes));
+        }
+
+        return Preencher([.. jogadores], posicoes);
+    }
+
+    private static Jogador[] Preencher(List<Jogador> disponiveis, IReadOnlyList<Posicao> posicoes)
+    {
         var escolhidos = new Jogador[posicoes.Count];
         var usados = new HashSet<int>();
 

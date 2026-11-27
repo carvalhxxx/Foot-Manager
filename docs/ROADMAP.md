@@ -13,10 +13,6 @@ _(nada)_
 
 ## Backlog (MVP · Fase 1)
 
-### E7 · Partida ao vivo · M
-- **Objetivo:** narração minuto a minuto, placar da rodada em tempo real, substituições e troca de mentalidade durante o jogo.
-- **Aceite:** decisões no meio da partida alteram o andamento; a mesma seed com as mesmas decisões gera o mesmo jogo.
-
 ### E8 · Mercado, contratos e finanças · G
 - **Objetivo:** comprar, vender e dispensar (com a IA também negociando), janelas de transferência, contratos e renovação, bilheteria com preço do ingresso, patrocínio, TV, premiação e salários.
 - **Observação:** hoje os elencos só mudam por evolução, aposentadoria e base, e os contratos são renovados automaticamente. Por isso o clube mais forte domina várias temporadas seguidas. O mercado é o que vai trazer rotatividade entre os grandes.
@@ -39,6 +35,12 @@ _(nada)_
 Mobile, saves na nuvem, ligas online entre amigos, modelo freemium/assinatura.
 
 ## Feito
+
+### E7 · Partida ao vivo · M
+- "Jogar rodada" abre o jogo ao vivo: os 20 jogos correm juntos, minuto a minuto, com narração variada do seu jogo e o placar da rodada em tempo real.
+- Controles: pausar/continuar (Espaço), velocidades 1×, 3× e 10×, pular para o fim. Pausa automática no intervalo, em lesão ou expulsão do seu time e no fim do jogo.
+- Decisões durante o jogo: substituições (até 5, inclusive no lugar de lesionado), mentalidade e formação (o C# reposiciona quem está em campo). "Simular rápido" continua disponível.
+- A rodada agora tem três passos (iniciar, avançar minuto, concluir); o modo rápido dá resultado idêntico ao de antes (verificado byte a byte no simulador). Mesma seed e mesmas decisões geram o mesmo jogo (teste). Decisão D-025.
 
 ### E6 · UI mínima (web) · G
 - Jogável no navegador: escolher clube, Início (próximo jogo, posição, últimos resultados, ajustes na escalação), Elenco, Tática (formação, mentalidade, titulares, reservas, escalação automática), Partida (placar, lances, posse, estatísticas, outros jogos), Classificação (Séries A e B, zonas, artilharia) e fim de temporada com virada de ano.

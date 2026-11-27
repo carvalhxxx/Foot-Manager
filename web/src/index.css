@@ -751,6 +751,101 @@ select {
   font-weight: 700;
 }
 
+/* ------------------------------------------------------------ ao vivo */
+
+.acoes-rodada {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.menu-ao-vivo {
+  color: var(--perigo);
+  font-weight: 700;
+}
+
+.menu-ao-vivo.ativo {
+  color: var(--destaque-texto);
+}
+
+.relogio {
+  margin: 8px 0 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--destaque);
+}
+
+.controles-ao-vivo {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.controles-ao-vivo .botao {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.narracao {
+  max-height: 520px;
+}
+
+.em-campo {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.em-campo li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.em-campo-nome {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cartao h3 {
+  font-size: 0.95rem;
+  margin: 16px 0 8px;
+}
+
+.form-substituicao {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-substituicao label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 600;
+}
+
+.placar-rodada-ao-vivo li {
+  grid-template-columns: 1fr auto 1fr auto;
+}
+
+.minuto-placar {
+  min-width: 64px;
+  color: var(--texto-suave);
+  font-weight: 400;
+  font-size: 0.85rem;
+}
+
 /* ------------------------------------------------------------ classificação */
 
 .abas {

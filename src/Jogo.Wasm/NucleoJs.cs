@@ -50,4 +50,19 @@ public static partial class NucleoJs
 
     [JSExport]
     internal static string EncerrarTemporada() => Api.EncerrarTemporada();
+
+    [JSExport]
+    internal static string IniciarAoVivo() => Api.IniciarAoVivo();
+
+    [JSExport]
+    internal static string AoVivo() => Api.AoVivo();
+
+    [JSExport]
+    internal static string AvancarAoVivo(int minutos) => Api.AvancarAoVivo(minutos);
+
+    [JSExport]
+    internal static string DecidirAoVivo(string decisaoJson) => Api.DecidirAoVivo(decisaoJson);
+
+    [JSExport]
+    internal static string ConcluirAoVivo() => Api.ConcluirAoVivo();
 }

@@ -3,6 +3,7 @@ import { Escudo } from './componentes/Escudo'
 import type { DefinicaoTatica, FimDeTemporada as FimDto, Resposta, ResumoMundo, Rodada } from './nucleo/contrato'
 import { descreverErros } from './nucleo/iniciar'
 import type { Nucleo } from './nucleo/nucleo'
+import { AoVivo } from './telas/AoVivo'
 import { Classificacao } from './telas/Classificacao'
 import { Elenco } from './telas/Elenco'
 import { FimDeTemporada } from './telas/FimDeTemporada'
@@ -11,7 +12,7 @@ import { Partida } from './telas/Partida'
 import { Tatica } from './telas/Tatica'
 import { textos } from './textos'
 
-type Tela = 'inicio' | 'elenco' | 'tatica' | 'partida' | 'classificacao' | 'fim'
+type Tela = 'inicio' | 'elenco' | 'tatica' | 'partida' | 'classificacao' | 'aoVivo' | 'fim'
 
 const MENU: { tela: Tela; rotulo: string }[] = [
   { tela: 'inicio', rotulo: textos.menu.inicio },
@@ -54,6 +55,7 @@ export function JogoEmAndamento({ nucleo, mundo, botaoTema }: Props) {
 
   const atualizar = () => setVersao((v) => v + 1)
 
+  /** Ação principal: jogar a rodada ao vivo (ou voltar a ela), ou encerrar a temporada. */
   const acaoPrincipal = useCallback(() => {
     if (simulando) {
       return
@@ -66,6 +68,12 @@ export function JogoEmAndamento({ nucleo, mundo, botaoTema }: Props) {
       return
     }
 
+    dados(nucleo.iniciarAoVivo())
+    setTela('aoVivo')
+    setVersao((v) => v + 1)
+  }, [estado.temporadaEncerrada, nucleo, simulando])
+
+  const simularRapido = () => {
     // Deixa a tela mostrar "Simulando…" antes de o WebAssembly ocupar a thread.
     setSimulando(true)
     setTimeout(() => {
@@ -75,12 +83,18 @@ export function JogoEmAndamento({ nucleo, mundo, botaoTema }: Props) {
       setTela('partida')
       setVersao((v) => v + 1)
     }, 0)
-  }, [estado.temporadaEncerrada, nucleo, simulando])
+  }
 
-  // Atalho: Espaço avança a rodada (fora de campos de formulário).
+  const concluirAoVivo = () => {
+    setRodada(dados(nucleo.concluirAoVivo()))
+    setTela('partida')
+    atualizar()
+  }
+
+  // Atalho: Espaço joga a rodada (a tela ao vivo usa o Espaço para pausar).
   useEffect(() => {
     const aoTeclar = (e: KeyboardEvent) => {
-      if (e.code === 'Space' && !elementoEditavel(e.target) && tela !== 'fim') {
+      if (e.code === 'Space' && !elementoEditavel(e.target) && tela !== 'fim' && tela !== 'aoVivo') {
         e.preventDefault()
         acaoPrincipal()
       }
@@ -131,6 +145,19 @@ export function JogoEmAndamento({ nucleo, mundo, botaoTema }: Props) {
           />
         )
       }
+      case 'aoVivo': {
+        const tatica = dados(nucleo.tatica())
+        return (
+          <AoVivo
+            inicial={dados(nucleo.aoVivo())}
+            formacoes={tatica.formacoes.map((f) => f.nome)}
+            mentalidades={tatica.mentalidades}
+            avancar={(minutos) => nucleo.avancarAoVivo(minutos)}
+            decidir={(decisao) => nucleo.decidirAoVivo(decisao)}
+            aoConcluir={concluirAoVivo}
+          />
+        )
+      }
       case 'fim':
         return fim ? (
           <FimDeTemporada
@@ -145,6 +172,14 @@ export function JogoEmAndamento({ nucleo, mundo, botaoTema }: Props) {
         ) : null
     }
   }
+
+  const rotuloPrincipal = simulando
+    ? textos.simulando
+    : estado.temporadaEncerrada
+      ? textos.avancar.encerrarTemporada
+      : estado.rodadaAoVivo
+        ? textos.avancar.voltarAoJogo
+        : textos.avancar.rodada
 
   return (
     <div className="casca">
@@ -165,24 +200,37 @@ export function JogoEmAndamento({ nucleo, mundo, botaoTema }: Props) {
               {item.rotulo}
             </button>
           ))}
+          {estado.rodadaAoVivo && (
+            <button
+              type="button"
+              className={`menu-item menu-ao-vivo ${tela === 'aoVivo' ? 'ativo' : ''}`}
+              aria-current={tela === 'aoVivo' ? 'page' : undefined}
+              onClick={() => setTela('aoVivo')}
+            >
+              ● {textos.aoVivo.menu}
+            </button>
+          )}
         </nav>
         {botaoTema}
       </aside>
 
       <main className="conteudo">
-        {tela !== 'fim' && (
+        {tela !== 'fim' && tela !== 'aoVivo' && (
           <div className="barra-avancar">
             <span className="secundario">
               {textos.inicio.temporada(estado.ano)} · {textos.inicio.rodada(estado.rodadaAtual, estado.totalRodadas)}
             </span>
-            <button type="button" className="botao botao-grande" onClick={acaoPrincipal} disabled={simulando}>
-              {simulando
-                ? textos.simulando
-                : estado.temporadaEncerrada
-                  ? textos.avancar.encerrarTemporada
-                  : textos.avancar.rodada}
-              {!simulando && <kbd>{textos.avancar.atalho}</kbd>}
-            </button>
+            <div className="acoes-rodada">
+              {!estado.temporadaEncerrada && !estado.rodadaAoVivo && (
+                <button type="button" className="botao botao-secundario" onClick={simularRapido} disabled={simulando}>
+                  {textos.avancar.simularRapido}
+                </button>
+              )}
+              <button type="button" className="botao botao-grande" onClick={acaoPrincipal} disabled={simulando}>
+                {rotuloPrincipal}
+                {!simulando && <kbd>{textos.avancar.atalho}</kbd>}
+              </button>
+            </div>
           </div>
         )}
         {conteudo()}

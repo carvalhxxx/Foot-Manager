@@ -89,6 +89,9 @@ public sealed class TimeEmJogo
     /// <summary>Posições deixadas por jogadores lesionados, à espera de substituição.</summary>
     internal List<(int JogadorId, Posicao Posicao)> VagasAbertas { get; } = [];
 
+    /// <summary>Lesionados que saíram e ainda não foram substituídos (id de quem saiu e a posição vaga).</summary>
+    public IReadOnlyList<(int JogadorId, Posicao Posicao)> VagasEmAberto => VagasAbertas;
+
     /// <summary>Quem está em campo agora, na ordem da formação.</summary>
     public IReadOnlyList<JogadorEmCampo> EmCampo => EmCampoInterno;
 

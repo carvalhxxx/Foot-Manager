@@ -1,6 +1,9 @@
 import { vi } from 'vitest'
 import type {
+  AoVivo as AoVivoDto,
   ClubeResumo,
+  Decisao,
+  EventoPartida,
   Classificacao,
   Estado,
   FimDeTemporada,
@@ -153,11 +156,66 @@ function classificacao(divisaoId: string): Classificacao {
   }
 }
 
-/** Núcleo falso com estado mínimo: rodada atual e fim de temporada. */
+/** Jogo ao vivo de mentira: gol aos 23', intervalo aos 45' e fim aos 93'. */
+const FIM_DO_JOGO_FALSO = 93
+
+/** Núcleo falso com estado mínimo: rodada atual, jogo ao vivo e fim de temporada. */
 export function criarNucleoFalso(opcoes: { totalRodadas?: number } = {}) {
   const totalRodadas = opcoes.totalRodadas ?? 38
   let rodadaAtual = 0
   let taticaAtual = tatica
+  let aoVivo: { minuto: number; mentalidade: string; formacao: string; emCampo: number[]; reservas: number[]; trocas: number } | undefined
+
+  const fotoAoVivo = (pausa?: AoVivoDto['pausa']): AoVivoDto => {
+    const v = aoVivo!
+    // Como no motor real: no intervalo já é 2º tempo, com o relógio parado em 45.
+    const segundoTempo = v.minuto >= 45
+    const eventos: EventoPartida[] = [{ minuto: 0, acrescimo: 0, tipo: 'InicioDeJogo' }]
+    if (v.minuto >= 23) {
+      eventos.push({ minuto: 23, acrescimo: 0, tipo: 'Gol', equipe: 'Mandante', jogador: 'Craque Silva', origem: 'JogadaTrabalhada' })
+    }
+    if (v.minuto >= 45) {
+      eventos.push({ minuto: 45, acrescimo: 0, tipo: 'Intervalo' })
+    }
+    if (v.minuto >= FIM_DO_JOGO_FALSO) {
+      eventos.push({ minuto: 90, acrescimo: 3, tipo: 'FimDeJogo' })
+    }
+    const encerrada = v.minuto >= FIM_DO_JOGO_FALSO
+    const porId = new Map(elenco.map((j) => [j.id, j]))
+    return {
+      rodada: rodadaAtual + 1,
+      rodadaEncerrada: encerrada,
+      pausa,
+      minhaPartida: {
+        mandante: pampa,
+        visitante: cerrado,
+        souMandante: true,
+        golsMandante: v.minuto >= 23 ? 1 : 0,
+        golsVisitante: 0,
+        tempo: segundoTempo ? 2 : 1,
+        minuto: Math.min(v.minuto, 90),
+        acrescimo: Math.max(0, v.minuto - 90),
+        encerrada,
+        posseMandante: 55,
+        estatisticasMandante: rodada.minhaPartida!.estatisticasMandante,
+        estatisticasVisitante: rodada.minhaPartida!.estatisticasVisitante,
+        formacao: v.formacao,
+        mentalidade: v.mentalidade,
+        substituicoesRestantes: 5 - v.trocas,
+        emCampo: v.emCampo.map((id) => ({ ...porId.get(id)!, condicao: 90, amarelos: 0, gols: 0 })),
+        reservas: v.reservas.map((id) => ({ ...porId.get(id)!, condicao: 100 })),
+        vagasAbertas: [],
+        eventos,
+      },
+      placares: [
+        {
+          divisaoId: 'serie-a',
+          divisaoNome: 'Série A',
+          jogos: [{ mandanteId: 'pampa', mandanteSigla: 'PAM', golsMandante: 0, visitanteId: 'cerrado', visitanteSigla: 'CER', golsVisitante: 0, minuto: Math.min(v.minuto, 90), acrescimo: 0, encerrado: encerrada }],
+        },
+      ],
+    }
+  }
 
   const estado = (): Estado => ({
     ano: 2027,
@@ -172,6 +230,7 @@ export function criarNucleoFalso(opcoes: { totalRodadas?: number } = {}) {
     proximoJogo: rodadaAtual < totalRodadas ? { rodada: rodadaAtual + 1, adversario: cerrado, emCasa: true } : undefined,
     ultimosResultados: rodadaAtual > 0 ? [{ rodada: 1, adversarioSigla: 'CER', emCasa: true, golsPro: 2, golsContra: 1 }] : [],
     ajustesNaEscalacao: ['Fulano entra no lugar de Machucado Souza (lesionado).'],
+    rodadaAoVivo: aoVivo !== undefined,
   })
 
   const nucleo = {
@@ -198,6 +257,45 @@ export function criarNucleoFalso(opcoes: { totalRodadas?: number } = {}) {
     encerrarTemporada: vi.fn(() => {
       rodadaAtual = 0
       return ok(fimDeTemporada)
+    }),
+    iniciarAoVivo: vi.fn(() => {
+      aoVivo ??= {
+        minuto: 0,
+        mentalidade: 'Equilibrada',
+        formacao: '4-4-2',
+        emCampo: elenco.slice(0, 11).map((j) => j.id),
+        reservas: [20, 21],
+        trocas: 0,
+      }
+      return ok(fotoAoVivo())
+    }),
+    aoVivo: vi.fn(() => ok(fotoAoVivo())),
+    avancarAoVivo: vi.fn((minutos: number) => {
+      const v = aoVivo!
+      let pausa: AoVivoDto['pausa']
+      for (let i = 0; i < minutos && v.minuto < FIM_DO_JOGO_FALSO && !pausa; i++) {
+        v.minuto++
+        pausa = v.minuto === 45 ? 'intervalo' : v.minuto === FIM_DO_JOGO_FALSO ? 'fim' : undefined
+      }
+      return ok(fotoAoVivo(pausa))
+    }),
+    decidirAoVivo: vi.fn((d: Decisao) => {
+      const v = aoVivo!
+      if (d.tipo === 'mentalidade') {
+        v.mentalidade = d.mentalidade
+      } else if (d.tipo === 'formacao') {
+        v.formacao = d.formacao
+      } else {
+        v.emCampo = v.emCampo.map((id) => (id === d.saiId ? d.entraId : id))
+        v.reservas = v.reservas.filter((id) => id !== d.entraId)
+        v.trocas++
+      }
+      return ok(fotoAoVivo())
+    }),
+    concluirAoVivo: vi.fn(() => {
+      aoVivo = undefined
+      rodadaAtual++
+      return ok({ ...rodada, rodada: rodadaAtual })
     }),
   } satisfies Nucleo
 

@@ -47,6 +47,21 @@ public sealed class ApiJson
 
     public string EncerrarTemporada() => Json(_servico.EncerrarTemporada());
 
+    public string IniciarAoVivo() => Json(_servico.IniciarAoVivo());
+
+    public string AoVivo() => Json(_servico.AoVivo());
+
+    public string AvancarAoVivo(int minutos) => Json(_servico.AvancarAoVivo(minutos));
+
+    public string DecidirAoVivo(string decisaoJson) => Proteger(() =>
+    {
+        var decisao = JsonSerializer.Deserialize(decisaoJson, ContratoJson.Default.DecisaoDto)
+            ?? throw new JsonException("Decisão vazia.");
+        return Json(_servico.DecidirAoVivo(decisao));
+    }, ContratoJson.Default.RespostaAoVivoDto);
+
+    public string ConcluirAoVivo() => Json(_servico.ConcluirAoVivo());
+
     // Uma sobrecarga por tipo de resposta: o serializador gerado em compilação precisa do tipo concreto.
     private static string Json(Resposta<ResumoMundoDto> r) => JsonSerializer.Serialize(r, ContratoJson.Default.RespostaResumoMundoDto);
     private static string Json(Resposta<EstadoDto> r) => JsonSerializer.Serialize(r, ContratoJson.Default.RespostaEstadoDto);
@@ -55,6 +70,7 @@ public sealed class ApiJson
     private static string Json(Resposta<RodadaDto> r) => JsonSerializer.Serialize(r, ContratoJson.Default.RespostaRodadaDto);
     private static string Json(Resposta<ClassificacaoDto> r) => JsonSerializer.Serialize(r, ContratoJson.Default.RespostaClassificacaoDto);
     private static string Json(Resposta<FimDeTemporadaDto> r) => JsonSerializer.Serialize(r, ContratoJson.Default.RespostaFimDeTemporadaDto);
+    private static string Json(Resposta<AoVivoDto> r) => JsonSerializer.Serialize(r, ContratoJson.Default.RespostaAoVivoDto);
 
     /// <summary>Converte entrada malformada em resposta de erro, em vez de deixar a exceção chegar ao JavaScript.</summary>
     private static string Proteger<T>(Func<string> acao, System.Text.Json.Serialization.Metadata.JsonTypeInfo<Resposta<T>> tipo)
