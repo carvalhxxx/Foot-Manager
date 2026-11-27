@@ -111,6 +111,12 @@ export const textos = {
     forca: 'Força',
     torcida: 'Torcida',
     comecar: (nome: string) => `Assumir o ${nome}`,
+    comoJogar: 'Como jogar',
+    dicas: [
+      'Escale o time em Tática (ou deixe no automático) e jogue a rodada ao vivo ou no modo rápido. Atalho: Espaço.',
+      'De olho no caixa: salários saem a cada rodada. Ingresso, vendas e premiação ajudam a pagar a conta.',
+      'Nas janelas de transferência, reforce o time no Mercado. Renove no Elenco quem está no último ano de contrato.',
+    ],
   },
   inicio: {
     temporada: (ano: number) => `Temporada ${ano}`,
@@ -126,6 +132,8 @@ export const textos = {
     ajustes: 'Ajustes na escalação para o próximo jogo',
     fimDaTemporada: 'A temporada acabou! Encerre-a para ver o resumo e começar a próxima.',
     janelaAberta: 'A janela de transferências está aberta: veja o Mercado.',
+    contratosAcabando: (n: number) =>
+      `${n} ${n === 1 ? 'jogador está' : 'jogadores estão'} no último ano de contrato: renove no Elenco ou ${n === 1 ? 'ele sai' : 'eles saem'} de graça no fim da temporada.`,
     vitoria: 'V',
     empate: 'E',
     derrota: 'D',
@@ -213,6 +221,9 @@ export const textos = {
     } as Record<string, string>,
   },
   partida: {
+    mercado: 'Mercado da rodada',
+    transferencia: (jogador: string, de: string, para: string) => `${jogador}: ${de} → ${para}`,
+    agenteLivre: 'livre',
     semPartida: 'Nenhuma partida jogada ainda. Avance a rodada para jogar.',
     rodada: (n: number) => `Rodada ${n}`,
     posse: 'Posse de bola',

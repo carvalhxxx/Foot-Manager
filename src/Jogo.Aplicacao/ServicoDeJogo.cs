@@ -93,7 +93,11 @@ public sealed class ServicoDeJogo
 
         return new EstadoDto(c.Temporada.Ano, c.Temporada.RodadaAtual, c.Temporada.TotalRodadas, c.Temporada.Encerrada,
             Resumir(c.Clube), competicao.Divisao.Id, competicao.Divisao.Nome, minhaLinha.Posicao, minhaLinha.Pontos,
-            proximo, ultimos, ajustes, c.AoVivo is not null, c.JanelaAberta);
+            proximo, ultimos, ajustes, c.AoVivo is not null, c.JanelaAberta,
+            // Aviso só na reta final (últimas 8 rodadas), quando ainda dá para renovar.
+            c.Temporada.RodadaAtual >= c.Temporada.TotalRodadas - 8
+                ? c.Clube.Elenco.Count(j => Contratos.PodeRenovar(j, c.Mundo.TemporadaAtual))
+                : 0);
     });
 
     public Resposta<IReadOnlyList<JogadorDto>> Elenco() => ComCarreira<IReadOnlyList<JogadorDto>>(c =>
@@ -229,7 +233,7 @@ public sealed class ServicoDeJogo
     });
 
     public Resposta<RodadaDto> UltimaRodada() => ComCarreira(c =>
-        c.UltimaRodada is { } rodada ? ParaDto(c, rodada) : new RodadaDto(0, null, []));
+        c.UltimaRodada is { } rodada ? ParaDto(c, rodada) : new RodadaDto(0, null, [], []));
 
     // ------------------------------------------------------------------ finanças
 
@@ -574,7 +578,11 @@ public sealed class ServicoDeJogo
             })]));
         }
 
-        return new RodadaDto(rodada.Rodada, minha, divisoes);
+        return new RodadaDto(rodada.Rodada, minha, divisoes, [.. c.UltimasTransferencias.Select(t =>
+        {
+            var para = c.Mundo.Clube(t.ParaClubeId);
+            return new TransferenciaDto(t.Jogador, t.DeClubeId is { } de ? c.Mundo.Clube(de).Sigla : null, para.Sigla, para.Nome, t.Valor);
+        })]);
     }
 
     private static PartidaDto ParaDto(int rodada, Clube mandante, Clube visitante, ResultadoPartida r, IReadOnlyDictionary<int, string> nomes) => new(

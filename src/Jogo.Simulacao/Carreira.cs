@@ -20,12 +20,23 @@ public sealed record EscalacaoDaRodada(TimeEscalado Escalacao, IReadOnlyList<str
 /// </summary>
 public sealed class Carreira
 {
+    /// <summary>Começa uma carreira nova (cria os agentes livres iniciais se o mundo não tiver nenhum).</summary>
     public Carreira(Mundo mundo, string clubeId, ulong seed)
+        : this(mundo, clubeId, seed, novaCarreira: true)
+    {
+    }
+
+    private Carreira(Mundo mundo, string clubeId, ulong seed, bool novaCarreira)
     {
         ArgumentNullException.ThrowIfNull(mundo);
         Mundo = mundo;
         Clube = mundo.Clube(clubeId);
         Seed = seed;
+        if (novaCarreira && mundo.AgentesLivres.Count == 0)
+        {
+            Mercado.AgentesLivresIniciais.Gerar(mundo, seed);
+        }
+
         Temporada = NovaTemporada();
         UsarEscalacaoAutomatica();
     }
@@ -42,7 +53,7 @@ public sealed class Carreira
         TaticaDoJogador tatica)
     {
         ArgumentNullException.ThrowIfNull(restaurarTemporada);
-        var carreira = new Carreira(mundo, clubeId, seed);
+        var carreira = new Carreira(mundo, clubeId, seed, novaCarreira: false);
         restaurarTemporada(carreira.Temporada);
         carreira.UltimaRodada = carreira.Temporada.RelatorioDaRodada(carreira.Temporada.RodadaAtual);
         carreira.DefinirTatica(tatica);
@@ -264,9 +275,13 @@ public sealed class Carreira
         return oferta;
     }
 
+    /// <summary>Negócios da IA logo depois da última rodada (só para exibir; não vai para o save).</summary>
+    public IReadOnlyList<Mercado.Transferencia> UltimasTransferencias { get; private set; } = [];
+
     /// <summary>Depois de cada rodada, com a janela aberta, a IA compra e vende (sorteio pela seed da rodada).</summary>
     private void MercadoDaIa()
     {
+        UltimasTransferencias = [];
         if (Temporada.Encerrada)
         {
             return;
@@ -274,7 +289,7 @@ public sealed class Carreira
 
         var aleatorio = new Dominio.Aleatoriedade.GeradorAleatorio(
             SementeDoAno(Temporada.Ano) ^ GeradorDeMundo.HashEstavel($"mercado/{Temporada.RodadaAtual}"));
-        Mercado.Transferencias.MovimentarIa(Mundo, Clube.Id, Temporada.RodadaAtual, aleatorio);
+        UltimasTransferencias = Mercado.Transferencias.MovimentarIa(Mundo, Clube.Id, Temporada.RodadaAtual, aleatorio);
     }
 
     // ------------------------------------------------------------------ ao vivo

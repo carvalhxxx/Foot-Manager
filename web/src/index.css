@@ -1193,3 +1193,22 @@ select {
 .form-busca input[type='number'] {
   width: 8rem;
 }
+
+.lista-simples {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.dicas {
+  margin-bottom: 1rem;
+}
+
+.dicas ol {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 0.35rem;
+}

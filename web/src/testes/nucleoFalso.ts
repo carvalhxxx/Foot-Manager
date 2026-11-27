@@ -153,6 +153,10 @@ export const rodada: Rodada = {
       ],
     },
   ],
+  transferencias: [
+    { jogador: 'Vendido Alves', deSigla: 'CER', paraSigla: 'PAM', paraNome: 'Pampa Sport Club', valor: 1500000 },
+    { jogador: 'Livre Nunes', paraSigla: 'CER', paraNome: 'Cerrado FC', valor: 0 },
+  ],
 }
 
 export const fimDeTemporada: FimDeTemporada = {
@@ -277,6 +281,7 @@ export function criarNucleoFalso(opcoes: { totalRodadas?: number } = {}) {
     ajustesNaEscalacao: ['Fulano entra no lugar de Machucado Souza (lesionado).'],
     rodadaAoVivo: aoVivo !== undefined,
     janelaAberta: rodadaAtual < 3,
+    contratosAcabando: rodadaAtual >= totalRodadas - 8 ? 2 : 0,
   })
 
   const nucleo = {
@@ -317,7 +322,7 @@ export function criarNucleoFalso(opcoes: { totalRodadas?: number } = {}) {
       rodadaAtual++
       return ok({ ...rodada, rodada: rodadaAtual })
     }),
-    ultimaRodada: vi.fn(() => ok(rodadaAtual > 0 ? rodada : { rodada: 0, divisoes: [] })),
+    ultimaRodada: vi.fn(() => ok(rodadaAtual > 0 ? rodada : { rodada: 0, divisoes: [], transferencias: [] })),
     classificacao: vi.fn((id: string) => ok(classificacao(id))),
     encerrarTemporada: vi.fn(() => {
       rodadaAtual = 0

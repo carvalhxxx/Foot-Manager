@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Escudo } from '../componentes/Escudo'
 import type { Estatisticas, EventoPartida, Rodada } from '../nucleo/contrato'
-import { descreverEvento, eventosImportantes, minutoDoEvento, textos } from '../textos'
+import { descreverEvento, eventosImportantes, formatoDinheiro, minutoDoEvento, textos } from '../textos'
 
 interface Props {
   rodada: Rodada
@@ -115,6 +115,20 @@ export function Partida({ rodada, meuClubeId }: Props) {
           ))}
         </div>
       </section>
+
+      {rodada.transferencias.length > 0 && (
+        <section className="cartao">
+          <h2>{t.mercado}</h2>
+          <ul className="lista-simples">
+            {rodada.transferencias.map((tr) => (
+              <li key={`${tr.jogador}-${tr.paraSigla}`}>
+                <span title={tr.paraNome}>{t.transferencia(tr.jogador, tr.deSigla ?? t.agenteLivre, tr.paraSigla)}</span>
+                {tr.valor > 0 && <span className="secundario"> · {formatoDinheiro.format(tr.valor)}</span>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </>
   )
 }

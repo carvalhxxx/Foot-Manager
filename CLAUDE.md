@@ -25,7 +25,7 @@ Prioridade: lançar rápido na web (desktop e celular), sem servidor: tudo roda 
 # Núcleo C#
 dotnet build FootManagerBR.slnx                 # build (warnings viram erro)
 dotnet test --solution FootManagerBR.slnx        # testes do núcleo
-dotnet run --project tools/Jogo.Calibracao       # calibração do motor e da temporada (sai com erro fora das metas)
+dotnet run --project tools/Jogo.Calibracao       # calibração do motor, da temporada e de carreiras de 5 anos com mercado (sai com erro fora das metas)
 dotnet run --project tools/Jogo.Simulador -- --temporadas 3   # simula temporadas e mostra tabelas/artilharia
 dotnet run --project tools/Jogo.GeradorDados     # regera dados/definicoes (seed 2027)
 

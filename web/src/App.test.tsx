@@ -63,6 +63,27 @@ describe('App', () => {
     expect(screen.getByText(/Fulano finaliza para fora/)).toBeInTheDocument()
   })
 
+  it('a partida mostra as transferências da IA na rodada', async () => {
+    await entrarNoJogo()
+    await avancar()
+
+    expect(screen.getByText(textos.partida.mercado)).toBeInTheDocument()
+    expect(screen.getByText(textos.partida.transferencia('Vendido Alves', 'CER', 'PAM'))).toBeInTheDocument()
+    expect(screen.getByText(textos.partida.transferencia('Livre Nunes', textos.partida.agenteLivre, 'CER'))).toBeInTheDocument()
+  })
+
+  it('a escolha de clube mostra as dicas de como jogar', async () => {
+    const { iniciar } = iniciarCom()
+    render(<App iniciar={iniciar} gerarSeed={() => '123'} />)
+    const dicas = await screen.findByRole('region', { name: textos.escolher.comoJogar })
+    expect(within(dicas).getAllByRole('listitem')).toHaveLength(textos.escolher.dicas.length)
+  })
+
+  it('avisa na reta final quem está no último ano de contrato', async () => {
+    await entrarNoJogo(criarNucleoFalso({ totalRodadas: 5 }))
+    expect(screen.getByText(textos.inicio.contratosAcabando(2))).toBeInTheDocument()
+  })
+
   it('a barra de espaço abre a rodada ao vivo', async () => {
     const nucleo = await entrarNoJogo()
 

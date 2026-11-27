@@ -45,7 +45,8 @@ public sealed record EstadoDto(
     IReadOnlyList<ResultadoRecenteDto> UltimosResultados,
     IReadOnlyList<string> AjustesNaEscalacao,
     bool RodadaAoVivo,
-    bool JanelaAberta);
+    bool JanelaAberta,
+    int ContratosAcabando);
 
 public sealed record AtributosDto(
     int Finalizacao, int Passe, int Desarme, int Drible, int Velocidade,
@@ -112,7 +113,10 @@ public sealed record PlacarDto(string MandanteId, string MandanteSigla, string M
 
 public sealed record RodadaDivisaoDto(string DivisaoId, string DivisaoNome, IReadOnlyList<PlacarDto> Jogos);
 
-public sealed record RodadaDto(int Rodada, PartidaDto? MinhaPartida, IReadOnlyList<RodadaDivisaoDto> Divisoes);
+/// <summary>Negócio da IA depois da rodada (origem nula = agente livre).</summary>
+public sealed record TransferenciaDto(string Jogador, string? DeSigla, string ParaSigla, string ParaNome, decimal Valor);
+
+public sealed record RodadaDto(int Rodada, PartidaDto? MinhaPartida, IReadOnlyList<RodadaDivisaoDto> Divisoes, IReadOnlyList<TransferenciaDto> Transferencias);
 
 // ------------------------------------------------------------------ ao vivo
 

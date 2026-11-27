@@ -103,7 +103,8 @@ public class SaveTestes
 
         var carregada = ConversorSave.Carregar(ConversorSave.Salvar(carreira));
 
-        var livre = Assert.Single(carregada.Mundo.AgentesLivres);
+        Assert.Equal(carreira.Mundo.AgentesLivres.Select(j => j.Id), carregada.Mundo.AgentesLivres.Select(j => j.Id));
+        var livre = carregada.Mundo.AgentesLivres.Single(j => j.Id == dispensado.Id);
         Assert.Equal((dispensado.Id, dispensado.Nome, dispensado.ForcaGeral), (livre.Id, livre.Nome, livre.ForcaGeral));
         Assert.Null(livre.Contrato);
     }

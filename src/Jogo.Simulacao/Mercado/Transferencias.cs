@@ -9,6 +9,9 @@ namespace Jogo.Simulacao.Mercado;
 /// <summary>Oferta de um clube por um jogador.</summary>
 public sealed record Oferta(Clube Clube, decimal Valor);
 
+/// <summary>Uma transferência concluída (origem nula = agente livre).</summary>
+public sealed record Transferencia(int JogadorId, string Jogador, string? DeClubeId, string ParaClubeId, decimal Valor);
+
 /// <summary>
 /// Compra e venda de jogadores. Duas janelas: pré-temporada (até a rodada 3) e meio do ano (rodadas 18 a 21).
 /// Agentes livres podem ser contratados a qualquer momento.
@@ -135,16 +138,16 @@ public static class Transferencias
     /// posição mais fraca com alguém de outro clube da IA ou um agente livre que caiba no orçamento.
     /// Nunca mexe no elenco do jogador.
     /// </summary>
-    public static int MovimentarIa(Mundo mundo, string clubeDoJogador, int rodadasDisputadas, IGeradorAleatorio aleatorio)
+    public static IReadOnlyList<Transferencia> MovimentarIa(Mundo mundo, string clubeDoJogador, int rodadasDisputadas, IGeradorAleatorio aleatorio)
     {
         ArgumentNullException.ThrowIfNull(mundo);
         ArgumentNullException.ThrowIfNull(aleatorio);
+        var negocios = new List<Transferencia>();
         if (!JanelaAberta(rodadasDisputadas))
         {
-            return 0;
+            return negocios;
         }
 
-        var negocios = 0;
         foreach (var clube in mundo.Clubes.Where(c => c.Id != clubeDoJogador).ToArray())
         {
             if (clube.Caixa < 0 && clube.Elenco.Count > 22)
@@ -160,21 +163,23 @@ public static class Transferencias
                     clube.Lancar(CategoriaFinanceira.VendaDeJogadores, oferta.Valor);
                     oferta.Clube.Lancar(CategoriaFinanceira.CompraDeJogadores, -oferta.Valor);
                     Transferir(oferta.Clube, venda, mundo.TemporadaAtual);
-                    negocios++;
+                    negocios.Add(new Transferencia(venda.Id, venda.Nome, clube.Id, oferta.Clube.Id, oferta.Valor));
                 }
 
                 continue;
             }
 
-            if (clube.Caixa <= 0 || !aleatorio.Chance(0.15) || clube.Elenco.Count >= ElencoMaximo - 2)
+            if (clube.Caixa <= 0 || !aleatorio.Chance(0.25) || clube.Elenco.Count >= ElencoMaximo - 2)
             {
                 continue;
             }
 
             if (Reforco(mundo, clube, clubeDoJogador, rodadasDisputadas) is { } alvo)
             {
+                var origem = alvo.Contrato?.ClubeId;
+                var preco = Preco(alvo, mundo.TemporadaAtual);
                 Comprar(mundo, clube, alvo, rodadasDisputadas);
-                negocios++;
+                negocios.Add(new Transferencia(alvo.Id, alvo.Nome, origem, clube.Id, preco));
             }
         }
 

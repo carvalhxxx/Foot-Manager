@@ -61,6 +61,20 @@ public sealed record MetasCalibracao
 
     /// <summary>Fração máxima de clubes com caixa negativo no fim da temporada.</summary>
     public double ClubesNoVermelhoMaximo { get; init; } = 0.10;
+
+    // Carreiras de vários anos (mercado ligado) ----------------------------------
+
+    /// <summary>Em 5 anos, quantos campeões diferentes da Série A (nem dinastia, nem loteria).</summary>
+    public (double Min, double Max) CampeoesDiferentes { get; init; } = (2, 4.5);
+
+    public double TitulosDoMaiorCampeaoMaximo { get; init; } = 3.5;
+    public (double Min, double Max) TransferenciasPorAno { get; init; } = (15, 80);
+
+    /// <summary>Fatia do dinheiro (positivo) que fica com os 4 clubes mais ricos.</summary>
+    public double ConcentracaoDeCaixaMaxima { get; init; } = 0.6;
+
+    public int ElencoMinimo { get; init; } = 18;
+    public int ElencoMaximo { get; init; } = 35;
 }
 
 /// <summary>
@@ -166,6 +180,64 @@ public static class Calibrador
             new("Resultado dos grandes (R$ mi)", resultadosGrandes.DefaultIfEmpty(0).Average(), metas.ResultadoDosGrandes.Min, metas.ResultadoDosGrandes.Max, "F1"),
             new("Resultado dos pequenos (R$ mi)", resultadosPequenos.DefaultIfEmpty(0).Average(), metas.ResultadoDosPequenos.Min, metas.ResultadoDosPequenos.Max, "F1"),
             new("Clubes no vermelho", clubes == 0 ? 0 : (double)clubesNoVermelho / clubes, null, metas.ClubesNoVermelhoMaximo, "P0"),
+        ];
+    }
+
+    /// <summary>
+    /// Carreiras de vários anos seguidos, com acesso, rebaixamento, contratos e mercado da IA.
+    /// O "jogador" é o clube mais fraco da última divisão, com escalação automática (quase não interfere).
+    /// </summary>
+    public static IReadOnlyList<Meta> Carreiras(Func<Mundo> criarMundo, int carreiras, int anos, ulong seed, MetasCalibracao? metas = null)
+    {
+        ArgumentNullException.ThrowIfNull(criarMundo);
+        metas ??= MetasCalibracao.Padrao;
+
+        double campeoesDistintos = 0, maiorTitulos = 0, transferencias = 0, vermelho = 0, clubes = 0, livres = 0;
+        double concentracao = 0;
+        int menorElenco = int.MaxValue, maiorElenco = 0;
+
+        for (var i = 0; i < carreiras; i++)
+        {
+            var mundo = criarMundo();
+            var ultimo = mundo.Divisoes[^1].ClubeIds.OrderBy(id => Top11(mundo.Clube(id))).ThenBy(id => id, StringComparer.Ordinal).First();
+            var carreira = new Carreira(mundo, ultimo, seed + (ulong)i);
+            var campeoes = new List<string>();
+
+            for (var ano = 0; ano < anos; ano++)
+            {
+                while (!carreira.Temporada.Encerrada)
+                {
+                    carreira.AvancarRodada();
+                    transferencias += carreira.UltimasTransferencias.Count;
+                }
+
+                campeoes.Add(carreira.Temporada.Tabela(mundo.Divisoes[0].Id)[0].ClubeId);
+                carreira.EncerrarTemporada();
+            }
+
+            campeoesDistintos += campeoes.Distinct(StringComparer.Ordinal).Count();
+            maiorTitulos += campeoes.GroupBy(c => c, StringComparer.Ordinal).Max(g => g.Count());
+            var caixas = mundo.Clubes.Select(c => (double)c.Caixa).OrderByDescending(c => c).ToArray();
+            concentracao += caixas.Take(4).Sum() / Math.Max(1, caixas.Where(c => c > 0).Sum());
+            vermelho += caixas.Count(c => c < 0);
+            clubes += caixas.Length;
+            livres += mundo.AgentesLivres.Count;
+            menorElenco = Math.Min(menorElenco, mundo.Clubes.Min(c => c.Elenco.Count));
+            maiorElenco = Math.Max(maiorElenco, mundo.Clubes.Max(c => c.Elenco.Count));
+        }
+
+        double Media(double total) => total / carreiras;
+
+        return
+        [
+            new($"Campeões diferentes em {anos} anos", Media(campeoesDistintos), metas.CampeoesDiferentes.Min, metas.CampeoesDiferentes.Max, "F1"),
+            new("Títulos do maior campeão", Media(maiorTitulos), null, metas.TitulosDoMaiorCampeaoMaximo, "F1"),
+            new("Transferências da IA por ano", Media(transferencias) / anos, metas.TransferenciasPorAno.Min, metas.TransferenciasPorAno.Max, "F0"),
+            new("Caixa dos 4 mais ricos (fatia)", Media(concentracao), null, metas.ConcentracaoDeCaixaMaxima, "P0"),
+            new("Clubes no vermelho no fim", clubes == 0 ? 0 : vermelho / clubes, null, metas.ClubesNoVermelhoMaximo * 2, "P0"),
+            new("Agentes livres no fim", Media(livres), null, null, "F0"),
+            new("Menor elenco", menorElenco, metas.ElencoMinimo, null, "F0"),
+            new("Maior elenco", maiorElenco, null, metas.ElencoMaximo, "F0"),
         ];
     }
 

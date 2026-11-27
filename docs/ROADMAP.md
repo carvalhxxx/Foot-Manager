@@ -27,6 +27,15 @@ Mobile, saves na nuvem, ligas online entre amigos, modelo freemium/assinatura.
 
 ## Feito
 
+### E10 · Polimento para o lançamento do MVP · M
+- Calibração de carreiras de 5 anos com mercado (rotatividade de campeões, concentração de dinheiro, tamanho dos elencos) no CI. A IA ficou mais ativa no mercado (D-030).
+- Carreira nova começa com 40 agentes livres.
+- Tela da partida mostra o "Mercado da rodada" (transferências da IA).
+- Início avisa, nas últimas 8 rodadas, quantos jogadores estão no último ano de contrato.
+- Tela de escolha de clube com 3 dicas de "Como jogar".
+- Verificado no navegador (desktop e 375 px): novo jogo, rodada com transferências, mercado com agentes livres.
+- **Pendente:** nome definitivo do jogo e ícone (decisão do dono do projeto), e teste de instalação/offline como PWA no Chrome do celular.
+
 ### E8 · Mercado, contratos e finanças · G
 - **Finanças (8a):** bilheteria com preço do ingresso escolhido pelo jogador, cota de TV, patrocínio e salários a cada rodada, premiação no fim da temporada, extrato por categoria e tela Finanças. Metas de economia na calibração (D-027).
 - **Contratos (8b):** valor de mercado, renovação no Elenco (1 a 4 anos, pelo salário pedido), dispensa com 3 salários de rescisão e agentes livres. Quem não renova sai de graça. A IA renova os úteis e libera os veteranos fracos (D-028).

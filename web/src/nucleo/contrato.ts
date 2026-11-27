@@ -66,6 +66,7 @@ export interface Estado {
   ajustesNaEscalacao: string[]
   rodadaAoVivo: boolean
   janelaAberta: boolean
+  contratosAcabando: number
 }
 
 export interface Atributos {
@@ -189,6 +190,15 @@ export interface Rodada {
   rodada: number
   minhaPartida?: Partida
   divisoes: RodadaDivisao[]
+  transferencias: Transferencia[]
+}
+
+export interface Transferencia {
+  jogador: string
+  deSigla?: string
+  paraSigla: string
+  paraNome: string
+  valor: number
 }
 
 // ---------------------------------------------------------------- ao vivo

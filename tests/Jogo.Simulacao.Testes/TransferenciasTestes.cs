@@ -100,7 +100,7 @@ public class TransferenciasTestes
             var negocios = 0;
             for (var r = 0; r < 3; r++)
             {
-                negocios += Transferencias.MovimentarIa(mundo, "pampa", r, new GeradorAleatorio(42 + (ulong)r));
+                negocios += Transferencias.MovimentarIa(mundo, "pampa", r, new GeradorAleatorio(42 + (ulong)r)).Count;
             }
 
             Assert.Equal(antes, mundo.Clube("pampa").Elenco.Select(j => j.Id));
@@ -110,6 +110,16 @@ public class TransferenciasTestes
         var a = Rodar();
         Assert.True(a.Negocios > 0);
         Assert.Equal(a, Rodar());
+    }
+
+    [Fact]
+    public void NovaCarreira_ComecaComAgentesLivresDeTodasAsPosicoes()
+    {
+        var carreira = new Carreira(NovoMundo(), "pampa", 3);
+
+        Assert.Equal(AgentesLivresIniciais.Quantidade, carreira.Mundo.AgentesLivres.Count);
+        Assert.All(carreira.Mundo.AgentesLivres, j => Assert.Null(j.Contrato));
+        Assert.Equal(GeradorDeMundo.ElencoBase.Distinct().Count(), carreira.Mundo.AgentesLivres.Select(j => j.PosicaoPrincipal).Distinct().Count());
     }
 
     [Fact]

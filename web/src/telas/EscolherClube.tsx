@@ -17,6 +17,14 @@ export function EscolherClube({ mundo, aoEscolher }: Props) {
         <h1>{t.titulo}</h1>
         <p>{t.subtitulo}</p>
       </header>
+      <section className="cartao dicas" aria-label={t.comoJogar}>
+        <h2>{t.comoJogar}</h2>
+        <ol>
+          {t.dicas.map((d) => (
+            <li key={d}>{d}</li>
+          ))}
+        </ol>
+      </section>
 
       {mundo.divisoes.map((divisao) => (
         <section key={divisao.id} className="escolher-divisao">
