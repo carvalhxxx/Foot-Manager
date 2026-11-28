@@ -30,6 +30,9 @@ Mobile, saves na nuvem, ligas online entre amigos, modelo freemium/assinatura.
 
 ## Feito
 
+### Economia na escala real · M
+- Receitas, salários, valores de mercado, prêmios do Brasileirão e da Copa do Brasil e caixa inicial na escala de 2025/2026; nova despesa de custos operacionais; saves antigos convertidos ao carregar; relatório `--financas` na calibração (D-041).
+
 ### Copa do Brasil · M
 - Mata-mata com os 60 clubes: 4 cabeças na 2ª fase, 1ª fase em jogo único na casa do clube de divisão mais baixa, ida e volta até a final, pênaltis no empate do agregado. Jogos no meio de semana depois de 11 rodadas do Brasileirão, simulados (sem ao vivo), com prêmio por fase. Aba Copa do Brasil na Classificação, situação na coluna da partida, cartão do jogo na tela da Partida e campeão no fim de temporada (D-040).
 

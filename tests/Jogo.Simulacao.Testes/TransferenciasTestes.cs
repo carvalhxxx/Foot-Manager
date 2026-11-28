@@ -78,7 +78,9 @@ public class TransferenciasTestes
     {
         var mundo = NovoMundo();
         var vendedor = mundo.Clube("pampa");
-        var jogador = vendedor.Elenco.MaxBy(j => j.ForcaGeral)!;
+        // O melhor jogador que algum clube consegue pagar.
+        var jogador = vendedor.Elenco.OrderByDescending(j => j.ForcaGeral).ThenBy(j => j.Id)
+            .First(j => Transferencias.MelhorOferta(mundo, vendedor, j) is not null);
         var oferta = Transferencias.MelhorOferta(mundo, vendedor, jogador);
         Assert.NotNull(oferta);
         var caixa = vendedor.Caixa;

@@ -10,15 +10,17 @@ public static class Valores
     public const decimal ValorMinimo = 50_000m;
 
     /// <summary>
-    /// Valor de mercado: cresce exponencialmente com a força (≈ R$ 0,5 mi com força 55, R$ 4 mi com 70,
-    /// R$ 32 mi com 85), sobe para jovens com potencial, cai com a idade e quando o contrato está no fim.
+    /// Valor de mercado: cresce exponencialmente com a força (≈ R$ 1,7 mi com força 55, R$ 33 mi com 70,
+    /// R$ 300 mi com 85), sobe para jovens com potencial, cai com a idade e quando o contrato está no fim.
     /// </summary>
     public static decimal ValorDeMercado(Jogador jogador, int temporadaAtual)
     {
         ArgumentNullException.ThrowIfNull(jogador);
 
         var forca = jogador.ForcaGeral;
-        var baseValor = 60_000.0 * Math.Pow(1.15, forca - 40);
+        // Inverso da força tirada do valor real (GeradorDeMundoReal): € 100 mil = força 50, ×10 a cada 11,5 pontos;
+        // em reais (€ 1 ≈ R$ 6).
+        var baseValor = 600_000.0 * Math.Pow(10, (forca - 50) / 11.5);
         var margem = Math.Max(0, jogador.Ocultos.Potencial - forca);
         var idade = jogador.Idade switch
         {
@@ -52,6 +54,6 @@ public static class Valores
         var humor = 1.1m - ((jogador.Moral - 50) / 500m);
         var pedido = mercado * humor;
         var atual = jogador.Contrato?.SalarioMensal ?? 0;
-        return Math.Max(1_500m, Math.Round(Math.Max(pedido, atual * 0.9m) / 500m) * 500m);
+        return Math.Max(GeradorDeJogadores.SalarioMinimo, Math.Round(Math.Max(pedido, atual * 0.9m) / 500m) * 500m);
     }
 }

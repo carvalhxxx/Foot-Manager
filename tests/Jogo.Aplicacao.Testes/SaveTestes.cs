@@ -182,6 +182,32 @@ public class SaveTestes
     }
 
     [Fact]
+    public void Carregar_SaveDaEscalaAntiga_ConverteSalariosECaixa()
+    {
+        // Arrange: save da versão 2, com o elenco do Pampa ganhando o salário antigo de força 72.
+        var no = JsonNode.Parse(ConversorSave.Salvar(new Carreira(NovoMundo(), "pampa", 3)))!;
+        no["versaoFormato"] = 2;
+        var pampa = no["clubes"]!.AsArray().First(c => c!["id"]!.GetValue<string>() == "pampa")!;
+        foreach (var j in pampa["elenco"]!.AsArray())
+        {
+            j!["salario"] = GeradorDeJogadores.SalarioAntigo(72);
+        }
+
+        pampa["caixa"] = 1_000_000m;
+        pampa["precoIngresso"] = 30m;
+
+        // Act
+        var carreira = ConversorSave.Carregar(no.ToJsonString());
+
+        // Assert
+        var clube = carreira.Mundo.Clube("pampa");
+        Assert.All(clube.Elenco, j => Assert.Equal(GeradorDeJogadores.Salario(72), j.Contrato!.SalarioMensal));
+        Assert.Equal(Math.Round(1_000_000m * GeradorDeJogadores.Salario(72) / GeradorDeJogadores.SalarioAntigo(72)), clube.Caixa);
+        Assert.True(clube.PrecoIngresso > 30m);
+        Assert.Contains("\"versaoFormato\":3", ConversorSave.Salvar(carreira), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void Carregar_VersaoMaisNova_PedeParaAtualizar()
     {
         var no = JsonNode.Parse(ConversorSave.Salvar(new Carreira(NovoMundo(), "pampa", 3)))!;

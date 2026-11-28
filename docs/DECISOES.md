@@ -186,5 +186,24 @@ Formato curto: contexto → decisão → consequência. Quando houver decisões 
 
 ### D-040 · Copa do Brasil (2026-11-27)
 - **Contexto:** o dono do projeto aprovou o desenho da Copa do Brasil como primeira competição de mata-mata, antes das continentais.
-- **Decisão:** todos os clubes do jogo disputam (com 60, os 4 de melhor reputação da Série A entram na 2ª fase e os outros 56 fazem 28 jogos únicos, na casa do clube de divisão mais baixa). Da 2ª fase à final, ida e volta; empate no agregado vai para os pênaltis, sem gol fora e sem prorrogação. Cada fase é sorteada pela seed da temporada quando a anterior termina. Os jogos acontecem "no meio de semana", logo depois das rodadas 3, 7, 9, 13, 15, 19, 21, 25, 27, 31 e 33, e nesta versão são simulados direto (a escalação do jogador vale se todos os titulares estiverem disponíveis; senão a IA escala), com cansaço, cartões, lesões, bilheteria para o mandante e prêmio para quem avança (R$ 0,1 mi na 1ª fase até R$ 4 mi para o campeão; R$ 1,5 mi para o vice), e a renda dos jogos da Copa é dividida meio a meio entre os dois clubes. Pênaltis: 5 cobranças alternadas e depois alternadas até alguém errar; a chance depende da Finalização do batedor contra os Reflexos do goleiro (entre 55% e 92%). O save guarda só os placares; o sorteio é refeito pela seed. Os cabeças são escolhidos pela reputação, que não muda durante a temporada, para que o sorteio refeito bata com o salvo.
+- **Decisão:** todos os clubes do jogo disputam (com 60, os 4 de melhor reputação da Série A entram na 2ª fase e os outros 56 fazem 28 jogos únicos, na casa do clube de divisão mais baixa). Da 2ª fase à final, ida e volta; empate no agregado vai para os pênaltis, sem gol fora e sem prorrogação. Cada fase é sorteada pela seed da temporada quando a anterior termina. Os jogos acontecem "no meio de semana", logo depois das rodadas 3, 7, 9, 13, 15, 19, 21, 25, 27, 31 e 33, e nesta versão são simulados direto (a escalação do jogador vale se todos os titulares estiverem disponíveis; senão a IA escala), com cansaço, cartões, lesões, bilheteria para o mandante e prêmio para quem avança (valores trocados pela escala real na D-041), e a renda dos jogos da Copa é dividida meio a meio entre os dois clubes. Pênaltis: 5 cobranças alternadas e depois alternadas até alguém errar; a chance depende da Finalização do batedor contra os Reflexos do goleiro (entre 55% e 92%). O save guarda só os placares; o sorteio é refeito pela seed. Os cabeças são escolhidos pela reputação, que não muda durante a temporada, para que o sorteio refeito bata com o salvo.
 - **Consequência:** a Copa dá dinheiro aos grandes, que jogam mais: a meta de calibração "resultado dos grandes" passou de 0 a 15 para 0 a 18 R$ mi por ano (sem a Copa ficava em 13,8; com ela, 16,8). Campeão e vice saem no fim de temporada, prontos para alimentar `VagasContinentais` quando as continentais existirem. Jogar a Copa ao vivo fica para uma próxima entrega.
+
+### D-041 · Economia na escala real (2026-11-27)
+- **Contexto:** o dono do projeto quis valores próximos dos reais. Antes, o maior clube faturava cerca de R$ 20 mi por ano, e o Flamengo real fatura perto de R$ 1,5 a 2 bi (EY e Sports Value, 2025).
+- **Decisão:** valores aproximados de 2025/2026:
+  - **TV:** reputação³ × fator, de cerca de R$ 70 mi a R$ 330 mi na Série A; a Série B recebe 25% e a Série C, 6%.
+  - **Patrocínio e receitas comerciais:** reputação⁵ × fator, de poucos milhões até cerca de R$ 550 mi.
+  - **Ingresso sugerido:** cerca de R$ 20 nos pequenos e R$ 90 nos maiores.
+  - **Prêmios do Brasileirão:** campeão da Série A com R$ 48 mi; nas divisões de baixo, 7% disso.
+  - **Copa do Brasil:** cotas de 2026, com R$ 78 mi para o campeão (R$ 34 mi garantidos ao vencer a semifinal, mais R$ 44 mi pelo título).
+  - **Salários:** curva real, de cerca de R$ 20 mil com força 55 a R$ 4 mi com força 81, com piso de R$ 3 mil e teto de R$ 5 mi.
+  - **Valor de mercado:** o inverso da força tirada do valor real (€ 1 ≈ R$ 6).
+  - **Caixa inicial:** de R$ 3 mi a cerca de R$ 400 mi.
+  - **Custos operacionais (nova despesa):** 55% da TV e do patrocínio, cobrindo encargos, comissão técnica, CT, viagens e estrutura. Na vida real a folha é só parte do custo.
+- **Saves antigos:** a versão do save passou para 3 e os saves antigos são convertidos ao carregar. Cada salário vira o da nova curva para a mesma força. Caixa, extrato e última renda são multiplicados por quanto a folha do clube cresceu, e o preço do ingresso escolhido acompanha o sugerido.
+- **Consequência:**
+  - A meta "resultado dos grandes" passou a 0 a 300 R$ mi; com essa escala, o resultado médio deles fica perto de R$ 210 mi.
+  - O mundo fictício dos testes ganhou caixa maior e grandes um pouco mais fracos (força 71).
+  - A calibração ganhou `--financas`, um relatório por clube para comparar com a realidade.
+  - Os números são aproximados, porque as fontes divergem.

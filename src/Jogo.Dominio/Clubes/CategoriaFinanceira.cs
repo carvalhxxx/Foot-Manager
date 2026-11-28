@@ -9,6 +9,9 @@ public enum CategoriaFinanceira
     Premiacao,
     VendaDeJogadores,
     Salarios,
+
+    /// <summary>Encargos, comissão técnica, CT, viagens e estrutura (D-041).</summary>
+    CustosOperacionais,
     CompraDeJogadores,
     Rescisoes,
 }

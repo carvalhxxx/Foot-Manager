@@ -69,9 +69,9 @@ public class GeradorDeJogadoresTestes
     }
 
     [Theory]
-    [InlineData(50, 6_000)]
-    [InlineData(70, 60_000)]
-    [InlineData(85, 329_000)]
+    [InlineData(55, 20_000)]
+    [InlineData(70, 425_000)]
+    [InlineData(81, 4_000_000)]
     public void Salario_CresceComAForca(int forca, decimal aproximado)
     {
         var salario = GeradorDeJogadores.Salario(forca);

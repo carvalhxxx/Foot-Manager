@@ -88,15 +88,15 @@ public class GeradorDeMundoTestes
     }
 
     [Fact]
-    public void Craques_TodoGrandeTemAoMenosUmAcimaDe85()
+    public void Craques_TodoGrandeTemAoMenosUmAcimaDe83()
     {
         foreach (var modelo in CatalogoBase.Clubes.Where(m => m.Porte == Porte.Grande))
         {
-            Assert.Contains(MundoBase.Clube(modelo.Id).Elenco, j => j.ForcaGeral >= 85);
+            Assert.Contains(MundoBase.Clube(modelo.Id).Elenco, j => j.ForcaGeral >= 83);
         }
 
         var maiorForca = MundoBase.Clubes.SelectMany(c => c.Elenco).Max(j => j.ForcaGeral);
-        Assert.InRange(maiorForca, 85, 95);
+        Assert.InRange(maiorForca, 83, 95);
     }
 
     [Fact]

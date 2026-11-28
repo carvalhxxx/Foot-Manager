@@ -188,10 +188,10 @@ public static class GeradorDeMundoReal
         return resultado;
     }
 
-    /// <summary>Caixa inicial pela reputação: de R$ 2 mi (pequenos) a cerca de R$ 80 mi (os maiores).</summary>
+    /// <summary>Caixa inicial pela reputação: de R$ 3 mi (pequenos) a cerca de R$ 400 mi (os maiores).</summary>
     private static decimal Caixa(ClubeReal modelo)
     {
-        var milhoes = 2 + (78 * Math.Pow(Math.Max(0, modelo.Reputacao - 40) / 55.0, 2.2));
+        var milhoes = 3 + (397 * Math.Pow(Math.Max(0, modelo.Reputacao - 40) / 55.0, 2.2));
         return Math.Round((decimal)milhoes * 10m) * 100_000m;
     }
 }

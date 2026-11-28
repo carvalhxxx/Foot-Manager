@@ -17,8 +17,11 @@ public sealed class SaveInvalidoException(string mensagem, Exception? causa = nu
 /// <summary>Converte uma <see cref="Carreira"/> em texto JSON e de volta, sem perder nada que afete o jogo.</summary>
 public static class ConversorSave
 {
-    /// <summary>Versão 2: finanças do clube (extrato, ingresso, último jogo em casa). Saves da versão 1 continuam carregando.</summary>
-    public const int VersaoAtual = 2;
+    /// <summary>
+    /// Versão 2: finanças do clube (extrato, ingresso, último jogo em casa). Versão 3: dinheiro na escala real
+    /// (D-041); saves mais antigos são convertidos ao carregar.
+    /// </summary>
+    public const int VersaoAtual = EscalaAntiga.VersaoDaEscalaReal;
 
     private static readonly TipoAtributo[] Atributos = Enum.GetValues<TipoAtributo>();
 
@@ -96,6 +99,11 @@ public static class ConversorSave
         if (save.VersaoFormato < 1 || save.Clubes is null || save.Divisoes is null || save.Temporada is null || save.Tatica is null)
         {
             throw new SaveInvalidoException("O arquivo não é um save válido do Foot Manager BR.");
+        }
+
+        if (save.VersaoFormato < EscalaAntiga.VersaoDaEscalaReal)
+        {
+            EscalaAntiga.Converter(save);
         }
 
         try

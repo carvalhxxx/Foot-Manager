@@ -39,6 +39,7 @@ export const textos = {
       Salarios: 'Salários',
       CompraDeJogadores: 'Compra de jogadores',
       Rescisoes: 'Rescisões',
+      CustosOperacionais: 'Custos operacionais',
     } as Record<string, string>,
   },
   tema: {

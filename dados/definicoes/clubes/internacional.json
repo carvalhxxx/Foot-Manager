@@ -15,7 +15,7 @@
   },
   "torcida": 84,
   "reputacao": 84,
-  "caixa": 49700000,
+  "caixa": 246000000,
   "elenco": [
     {
       "id": 511,
@@ -39,7 +39,7 @@
         "propensaoLesao": 9,
         "profissionalismo": 9
       },
-      "salario": 42500,
+      "salario": 233000,
       "contratoAte": 2027
     },
     {
@@ -64,7 +64,7 @@
         "propensaoLesao": 4,
         "profissionalismo": 15
       },
-      "salario": 42500,
+      "salario": 233000,
       "contratoAte": 2029
     },
     {
@@ -89,7 +89,7 @@
         "propensaoLesao": 6,
         "profissionalismo": 8
       },
-      "salario": 21500,
+      "salario": 68500,
       "contratoAte": 2029
     },
     {
@@ -117,7 +117,7 @@
         "propensaoLesao": 5,
         "profissionalismo": 8
       },
-      "salario": 67000,
+      "salario": 526000,
       "contratoAte": 2028
     },
     {
@@ -145,7 +145,7 @@
         "propensaoLesao": 5,
         "profissionalismo": 12
       },
-      "salario": 48000,
+      "salario": 285500,
       "contratoAte": 2026
     },
     {
@@ -170,7 +170,7 @@
         "propensaoLesao": 7,
         "profissionalismo": 5
       },
-      "salario": 17000,
+      "salario": 45500,
       "contratoAte": 2029
     },
     {
@@ -198,7 +198,7 @@
         "propensaoLesao": 15,
         "profissionalismo": 6
       },
-      "salario": 17000,
+      "salario": 45500,
       "contratoAte": 2028
     },
     {
@@ -223,7 +223,7 @@
         "propensaoLesao": 7,
         "profissionalismo": 9
       },
-      "salario": 42500,
+      "salario": 233000,
       "contratoAte": 2028
     },
     {
@@ -252,7 +252,7 @@
         "propensaoLesao": 9,
         "profissionalismo": 16
       },
-      "salario": 12500,
+      "salario": 24500,
       "contratoAte": 2029
     },
     {
@@ -280,7 +280,7 @@
         "propensaoLesao": 7,
         "profissionalismo": 9
       },
-      "salario": 84000,
+      "salario": 790500,
       "contratoAte": 2027
     },
     {
@@ -305,7 +305,7 @@
         "propensaoLesao": 9,
         "profissionalismo": 2
       },
-      "salario": 42500,
+      "salario": 233000,
       "contratoAte": 2027
     },
     {
@@ -330,7 +330,7 @@
         "propensaoLesao": 9,
         "profissionalismo": 4
       },
-      "salario": 53500,
+      "salario": 350000,
       "contratoAte": 2028
     },
     {
@@ -355,7 +355,7 @@
         "propensaoLesao": 9,
         "profissionalismo": 14
       },
-      "salario": 19500,
+      "salario": 56000,
       "contratoAte": 2029
     },
     {
@@ -383,7 +383,7 @@
         "propensaoLesao": 8,
         "profissionalismo": 9
       },
-      "salario": 38000,
+      "salario": 190000,
       "contratoAte": 2029
     },
     {
@@ -408,7 +408,7 @@
         "propensaoLesao": 11,
         "profissionalismo": 9
       },
-      "salario": 19500,
+      "salario": 56000,
       "contratoAte": 2026
     },
     {
@@ -433,7 +433,7 @@
         "propensaoLesao": 3,
         "profissionalismo": 16
       },
-      "salario": 15500,
+      "salario": 37000,
       "contratoAte": 2029
     },
     {
@@ -458,7 +458,7 @@
         "propensaoLesao": 6,
         "profissionalismo": 11
       },
-      "salario": 60000,
+      "salario": 429000,
       "contratoAte": 2026
     },
     {
@@ -487,7 +487,7 @@
         "propensaoLesao": 10,
         "profissionalismo": 7
       },
-      "salario": 19500,
+      "salario": 56000,
       "contratoAte": 2029
     },
     {
@@ -512,7 +512,7 @@
         "propensaoLesao": 9,
         "profissionalismo": 8
       },
-      "salario": 24000,
+      "salario": 84000,
       "contratoAte": 2026
     },
     {
@@ -541,7 +541,7 @@
         "propensaoLesao": 9,
         "profissionalismo": 8
       },
-      "salario": 12500,
+      "salario": 24500,
       "contratoAte": 2026
     },
     {
@@ -569,7 +569,7 @@
         "propensaoLesao": 9,
         "profissionalismo": 2
       },
-      "salario": 24000,
+      "salario": 84000,
       "contratoAte": 2029
     },
     {
@@ -594,7 +594,7 @@
         "propensaoLesao": 11,
         "profissionalismo": 11
       },
-      "salario": 12500,
+      "salario": 24500,
       "contratoAte": 2028
     },
     {
@@ -622,7 +622,7 @@
         "propensaoLesao": 7,
         "profissionalismo": 12
       },
-      "salario": 19500,
+      "salario": 56000,
       "contratoAte": 2029
     },
     {
@@ -650,7 +650,7 @@
         "propensaoLesao": 8,
         "profissionalismo": 18
       },
-      "salario": 17000,
+      "salario": 45500,
       "contratoAte": 2029
     },
     {
@@ -679,7 +679,7 @@
         "propensaoLesao": 9,
         "profissionalismo": 14
       },
-      "salario": 15500,
+      "salario": 37000,
       "contratoAte": 2028
     },
     {
@@ -704,7 +704,7 @@
         "propensaoLesao": 10,
         "profissionalismo": 7
       },
-      "salario": 12500,
+      "salario": 24500,
       "contratoAte": 2027
     },
     {
@@ -729,7 +729,7 @@
         "propensaoLesao": 9,
         "profissionalismo": 15
       },
-      "salario": 12500,
+      "salario": 24500,
       "contratoAte": 2026
     },
     {
@@ -754,7 +754,7 @@
         "propensaoLesao": 8,
         "profissionalismo": 5
       },
-      "salario": 27000,
+      "salario": 103000,
       "contratoAte": 2026
     },
     {
@@ -782,7 +782,7 @@
         "propensaoLesao": 8,
         "profissionalismo": 4
       },
-      "salario": 34000,
+      "salario": 155000,
       "contratoAte": 2028
     },
     {
@@ -807,7 +807,7 @@
         "propensaoLesao": 6,
         "profissionalismo": 8
       },
-      "salario": 27000,
+      "salario": 103000,
       "contratoAte": 2026
     }
   ]

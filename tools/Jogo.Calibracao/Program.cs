@@ -17,6 +17,7 @@ var temporadas = 30;
 var seed = 1UL;
 var carreiras = 6;
 var anos = 5;
+var soFinancas = false;
 
 for (var i = 0; i < args.Length; i++)
 {
@@ -37,17 +38,43 @@ for (var i = 0; i < args.Length; i++)
         case "--anos" when i + 1 < args.Length:
             anos = int.Parse(args[++i], CultureInfo.InvariantCulture);
             break;
+        case "--financas":
+            soFinancas = true;
+            break;
         case "--seed" when i + 1 < args.Length:
             seed = ulong.Parse(args[++i], CultureInfo.InvariantCulture);
             break;
         default:
             Console.Error.WriteLine($"Argumento desconhecido: {args[i]}");
-            Console.Error.WriteLine("Uso: Jogo.Calibracao [--partidas N] [--por-formacao N] [--temporadas N] [--carreiras N] [--anos N] [--seed N]");
+            Console.Error.WriteLine("Uso: Jogo.Calibracao [--partidas N] [--por-formacao N] [--temporadas N] [--carreiras N] [--anos N] [--seed N] [--financas]");
             return 2;
     }
 }
 
 var pasta = PastaDefinicoes();
+if (soFinancas)
+{
+    // Relatório de uma temporada por clube (R$ mi), para comparar a economia com a realidade.
+    var m = LeitorDefinicoes.Carregar(pasta).Mundo;
+    var t = new Jogo.Simulacao.Temporadas.Temporada(m, seed);
+    t.JogarAteOFim();
+    Console.WriteLine($"{"Clube",-22}{"Div",4}{"Rep",5}{"Bilh",8}{"TV",8}{"Patr",8}{"Prêm",8}{"Liga",8}{"Salár",9}{"Custos",9}{"Result",9}{"Caixa",9}");
+    foreach (var d in m.Divisoes.OrderBy(d => d.Nivel))
+    {
+        var tabela = t.Tabela(d.Id);
+        foreach (var l in tabela)
+        {
+            var c = m.Clube(l.ClubeId);
+            decimal V(Jogo.Dominio.Clubes.CategoriaFinanceira k) => c.Extrato.GetValueOrDefault(k) / 1_000_000m;
+            var liga = Jogo.Simulacao.Financas.Financas.Premio(l.Posicao, tabela.Count, d, t.RegrasFinanceiras) / 1_000_000m;
+            Console.WriteLine(string.Create(CultureInfo.InvariantCulture,
+                $"{c.Nome,-22}{d.Nivel,4}{c.Reputacao,5}{V(Jogo.Dominio.Clubes.CategoriaFinanceira.Bilheteria),8:F1}{V(Jogo.Dominio.Clubes.CategoriaFinanceira.CotaDeTv),8:F1}{V(Jogo.Dominio.Clubes.CategoriaFinanceira.Patrocinio),8:F1}{V(Jogo.Dominio.Clubes.CategoriaFinanceira.Premiacao),8:F1}{liga,8:F1}{V(Jogo.Dominio.Clubes.CategoriaFinanceira.Salarios),9:F1}{V(Jogo.Dominio.Clubes.CategoriaFinanceira.CustosOperacionais),9:F1}{(c.Extrato.Values.Sum() / 1_000_000m) + liga,9:F1}{c.Caixa / 1_000_000m,9:F1}"));
+        }
+    }
+
+    return 0;
+}
+
 var (_, mundo) = LeitorDefinicoes.Carregar(pasta);
 var cronometro = Stopwatch.StartNew();
 var relatorio = Calibrador.Executar(mundo, partidas, porFormacao, seed);

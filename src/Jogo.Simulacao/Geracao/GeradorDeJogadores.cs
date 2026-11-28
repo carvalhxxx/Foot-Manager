@@ -53,13 +53,24 @@ public sealed class GeradorDeJogadores(IGeradorAleatorio aleatorio)
 
     /// <summary>
     /// Salário mensal em reais, crescendo de forma exponencial com a força
-    /// (≈ R$ 6 mil com força 50, R$ 60 mil com 70, R$ 330 mil com 85), arredondado a R$ 500.
+    /// (escala real, D-041: ≈ R$ 20 mil com força 55, R$ 425 mil com 70, R$ 1,4 mi com 76 e R$ 4 mi com 81), arredondado a R$ 500.
     /// </summary>
     public static decimal Salario(int forca)
     {
-        var bruto = 2_000 * Math.Pow(1.12, forca - 40);
-        return Math.Max(1_500m, Math.Round((decimal)bruto / 500m, MidpointRounding.AwayFromZero) * 500m);
+        var bruto = Math.Min(950 * Math.Pow(1.226, forca - 40), (double)SalarioMaximo);
+        return Math.Max(SalarioMinimo, Math.Round((decimal)bruto / 500m, MidpointRounding.AwayFromZero) * 500m);
     }
+
+    public const decimal SalarioMinimo = 3_000m;
+
+    /// <summary>Teto: os maiores salários do futebol brasileiro ficam perto de R$ 5 mi por mês.</summary>
+    public const decimal SalarioMaximo = 5_000_000m;
+
+    /// <summary>
+    /// Salário da escala antiga (saves de versão 2 ou menor, antes da D-041): usado só para converter saves.
+    /// </summary>
+    public static decimal SalarioAntigo(int forca) =>
+        Math.Max(1_500m, Math.Round((decimal)(2_000 * Math.Pow(1.12, forca - 40)) / 500m, MidpointRounding.AwayFromZero) * 500m);
 
     /// <summary>Variação triangular em [−2a, 2a], concentrada perto de zero.</summary>
     public int Variacao(int amplitude) =>

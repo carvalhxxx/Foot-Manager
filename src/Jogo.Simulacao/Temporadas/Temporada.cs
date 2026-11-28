@@ -494,12 +494,7 @@ public sealed class Temporada
 
             if (confronto.Vencedor is { } vencedor)
             {
-                var perdedor = vencedor == confronto.ClubeA ? confronto.ClubeB : confronto.ClubeA;
                 _mundo.Clube(vencedor).Lancar(CategoriaFinanceira.Premiacao, Copas.CopaDoBrasil.PremioPorAvancar(etapa.Fase));
-                if (etapa.Fase == Copas.FaseCopa.Final)
-                {
-                    _mundo.Clube(perdedor).Lancar(CategoriaFinanceira.Premiacao, Copas.CopaDoBrasil.PremioDoVice);
-                }
             }
         }
 

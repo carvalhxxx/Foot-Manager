@@ -27,6 +27,7 @@ Prioridade: lançar rápido na web (desktop e celular), sem servidor: tudo roda 
 dotnet build FootManagerBR.slnx                 # build (warnings viram erro)
 dotnet test --solution FootManagerBR.slnx        # testes do núcleo
 dotnet run --project tools/Jogo.Calibracao       # calibração do motor, da temporada e de carreiras de 5 anos com mercado (sai com erro fora das metas)
+dotnet run --project tools/Jogo.Calibracao -- --financas   # receitas e despesas de cada clube numa temporada (R$ mi)
 dotnet run --project tools/Jogo.Simulador -- --temporadas 3   # simula temporadas e mostra tabelas/artilharia
 dotnet run --project tools/Jogo.GeradorDados     # regera dados/definicoes a partir dos dados reais (seed 2027, temporada 2026)
 dotnet run --project tools/Jogo.GeradorDados -- --api   # SÓ LOCAL: elencos da API-Football (chave em API_FOOTBALL_KEY) em dados/local/definicoes

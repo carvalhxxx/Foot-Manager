@@ -132,10 +132,10 @@ public static class GeradorDeMundo
 
     private static Perfil PerfilDoPorte(Porte porte, int divisao) => (porte, divisao) switch
     {
-        (Porte.Grande, _) => new(73, (85, 95), (80, 92), (40_000, 80_000), (45_000, 75_000)),
-        (Porte.Medio, 1) => new(66, (50, 72), (55, 72), (12_000, 30_000), (22_000, 45_000)),
-        (Porte.Medio, _) => new(61, (40, 60), (42, 58), (6_000, 15_000), (15_000, 35_000)),
-        _ => new(56, (18, 40), (28, 45), (2_000, 8_000), (8_000, 20_000)),
+        (Porte.Grande, _) => new(71, (85, 95), (80, 92), (200_000, 400_000), (45_000, 75_000)),
+        (Porte.Medio, 1) => new(66, (50, 72), (55, 72), (60_000, 150_000), (22_000, 45_000)),
+        (Porte.Medio, _) => new(61, (40, 60), (42, 58), (30_000, 75_000), (15_000, 35_000)),
+        _ => new(56, (18, 40), (28, 45), (10_000, 40_000), (8_000, 20_000)),
     };
 
     private static int Entre(GeradorAleatorio aleatorio, (int Min, int Max) faixa) =>

@@ -100,18 +100,19 @@ public sealed class CopaDoBrasil
 
     public static bool JogoUnico(FaseCopa fase) => fase == FaseCopa.PrimeiraFase;
 
-    /// <summary>Prêmio para quem passa de fase (o da final é o do campeão).</summary>
+    /// <summary>
+    /// Prêmio para quem passa de fase, com as cotas reais de 2026 (D-041): quem vence a semifinal garante
+    /// R$ 34 mi (a cota do vice) e o campeão leva mais R$ 44 mi, fechando os R$ 78 mi da final.
+    /// </summary>
     public static decimal PremioPorAvancar(FaseCopa fase) => fase switch
     {
-        FaseCopa.PrimeiraFase => 100_000m,
-        FaseCopa.SegundaFase => 250_000m,
-        FaseCopa.Oitavas => 500_000m,
-        FaseCopa.Quartas => 1_000_000m,
-        FaseCopa.Semifinal => 1_500_000m,
-        _ => 4_000_000m,
+        FaseCopa.PrimeiraFase => 1_000_000m,
+        FaseCopa.SegundaFase => 2_500_000m,
+        FaseCopa.Oitavas => 4_900_000m,
+        FaseCopa.Quartas => 9_000_000m,
+        FaseCopa.Semifinal => 34_000_000m,
+        _ => 44_000_000m,
     };
-
-    public const decimal PremioDoVice = 1_500_000m;
 
     private readonly ulong _seed;
     private readonly int _ano;
