@@ -67,6 +67,25 @@ export interface Estado {
   rodadaAoVivo: boolean
   janelaAberta: boolean
   contratosAcabando: number
+  /** Ausente quando a temporada não tem Copa do Brasil. */
+  copa?: CopaEstado
+}
+
+export type FaseCopa = 'PrimeiraFase' | 'SegundaFase' | 'Oitavas' | 'Quartas' | 'Semifinal' | 'Final'
+
+export interface ProximoJogoCopa {
+  fase: FaseCopa
+  perna: number
+  /** O jogo é no meio de semana, logo depois desta rodada do Brasileirão. */
+  depoisDaRodada: number
+  adversario: ClubeResumo
+  emCasa: boolean
+}
+
+export interface CopaEstado {
+  situacao: 'vivo' | 'eliminado' | 'campeao'
+  faseEliminado?: FaseCopa
+  proximoJogo?: ProximoJogoCopa
 }
 
 export interface Atributos {
@@ -207,6 +226,47 @@ export interface Rodada {
   minhaPartida?: Partida
   divisoes: RodadaDivisao[]
   transferencias: Transferencia[]
+  minhaCopa?: JogoCopa
+  jogosDaCopa?: Placar[]
+}
+
+export interface JogoCopa {
+  fase: FaseCopa
+  perna: number
+  partida: Partida
+  penaltisMandante?: number
+  penaltisVisitante?: number
+  classificado: boolean
+  confrontoEncerrado: boolean
+}
+
+export interface ConfrontoCopa {
+  aNome: string
+  aSigla: string
+  bNome: string
+  bSigla: string
+  idaGolsA?: number
+  idaGolsB?: number
+  voltaGolsA?: number
+  voltaGolsB?: number
+  penaltisA?: number
+  penaltisB?: number
+  vencedorSigla?: string
+  meu: boolean
+}
+
+export interface FaseCopaDto {
+  fase: FaseCopa
+  jogoUnico: boolean
+  rodadaIda: number
+  rodadaVolta?: number
+  confrontos: ConfrontoCopa[]
+}
+
+export interface Copa {
+  fases: FaseCopaDto[]
+  cabecas: string[]
+  campeaoNome?: string
 }
 
 export interface Transferencia {
@@ -417,6 +477,8 @@ export interface FimDeTemporada {
   revelacoes: number
   proximoAno: number
   meuResultadoFinanceiro: number
+  campeaoCopa?: string
+  viceCopa?: string
 }
 
 export interface BuscaMercado {

@@ -211,6 +211,21 @@ describe('App', () => {
     expect(regras).toHaveTextContent(textos.classificacao.criterios.Saldo)
   })
 
+  it('Copa do Brasil: aba com o chaveamento e próximo jogo no painel', async () => {
+    const nucleo = await entrarNoJogo()
+    const painel = screen.getByRole('region', { name: textos.copa.titulo })
+    expect(painel).toHaveTextContent('Dunas FC')
+    expect(painel).toHaveTextContent(textos.copa.proximo(textos.copa.fases.SegundaFase, 1, 7))
+
+    await userEvent.click(screen.getByRole('button', { name: textos.menu.classificacao }))
+    await userEvent.click(screen.getByRole('tab', { name: textos.copa.aba }))
+    expect(nucleo.copa).toHaveBeenCalled()
+    expect(screen.getByRole('tab', { name: textos.copa.fases.SegundaFase })).toHaveAttribute('aria-selected', 'true')
+
+    await userEvent.click(screen.getByRole('tab', { name: textos.copa.fases.PrimeiraFase }))
+    expect(screen.getByText(/pên\. 3 × 4/)).toBeInTheDocument()
+  })
+
   it('classificação troca de divisão e destaca o clube do jogador', async () => {
     const nucleo = await entrarNoJogo()
     await userEvent.click(screen.getByRole('button', { name: textos.menu.classificacao }))
@@ -219,7 +234,7 @@ describe('App', () => {
 
     await userEvent.click(screen.getByRole('tab', { name: 'Série B' }))
     expect(nucleo.classificacao).toHaveBeenLastCalledWith('serie-b')
-    expect(screen.getByText('Dunas FC')).toBeInTheDocument()
+    expect(screen.getByRole('row', { name: /Dunas FC/ })).toBeInTheDocument()
   })
 
   it('fim de temporada: encerra, mostra o resumo e começa o ano seguinte', async () => {

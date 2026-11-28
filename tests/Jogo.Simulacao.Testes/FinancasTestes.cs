@@ -95,7 +95,8 @@ public class FinancasTestes
 
         var resultado = FimDeTemporada.Encerrar(temporada, mundo, 1);
 
-        Assert.Equal(Regras.PremioCampeao, resultado.Extratos[campeao][CategoriaFinanceira.Premiacao]);
+        // Prêmio do Brasileirão (mais o da Copa do Brasil, se ele avançou nela).
+        Assert.True(resultado.Extratos[campeao][CategoriaFinanceira.Premiacao] >= Regras.PremioCampeao);
         Assert.Empty(mundo.Clube(campeao).Extrato);
     }
 

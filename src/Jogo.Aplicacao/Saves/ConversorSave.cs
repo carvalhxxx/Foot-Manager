@@ -49,6 +49,12 @@ public static class ConversorSave
             Temporada = new TemporadaSave
             {
                 RodadaAtual = temporada.RodadaAtual,
+                Copa = temporada.Copa is null ? null : [.. temporada.Copa.Disputados.Select(j => new JogoCopaSave
+                {
+                    Fase = j.Fase.ToString(), Confronto = j.Confronto, Perna = j.Perna, Rodada = j.Rodada,
+                    Mandante = j.MandanteId, Visitante = j.VisitanteId, GolsMandante = j.GolsMandante, GolsVisitante = j.GolsVisitante,
+                    PenaltisMandante = j.PenaltisMandante, PenaltisVisitante = j.PenaltisVisitante,
+                })],
                 Jogos = [.. temporada.Competicoes.SelectMany(c => c.Disputados.Select(j =>
                     ParaSave(c.Divisao.Id, j, detalhado: j.Placar.Jogo.Rodada == temporada.RodadaAtual
                         && (j.Placar.Jogo.MandanteId == carreira.Clube.Id || j.Placar.Jogo.VisitanteId == carreira.Clube.Id))))],
@@ -115,7 +121,13 @@ public static class ConversorSave
                 mundo,
                 save.ClubeId!,
                 ulong.Parse(save.Seed!, CultureInfo.InvariantCulture),
-                t => t.Restaurar(temporadaSave.RodadaAtual, (temporadaSave.Jogos ?? []).Select(j => (j.Divisao!, ParaDominio(j)))),
+                t =>
+                {
+                    t.Restaurar(temporadaSave.RodadaAtual, (temporadaSave.Jogos ?? []).Select(j => (j.Divisao!, ParaDominio(j))));
+                    t.RestaurarCopa((temporadaSave.Copa ?? []).Select(j => new Simulacao.Copas.JogoCopa(
+                        Enum.Parse<Simulacao.Copas.FaseCopa>(j.Fase!), j.Confronto, j.Perna, j.Rodada, j.Mandante!, j.Visitante!,
+                        j.GolsMandante, j.GolsVisitante, j.PenaltisMandante, j.PenaltisVisitante)));
+                },
                 tatica);
         }
         catch (SaveInvalidoException)

@@ -21,6 +21,51 @@ export function Partida({ rodada, meuClubeId }: Props) {
   const t = textos.partida
   const [todos, setTodos] = useState(false)
   const p = rodada.minhaPartida
+  const tc = textos.copa
+  const copa = rodada.minhaCopa
+
+  // Meu jogo da Copa no meio de semana (simulado direto, sem ao vivo nesta versão).
+  const cartaoCopa = copa && (
+    <section className="cartao placar placar-copa" aria-label={tc.meioDeSemana}>
+      <p className="secundario">
+        {tc.meioDeSemana} · {tc.fases[copa.fase] ?? copa.fase}
+        {copa.perna === 2 ? ` (${textos.classificacao.volta.toLowerCase()})` : ''}
+      </p>
+      <div className="placar-linha">
+        <span className="placar-time">
+          <Escudo corPrimaria={copa.partida.mandante.corPrimaria} corSecundaria={copa.partida.mandante.corSecundaria} />
+          {copa.partida.mandante.nome}
+        </span>
+        <span className="placar-gols">
+          {copa.partida.golsMandante} <span aria-hidden="true">×</span> {copa.partida.golsVisitante}
+        </span>
+        <span className="placar-time placar-time-visitante">
+          {copa.partida.visitante.nome}
+          <Escudo corPrimaria={copa.partida.visitante.corPrimaria} corSecundaria={copa.partida.visitante.corSecundaria} />
+        </span>
+      </div>
+      {copa.penaltisMandante !== undefined && copa.penaltisVisitante !== undefined && (
+        <p>
+          <strong>{tc.penaltisDisputa(copa.penaltisMandante, copa.penaltisVisitante)}</strong>
+        </p>
+      )}
+      {copa.confrontoEncerrado && (
+        <p className={copa.classificado ? 'positivo' : 'negativo'}>
+          {copa.classificado ? (copa.fase === 'Final' ? tc.venceuACopa : tc.classificou) : tc.caiu}
+        </p>
+      )}
+      <ul className="lista-simples">
+        {copa.partida.eventos
+          .filter((e) => e.tipo === 'Gol' || e.tipo === 'CartaoVermelho')
+          .map((e, i) => (
+            <li key={`${e.minuto}-${i}`}>
+              {minutoDoEvento(e)}{' '}
+              {descreverEvento(e, (eq) => (eq === 'Mandante' ? copa.partida.mandante.nome : eq === 'Visitante' ? copa.partida.visitante.nome : ''))}
+            </li>
+          ))}
+      </ul>
+    </section>
+  )
 
   // Outros jogos e mercado da rodada: aparecem mesmo quando o time do jogador não jogou (ex.: playoff da Série B).
   const restoDaRodada = (
@@ -50,6 +95,23 @@ export function Partida({ rodada, meuClubeId }: Props) {
           </div>
         </section>
 
+        {rodada.jogosDaCopa && rodada.jogosDaCopa.length > 0 && (
+          <section className="cartao">
+            <h2>{tc.outrosJogos}</h2>
+            <ul className="outros-jogos-copa">
+              {rodada.jogosDaCopa.map((j) => (
+                <li key={j.mandanteId} className={j.mandanteId === meuClubeId || j.visitanteId === meuClubeId ? 'meu-jogo' : undefined}>
+                  <span title={j.mandanteNome}>{j.mandanteSigla}</span>
+                  <strong>
+                    {j.golsMandante} × {j.golsVisitante}
+                  </strong>
+                  <span title={j.visitanteNome}>{j.visitanteSigla}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
         {rodada.transferencias.length > 0 && (
           <section className="cartao">
             <h2>{t.mercado}</h2>
@@ -67,7 +129,7 @@ export function Partida({ rodada, meuClubeId }: Props) {
   )
 
   if (!p) {
-    return rodada.divisoes.length === 0 ? (
+    return rodada.divisoes.length === 0 && !copa ? (
       <p className="aviso">{t.semPartida}</p>
     ) : (
       <>
@@ -75,6 +137,7 @@ export function Partida({ rodada, meuClubeId }: Props) {
           <h1>{t.rodada(rodada.rodada)}</h1>
           <p>{t.semJogoMeu}</p>
         </header>
+        {cartaoCopa}
         {restoDaRodada}
       </>
     )
@@ -145,6 +208,7 @@ export function Partida({ rodada, meuClubeId }: Props) {
         </section>
       </div>
 
+      {cartaoCopa}
       {restoDaRodada}
     </>
   )

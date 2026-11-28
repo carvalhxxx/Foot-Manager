@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { Escudo } from '../componentes/Escudo'
-import type { Estado } from '../nucleo/contrato'
+import type { CopaEstado, Estado } from '../nucleo/contrato'
 import { formatoDinheiro, textos } from '../textos'
 
 interface Props {
@@ -41,6 +41,8 @@ export function PainelPartida({ estado, caixa, acoes }: Props) {
         )}
         <div className="acoes-painel">{acoes}</div>
       </section>
+
+      {estado.copa && <LinhaCopa copa={estado.copa} />}
 
       <section className="cartao">
         <dl className="resumo-painel">
@@ -85,5 +87,34 @@ export function PainelPartida({ estado, caixa, acoes }: Props) {
         </section>
       )}
     </div>
+  )
+}
+
+/** Situação na Copa do Brasil: próximo jogo (meio de semana), eliminação ou título. */
+function LinhaCopa({ copa }: { copa: CopaEstado }) {
+  const t = textos.copa
+  const fase = (f?: string) => (f ? (t.fases[f] ?? f) : '')
+  const p = copa.proximoJogo
+  return (
+    <section className="cartao cartao-copa" aria-label={t.titulo}>
+      <h3 className="subtitulo-painel">{t.titulo}</h3>
+      {copa.situacao === 'campeao' ? (
+        <p className="positivo">{t.souCampeao}</p>
+      ) : copa.situacao === 'eliminado' ? (
+        <p className="secundario">{t.eliminado(fase(copa.faseEliminado))}</p>
+      ) : p ? (
+        <p className="proximo-jogo">
+          <Escudo corPrimaria={p.adversario.corPrimaria} corSecundaria={p.adversario.corSecundaria} />
+          <span>
+            <strong>{p.adversario.nome}</strong>
+            <span className="secundario">
+              {t.proximo(fase(p.fase), p.perna, p.depoisDaRodada)} · {p.emCasa ? textos.inicio.emCasa : textos.inicio.fora}
+            </span>
+          </span>
+        </p>
+      ) : (
+        <p className="secundario">{t.aguardandoSorteio}</p>
+      )}
+    </section>
   )
 }

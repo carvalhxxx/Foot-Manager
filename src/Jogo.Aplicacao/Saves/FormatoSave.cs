@@ -94,6 +94,24 @@ internal sealed class TemporadaSave
 {
     public int RodadaAtual { get; set; }
     public List<JogoSave>? Jogos { get; set; }
+
+    /// <summary>Jogos da Copa do Brasil (ausente em saves antigos = Copa ainda sem jogos).</summary>
+    public List<JogoCopaSave>? Copa { get; set; }
+}
+
+/// <summary>Um jogo da Copa: o sorteio é refeito pela seed, então basta o placar (e os pênaltis).</summary>
+internal sealed class JogoCopaSave
+{
+    [JsonPropertyName("f")] public string? Fase { get; set; }
+    [JsonPropertyName("c")] public int Confronto { get; set; }
+    [JsonPropertyName("p")] public int Perna { get; set; }
+    [JsonPropertyName("r")] public int Rodada { get; set; }
+    [JsonPropertyName("m")] public string? Mandante { get; set; }
+    [JsonPropertyName("v")] public string? Visitante { get; set; }
+    [JsonPropertyName("gm")] public int GolsMandante { get; set; }
+    [JsonPropertyName("gv")] public int GolsVisitante { get; set; }
+    [JsonPropertyName("pm")] public int? PenaltisMandante { get; set; }
+    [JsonPropertyName("pv")] public int? PenaltisVisitante { get; set; }
 }
 
 /// <summary>Um jogo disputado, em forma compacta (são 760 por temporada).</summary>

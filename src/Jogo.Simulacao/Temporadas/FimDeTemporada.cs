@@ -25,7 +25,9 @@ public sealed record ResultadoTemporada(
     IReadOnlyList<ResumoDivisao> Divisoes,
     IReadOnlyList<int> Aposentados,
     IReadOnlyList<int> Revelacoes,
-    IReadOnlyDictionary<string, IReadOnlyDictionary<CategoriaFinanceira, decimal>> Extratos);
+    IReadOnlyDictionary<string, IReadOnlyDictionary<CategoriaFinanceira, decimal>> Extratos,
+    string? CampeaoCopa = null,
+    string? ViceCopa = null);
 
 /// <summary>
 /// Fecha a temporada: acesso e rebaixamento, evolução, aposentadorias, revelações da base,
@@ -112,7 +114,8 @@ public static class FimDeTemporada
         }
 
         mundo.AvancarTemporada();
-        return new ResultadoTemporada(temporada.Ano, resumos, aposentados, revelacoes, extratos);
+        return new ResultadoTemporada(temporada.Ano, resumos, aposentados, revelacoes, extratos,
+            temporada.Copa?.Campeao, temporada.Copa?.Vice);
     }
 
     private static void PagarPremiacao(Temporada temporada, Mundo mundo)

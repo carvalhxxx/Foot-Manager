@@ -47,6 +47,8 @@ public sealed class ApiJson
 
     public string EncerrarTemporada() => Json(_servico.EncerrarTemporada());
 
+    public string Copa() => Json(_servico.Copa());
+
     public string IniciarAoVivo() => Json(_servico.IniciarAoVivo());
 
     public string AoVivo() => Json(_servico.AoVivo());
@@ -98,6 +100,7 @@ public sealed class ApiJson
     private static string Json(Resposta<RodadaDto> r) => JsonSerializer.Serialize(r, ContratoJson.Default.RespostaRodadaDto);
     private static string Json(Resposta<ClassificacaoDto> r) => JsonSerializer.Serialize(r, ContratoJson.Default.RespostaClassificacaoDto);
     private static string Json(Resposta<FimDeTemporadaDto> r) => JsonSerializer.Serialize(r, ContratoJson.Default.RespostaFimDeTemporadaDto);
+    private static string Json(Resposta<CopaDto> r) => JsonSerializer.Serialize(r, ContratoJson.Default.RespostaCopaDto);
     private static string Json(Resposta<AoVivoDto> r) => JsonSerializer.Serialize(r, ContratoJson.Default.RespostaAoVivoDto);
     private static string Json(Resposta<FinancasDto> r) => JsonSerializer.Serialize(r, ContratoJson.Default.RespostaFinancasDto);
     private static string Json(Resposta<SaveDto> r) => JsonSerializer.Serialize(r, ContratoJson.Default.RespostaSaveDto);

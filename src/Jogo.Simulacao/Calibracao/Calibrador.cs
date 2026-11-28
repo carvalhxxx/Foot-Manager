@@ -54,7 +54,7 @@ public sealed record MetasCalibracao
     // Finanças (uma temporada sem mercado) --------------------------------------
 
     /// <summary>Resultado médio (receitas − despesas, em milhões) dos clubes de reputação ≥ 80.</summary>
-    public (double Min, double Max) ResultadoDosGrandes { get; init; } = (0, 15);
+    public (double Min, double Max) ResultadoDosGrandes { get; init; } = (0, 18);
 
     /// <summary>Resultado médio (em milhões) dos clubes de reputação &lt; 46: apertado, perto do zero.</summary>
     public (double Min, double Max) ResultadoDosPequenos { get; init; } = (-2, 3);

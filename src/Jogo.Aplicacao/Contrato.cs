@@ -46,7 +46,16 @@ public sealed record EstadoDto(
     IReadOnlyList<string> AjustesNaEscalacao,
     bool RodadaAoVivo,
     bool JanelaAberta,
-    int ContratosAcabando);
+    int ContratosAcabando,
+    CopaEstadoDto? Copa = null);
+
+/// <summary>
+/// Situação do clube na Copa do Brasil: "vivo" (com próximo jogo), "eliminado" (fase em que caiu) ou "campeao".
+/// O jogo acontece no meio de semana, logo depois da rodada <see cref="ProximoJogoCopaDto.DepoisDaRodada"/>.
+/// </summary>
+public sealed record CopaEstadoDto(string Situacao, string? FaseEliminado, ProximoJogoCopaDto? ProximoJogo);
+
+public sealed record ProximoJogoCopaDto(string Fase, int Perna, int DepoisDaRodada, ClubeResumoDto Adversario, bool EmCasa);
 
 public sealed record AtributosDto(
     int Finalizacao, int Passe, int Desarme, int Drible, int Velocidade,
@@ -135,7 +144,23 @@ public sealed record RodadaDivisaoDto(string DivisaoId, string DivisaoNome, IRea
 /// <summary>Negócio da IA depois da rodada (origem nula = agente livre).</summary>
 public sealed record TransferenciaDto(string Jogador, string? DeSigla, string ParaSigla, string ParaNome, decimal Valor);
 
-public sealed record RodadaDto(int Rodada, PartidaDto? MinhaPartida, IReadOnlyList<RodadaDivisaoDto> Divisoes, IReadOnlyList<TransferenciaDto> Transferencias);
+public sealed record RodadaDto(int Rodada, PartidaDto? MinhaPartida, IReadOnlyList<RodadaDivisaoDto> Divisoes, IReadOnlyList<TransferenciaDto> Transferencias,
+    JogoCopaDto? MinhaCopa = null, IReadOnlyList<PlacarDto>? JogosDaCopa = null);
+
+/// <summary>Meu jogo da Copa no meio de semana (pênaltis nulos se não houve disputa).</summary>
+public sealed record JogoCopaDto(string Fase, int Perna, PartidaDto Partida, int? PenaltisMandante, int? PenaltisVisitante, bool Classificado, bool ConfrontoEncerrado);
+
+// ------------------------------------------------------------------ copa do brasil
+
+/// <summary>Confronto do chaveamento: A manda a ida (ou o jogo único). Gols nulos = jogo não disputado.</summary>
+public sealed record ConfrontoCopaDto(
+    string ANome, string ASigla, string BNome, string BSigla,
+    int? IdaGolsA, int? IdaGolsB, int? VoltaGolsA, int? VoltaGolsB,
+    int? PenaltisA, int? PenaltisB, string? VencedorSigla, bool Meu);
+
+public sealed record FaseCopaDto(string Fase, bool JogoUnico, int RodadaIda, int? RodadaVolta, IReadOnlyList<ConfrontoCopaDto> Confrontos);
+
+public sealed record CopaDto(IReadOnlyList<FaseCopaDto> Fases, IReadOnlyList<string> Cabecas, string? CampeaoNome);
 
 // ------------------------------------------------------------------ ao vivo
 
@@ -245,7 +270,8 @@ public sealed record ResumoDivisaoDto(string Nome, string Campeao, IReadOnlyList
 
 public sealed record FimDeTemporadaDto(
     int Ano, IReadOnlyList<ResumoDivisaoDto> Divisoes, int MinhaPosicao, string MinhaDivisao,
-    string? Movimento, int Aposentados, int Revelacoes, int ProximoAno, decimal MeuResultadoFinanceiro);
+    string? Movimento, int Aposentados, int Revelacoes, int ProximoAno, decimal MeuResultadoFinanceiro,
+    string? CampeaoCopa = null, string? ViceCopa = null);
 
 /// <summary>Filtros da busca no mercado (todos opcionais).</summary>
 public sealed record BuscaMercadoDto(string? Posicao, int ForcaMinima, decimal? PrecoMaximo, bool ApenasLivres);
@@ -279,4 +305,5 @@ public sealed record OfertaDto(int JogadorId, string? ClubeNome, decimal Valor, 
 [JsonSerializable(typeof(Resposta<RodadaDto>))]
 [JsonSerializable(typeof(Resposta<ClassificacaoDto>))]
 [JsonSerializable(typeof(Resposta<FimDeTemporadaDto>))]
+[JsonSerializable(typeof(Resposta<CopaDto>))]
 internal sealed partial class ContratoJson : JsonSerializerContext;

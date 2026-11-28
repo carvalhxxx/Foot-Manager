@@ -6,6 +6,7 @@ import type {
   EventoPartida,
   Financas,
   Classificacao,
+  Copa,
   Estado,
   FimDeTemporada,
   Jogador,
@@ -177,6 +178,27 @@ export const fimDeTemporada: FimDeTemporada = {
   meuResultadoFinanceiro: 4_500_000,
 }
 
+export const copa: Copa = {
+  cabecas: ['Pampa Sport Club'],
+  fases: [
+    {
+      fase: 'PrimeiraFase',
+      jogoUnico: true,
+      rodadaIda: 3,
+      confrontos: [
+        { aNome: 'Dunas FC', aSigla: 'DUN', bNome: 'Cerrado EC', bSigla: 'CER', idaGolsA: 1, idaGolsB: 1, penaltisA: 3, penaltisB: 4, vencedorSigla: 'CER', meu: false },
+      ],
+    },
+    {
+      fase: 'SegundaFase',
+      jogoUnico: false,
+      rodadaIda: 7,
+      rodadaVolta: 9,
+      confrontos: [{ aNome: 'Cerrado EC', aSigla: 'CER', bNome: 'Pampa Sport Club', bSigla: 'PAM', meu: true }],
+    },
+  ],
+}
+
 function classificacao(divisaoId: string): Classificacao {
   return {
     divisaoId,
@@ -313,6 +335,7 @@ export function criarNucleoFalso(opcoes: { totalRodadas?: number } = {}) {
     rodadaAoVivo: aoVivo !== undefined,
     janelaAberta: rodadaAtual < 3,
     contratosAcabando: rodadaAtual >= totalRodadas - 8 ? 2 : 0,
+    copa: { situacao: 'vivo', proximoJogo: { fase: 'SegundaFase', perna: 1, depoisDaRodada: 7, adversario: { ...cerrado, id: 'dunas', nome: 'Dunas FC', sigla: 'DUN' }, emCasa: false } },
   })
 
   const nucleo = {
@@ -365,6 +388,7 @@ export function criarNucleoFalso(opcoes: { totalRodadas?: number } = {}) {
     }),
     ultimaRodada: vi.fn(() => ok(rodadaAtual > 0 ? rodada : { rodada: 0, divisoes: [], transferencias: [] })),
     classificacao: vi.fn((id: string) => ok(classificacao(id))),
+    copa: vi.fn(() => ok(copa)),
     encerrarTemporada: vi.fn(() => {
       rodadaAtual = 0
       return ok(fimDeTemporada)

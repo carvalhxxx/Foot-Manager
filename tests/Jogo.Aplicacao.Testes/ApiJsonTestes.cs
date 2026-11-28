@@ -390,4 +390,28 @@ public class ApiJsonTestes
         Assert.Equal((2027, 0, false), (estado["ano"]!.GetValue<int>(), estado["rodadaAtual"]!.GetValue<int>(), estado["temporadaEncerrada"]!.GetValue<bool>()));
         Assert.Contains("ainda não terminou", Falha(api.EncerrarTemporada()), StringComparison.Ordinal);
     }
+
+    [Fact]
+    public void Copa_DepoisDaTerceiraRodada_PrimeiraFaseDisputadaENoChaveamento()
+    {
+        var api = ComCarreira();
+        JsonNode rodada = null!;
+        for (var r = 0; r < 3; r++)
+        {
+            rodada = Ok(api.AvancarRodada());
+        }
+
+        var copa = Ok(api.Copa());
+        var primeira = copa["fases"]![0]!;
+        Assert.Equal("PrimeiraFase", primeira["fase"]!.GetValue<string>());
+        var confrontos = primeira["confrontos"]!.AsArray();
+        Assert.Equal(28, confrontos.Count);
+        Assert.All(confrontos, c => Assert.NotNull(c!["vencedorSigla"]));
+        Assert.Equal(28, rodada["jogosDaCopa"]!.AsArray().Count);
+        Assert.Equal(confrontos.Any(c => c!["meu"]!.GetValue<bool>()), rodada["minhaCopa"] is not null);
+        Assert.Equal("SegundaFase", copa["fases"]![1]!["fase"]!.GetValue<string>());
+
+        var situacao = Ok(api.Estado())["copa"]!["situacao"]!.GetValue<string>();
+        Assert.Contains(situacao, new[] { "vivo", "eliminado" });
+    }
 }

@@ -1,6 +1,7 @@
 import type {
   AoVivo,
   Classificacao,
+  Copa,
   Decisao,
   DefinicaoTatica,
   Estado,
@@ -40,6 +41,7 @@ export interface Nucleo {
   ultimaRodada(): Resposta<Rodada>
   classificacao(divisaoId: string): Resposta<Classificacao>
   encerrarTemporada(): Resposta<FimDeTemporada>
+  copa(): Resposta<Copa>
   iniciarAoVivo(): Resposta<AoVivo>
   aoVivo(): Resposta<AoVivo>
   avancarAoVivo(minutos: number): Resposta<AoVivo>
@@ -66,6 +68,7 @@ interface ApiBruta {
   UltimaRodada(): string
   Classificacao(divisaoId: string): string
   EncerrarTemporada(): string
+  Copa(): string
   IniciarAoVivo(): string
   AoVivo(): string
   AvancarAoVivo(minutos: number): string
@@ -140,6 +143,7 @@ function embrulhar(api: ApiBruta): Nucleo {
     ultimaRodada: () => ler(api.UltimaRodada()),
     classificacao: (divisaoId) => ler(api.Classificacao(divisaoId)),
     encerrarTemporada: () => ler(api.EncerrarTemporada()),
+    copa: () => ler(api.Copa()),
     iniciarAoVivo: () => ler(api.IniciarAoVivo()),
     aoVivo: () => ler(api.AoVivo()),
     avancarAoVivo: (minutos) => ler(api.AvancarAoVivo(minutos)),

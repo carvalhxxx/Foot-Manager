@@ -6,7 +6,7 @@ import type { Nucleo } from './nucleo/nucleo'
 import type { ArmazenamentoSaves } from './saves/armazenamento'
 import { baixarSave, formatoHora, salvarCarreira } from './saves/salvar'
 import { AoVivo } from './telas/AoVivo'
-import { Classificacao } from './telas/Classificacao'
+import { ABA_COPA, Classificacao } from './telas/Classificacao'
 import { Elenco } from './telas/Elenco'
 import { Financas } from './telas/Financas'
 import { FimDeTemporada } from './telas/FimDeTemporada'
@@ -233,7 +233,9 @@ export function JogoEmAndamento({ nucleo, mundo, botaoTema, slotId, armazenament
             divisoes={divisoes}
             selecionada={selecionada}
             aoSelecionar={setDivisaoVista}
-            classificacao={dados(nucleo.classificacao(selecionada))}
+            classificacao={selecionada === ABA_COPA ? undefined : dados(nucleo.classificacao(selecionada))}
+            copa={selecionada === ABA_COPA ? dados(nucleo.copa()) : undefined}
+            temCopa={estado.copa !== undefined}
             meuClubeId={estado.clube.id}
           />
         )

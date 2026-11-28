@@ -5,6 +5,7 @@ using Jogo.Dominio;
 using Jogo.Dominio.Clubes;
 using Jogo.Dominio.Jogadores;
 using Jogo.Motor;
+using Jogo.Simulacao.Copas;
 using Jogo.Simulacao;
 using Jogo.Simulacao.Mercado;
 using Jogo.Simulacao.Temporadas;
@@ -97,7 +98,59 @@ public sealed class ServicoDeJogo
             // Aviso só na reta final (últimas 8 rodadas), quando ainda dá para renovar.
             c.Temporada.RodadaAtual >= c.Temporada.TotalRodadas - 8
                 ? c.Clube.Elenco.Count(j => Contratos.PodeRenovar(j, c.Mundo.TemporadaAtual))
-                : 0);
+                : 0,
+            CopaDe(c));
+    });
+
+    private static CopaEstadoDto? CopaDe(Carreira c)
+    {
+        if (c.Temporada.Copa is not { } copa)
+        {
+            return null;
+        }
+
+        if (copa.Campeao == c.Clube.Id)
+        {
+            return new CopaEstadoDto("campeao", null, null);
+        }
+
+        if (copa.EliminadoEm(c.Clube.Id) is { } fase)
+        {
+            return new CopaEstadoDto("eliminado", fase.ToString(), null);
+        }
+
+        var proximo = copa.ProximoJogo(c.Clube.Id) is { } p
+            ? new ProximoJogoCopaDto(p.Fase.ToString(), p.Perna, CopaDoBrasil.RodadaDaEtapa(p.Fase, p.Perna),
+                Resumir(c.Mundo.Clube(p.Adversario)), p.EmCasa)
+            : null;
+        return new CopaEstadoDto("vivo", null, proximo);
+    }
+
+    /// <summary>Chaveamento da Copa do Brasil da temporada, fase a fase.</summary>
+    public Resposta<CopaDto> Copa() => ComCarreira(c =>
+    {
+        var copa = c.Temporada.Copa ?? throw new InvalidOperationException("Esta temporada não tem Copa do Brasil.");
+        var fases = copa.FasesDefinidas.Select(f => new FaseCopaDto(
+            f.ToString(), CopaDoBrasil.JogoUnico(f), CopaDoBrasil.RodadaDaEtapa(f, 1),
+            CopaDoBrasil.JogoUnico(f) ? null : CopaDoBrasil.RodadaDaEtapa(f, 2),
+            [.. copa.Confrontos(f).Select(x =>
+            {
+                var a = c.Mundo.Clube(x.ClubeA);
+                var b = c.Mundo.Clube(x.ClubeB);
+                var decisivo = x.JogoUnico ? x.Ida : x.Volta;
+                int? penA = null, penB = null;
+                if (decisivo?.PenaltisMandante is { } pm && decisivo.PenaltisVisitante is { } pv)
+                {
+                    (penA, penB) = decisivo.MandanteId == x.ClubeA ? (pm, pv) : (pv, pm);
+                }
+
+                return new ConfrontoCopaDto(a.Nome, a.Sigla, b.Nome, b.Sigla,
+                    x.Ida?.GolsMandante, x.Ida?.GolsVisitante, x.Volta?.GolsVisitante, x.Volta?.GolsMandante,
+                    penA, penB, x.Vencedor is { } v ? c.Mundo.Clube(v).Sigla : null,
+                    x.ClubeA == c.Clube.Id || x.ClubeB == c.Clube.Id);
+            })])).ToArray();
+        return new CopaDto(fases, [.. copa.Cabecas.Select(id => c.Mundo.Clube(id).Nome)],
+            copa.Campeao is { } campeao ? c.Mundo.Clube(campeao).Nome : null);
     });
 
     public Resposta<IReadOnlyList<JogadorDto>> Elenco() => ComCarreira<IReadOnlyList<JogadorDto>>(c =>
@@ -519,7 +572,9 @@ public sealed class ServicoDeJogo
             resultado.Aposentados.Count,
             resultado.Revelacoes.Count,
             c.Mundo.TemporadaAtual,
-            resultado.Extratos[c.Clube.Id].Values.Sum());
+            resultado.Extratos[c.Clube.Id].Values.Sum(),
+            resultado.CampeaoCopa is { } cc ? c.Mundo.Clube(cc).Nome : null,
+            resultado.ViceCopa is { } vc ? c.Mundo.Clube(vc).Nome : null);
     });
 
     // ------------------------------------------------------------------ apoio
@@ -622,11 +677,27 @@ public sealed class ServicoDeJogo
             })]));
         }
 
+        JogoCopaDto? minhaCopa = null;
+        var placaresCopa = new List<PlacarDto>();
+        foreach (var j in rodada.JogosDaCopa)
+        {
+            var mandante = c.Mundo.Clube(j.MandanteId);
+            var visitante = c.Mundo.Clube(j.VisitanteId);
+            placaresCopa.Add(new PlacarDto(mandante.Id, mandante.Sigla, mandante.Nome, j.GolsMandante,
+                visitante.Id, visitante.Sigla, visitante.Nome, j.GolsVisitante));
+            if ((mandante.Id == c.Clube.Id || visitante.Id == c.Clube.Id) && j.Resultado is { } resultado)
+            {
+                var confronto = c.Temporada.Copa!.Confrontos(j.Fase)[j.Confronto];
+                minhaCopa = new JogoCopaDto(j.Fase.ToString(), j.Perna, ParaDto(rodada.Rodada, mandante, visitante, resultado, nomes),
+                    j.PenaltisMandante, j.PenaltisVisitante, confronto.Vencedor == c.Clube.Id, confronto.Vencedor is not null);
+            }
+        }
+
         return new RodadaDto(rodada.Rodada, minha, divisoes, [.. c.UltimasTransferencias.Select(t =>
         {
             var para = c.Mundo.Clube(t.ParaClubeId);
             return new TransferenciaDto(t.Jogador, t.DeClubeId is { } de ? c.Mundo.Clube(de).Sigla : null, para.Sigla, para.Nome, t.Valor);
-        })]);
+        })], minhaCopa, placaresCopa);
     }
 
     private static PartidaDto ParaDto(int rodada, Clube mandante, Clube visitante, ResultadoPartida r, IReadOnlyDictionary<int, string> nomes) => new(

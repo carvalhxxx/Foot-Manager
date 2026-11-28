@@ -14,7 +14,14 @@ namespace Jogo.Simulacao.Temporadas;
 public sealed record JogoDisputado(PlacarJogo Placar, ResultadoPartida Resultado);
 
 /// <summary>Os jogos de uma rodada, por divisão.</summary>
-public sealed record RelatorioRodada(int Rodada, IReadOnlyDictionary<string, IReadOnlyList<JogoDisputado>> JogosPorDivisao);
+/// <summary>Os jogos de uma rodada, por divisão, e os da Copa do Brasil que vieram logo depois (meio de semana).</summary>
+public sealed record RelatorioRodada(
+    int Rodada,
+    IReadOnlyDictionary<string, IReadOnlyList<JogoDisputado>> JogosPorDivisao,
+    IReadOnlyList<Copas.JogoCopa>? JogosDaCopa = null)
+{
+    public IReadOnlyList<Copas.JogoCopa> JogosDaCopa { get; } = JogosDaCopa ?? [];
+}
 
 /// <summary>
 /// Um confronto do playoff de acesso (ida e volta). Gols somados nos dois jogos; empate no agregado
@@ -93,6 +100,9 @@ public sealed class Temporada
         Competicoes = [.. mundo.Divisoes.Select(d => new CompeticaoDaTemporada(
             d, Temporadas.Calendario.PontosCorridos(d.ClubeIds, new GeradorAleatorio(Semente(d.Id, 0, 0)))))];
         TotalRodadas = Competicoes.Max(c => c.RodadasRegulares + c.RodadasDePlayoff);
+        Copa = Copas.CopaDoBrasil.Cabe(mundo.Clubes.Count)
+            ? new Copas.CopaDoBrasil(mundo, _seed ^ GeradorDeMundo.HashEstavel($"{Ano}/copa"))
+            : null;
     }
 
     public int Ano { get; }
@@ -105,6 +115,22 @@ public sealed class Temporada
     public int RodadaAtual { get; private set; }
 
     public int TotalRodadas { get; }
+
+    /// <summary>Copa do Brasil da temporada (nula em mundos pequenos demais, como alguns de teste).</summary>
+    public Copas.CopaDoBrasil? Copa { get; }
+
+    /// <summary>Escalações escolhidas fora da IA na rodada em andamento (reaproveitadas na Copa do meio de semana).</summary>
+    private IReadOnlyDictionary<string, TimeEscalado>? _escalacoesFixas;
+
+    /// <summary>Recoloca os jogos da Copa vindos de um save (sem reaplicar pós-jogo nem dinheiro).</summary>
+    public void RestaurarCopa(IEnumerable<Copas.JogoCopa> jogos)
+    {
+        ArgumentNullException.ThrowIfNull(jogos);
+        foreach (var jogo in jogos.OrderBy(j => j.Rodada).ThenBy(j => j.Confronto))
+        {
+            (Copa ?? throw new InvalidOperationException("Esta temporada não tem Copa do Brasil.")).Registrar(jogo);
+        }
+    }
     public bool Encerrada => RodadaAtual >= TotalRodadas;
 
     /// <summary>
@@ -190,7 +216,8 @@ public sealed class Temporada
             .Select(c => (c.Divisao.Id, Jogos: c.Disputados.Where(j => j.Placar.Jogo.Rodada == rodada).ToArray()))
             .Where(x => x.Jogos.Length > 0)
             .ToDictionary(x => x.Id, x => (IReadOnlyList<JogoDisputado>)x.Jogos, StringComparer.Ordinal);
-        return jogos.Count == 0 ? null : new RelatorioRodada(rodada, jogos);
+        var daCopa = Copa?.Disputados.Where(j => j.Rodada == rodada).ToArray() ?? [];
+        return jogos.Count == 0 && daCopa.Length == 0 ? null : new RelatorioRodada(rodada, jogos, daCopa);
     }
 
     public CompeticaoDaTemporada Competicao(string divisaoId) =>
@@ -336,6 +363,7 @@ public sealed class Temporada
             }
         }
 
+        _escalacoesFixas = escalacoesFixas;
         EmAndamento = new RodadaEmAndamento(rodada, jogos);
         return EmAndamento;
     }
@@ -406,7 +434,9 @@ public sealed class Temporada
             DefinirPlayoffSePronto(competicao);
         }
 
-        return new RelatorioRodada(emAndamento.Rodada, jogosPorDivisao);
+        var jogosDaCopa = JogarCopaDepoisDa(RodadaAtual);
+        _escalacoesFixas = null;
+        return new RelatorioRodada(emAndamento.Rodada, jogosPorDivisao, jogosDaCopa);
     }
 
     public void JogarAteOFim()
@@ -416,6 +446,71 @@ public sealed class Temporada
             JogarRodada();
         }
     }
+
+    /// <summary>
+    /// Jogos da Copa do Brasil do meio de semana (depois da rodada <paramref name="rodada"/> do Brasileirão),
+    /// simulados de uma vez, com pós-jogo, bilheteria e prêmio por fase (D-040).
+    /// </summary>
+    private List<Copas.JogoCopa> JogarCopaDepoisDa(int rodada)
+    {
+        var jogados = new List<Copas.JogoCopa>();
+        if (Copa is null || Copas.CopaDoBrasil.EtapaDepoisDa(rodada) is not { } etapa)
+        {
+            return jogados;
+        }
+
+        var jogos = Copa.Jogos(etapa.Fase, etapa.Perna);
+        for (var i = 0; i < jogos.Count; i++)
+        {
+            var (confronto, mandanteId, visitanteId) = jogos[i];
+            var mandante = _mundo.Clube(mandanteId);
+            var visitante = _mundo.Clube(visitanteId);
+            var em = EscalacaoDaCopa(mandante);
+            var ev = EscalacaoDaCopa(visitante);
+            var resultado = MotorDePartida.SimularRapido(em, ev,
+                new GeradorAleatorio(Semente("copa", rodada, i + 1)), configuracao: Configuracao);
+
+            // Pênaltis no jogo que decide, se o confronto terminou empatado.
+            var decide = confronto.JogoUnico || etapa.Perna == 2;
+            var empatado = etapa.Perna == 1
+                ? resultado.GolsMandante == resultado.GolsVisitante
+                : confronto.Ida!.GolsMandante + resultado.GolsVisitante == confronto.Ida.GolsVisitante + resultado.GolsMandante;
+            (int, int)? penaltis = null;
+            if (decide && empatado)
+            {
+                var disputa = Copas.Penaltis.Disputar(em.Titulares, em.CobradorId, ev.Titulares, ev.CobradorId,
+                    new GeradorAleatorio(Semente("copa-penaltis", rodada, i + 1)));
+                penaltis = (disputa.Mandante, disputa.Visitante);
+            }
+
+            var jogo = new Copas.JogoCopa(etapa.Fase, confronto.Indice, etapa.Perna, rodada, mandanteId, visitanteId,
+                resultado.GolsMandante, resultado.GolsVisitante, penaltis?.Item1, penaltis?.Item2, resultado);
+            Copa.Registrar(jogo);
+            jogados.Add(jogo);
+
+            PosJogo.Aplicar(mandante, em, resultado, Equipe.Mandante, Regras);
+            PosJogo.Aplicar(visitante, ev, resultado, Equipe.Visitante, Regras);
+            Financas.Financas.ProcessarJogoEmCasa(mandante, visitante, 0.5, RegrasFinanceiras, parteDoMandante: 0.5m);
+
+            if (confronto.Vencedor is { } vencedor)
+            {
+                var perdedor = vencedor == confronto.ClubeA ? confronto.ClubeB : confronto.ClubeA;
+                _mundo.Clube(vencedor).Lancar(CategoriaFinanceira.Premiacao, Copas.CopaDoBrasil.PremioPorAvancar(etapa.Fase));
+                if (etapa.Fase == Copas.FaseCopa.Final)
+                {
+                    _mundo.Clube(perdedor).Lancar(CategoriaFinanceira.Premiacao, Copas.CopaDoBrasil.PremioDoVice);
+                }
+            }
+        }
+
+        return jogados;
+    }
+
+    /// <summary>A escalação do jogador vale na Copa se ninguém se machucou ou foi suspenso; senão a IA escala.</summary>
+    private TimeEscalado EscalacaoDaCopa(Clube clube) =>
+        _escalacoesFixas is not null && _escalacoesFixas.TryGetValue(clube.Id, out var fixa) && fixa.Titulares.All(j => j.Disponivel)
+            ? fixa.ComEntrosamento(PosJogo.BonusEntrosamento(fixa.Titulares, Regras))
+            : Escalar(clube);
 
     private TimeEscalado EscalacaoDaRodada(Clube clube, IReadOnlyDictionary<string, TimeEscalado>? fixas) =>
         fixas is not null && fixas.TryGetValue(clube.Id, out var fixa)

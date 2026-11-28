@@ -107,12 +107,20 @@ public static class Financas
     }
 
     /// <summary>Bilheteria de um jogo em casa.</summary>
-    public static void ProcessarJogoEmCasa(Clube mandante, Clube visitante, double aproveitamentoRecente, RegrasFinanceiras regras)
+    /// <param name="parteDoMandante">Fração da renda que fica com o mandante; o resto vai para o visitante (Copa: metade).</param>
+    public static void ProcessarJogoEmCasa(Clube mandante, Clube visitante, double aproveitamentoRecente, RegrasFinanceiras regras,
+        decimal parteDoMandante = 1m)
     {
         var preco = PrecoDoIngresso(mandante, regras);
         var publico = Publico(mandante, visitante, preco, aproveitamentoRecente, regras);
         var renda = publico * preco;
-        mandante.Lancar(CategoriaFinanceira.Bilheteria, renda);
+        var doMandante = Math.Round(renda * parteDoMandante);
+        mandante.Lancar(CategoriaFinanceira.Bilheteria, doMandante);
+        if (renda - doMandante != 0)
+        {
+            visitante.Lancar(CategoriaFinanceira.Bilheteria, renda - doMandante);
+        }
+
         mandante.RegistrarJogoEmCasa(publico, renda);
     }
 

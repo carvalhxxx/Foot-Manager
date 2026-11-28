@@ -1,14 +1,23 @@
 import { Escudo } from '../componentes/Escudo'
-import type { Classificacao as ClassificacaoDto } from '../nucleo/contrato'
+import type { Classificacao as ClassificacaoDto, Copa } from '../nucleo/contrato'
+import { ChaveamentoCopa } from './ChaveamentoCopa'
 import { textos } from '../textos'
 
 interface Props {
   divisoes: { id: string; nome: string }[]
   selecionada: string
   aoSelecionar: (divisaoId: string) => void
-  classificacao: ClassificacaoDto
+  /** Tabela da divisão selecionada (ausente quando a aba da Copa está aberta). */
+  classificacao?: ClassificacaoDto
+  /** Chaveamento da Copa do Brasil, quando a aba da Copa está aberta. */
+  copa?: Copa
+  /** A temporada tem Copa do Brasil (mostra a aba). */
+  temCopa?: boolean
   meuClubeId: string
 }
+
+/** Id da aba da Copa na lista de abas da classificação. */
+export const ABA_COPA = 'copa'
 
 /** Classe de cor da faixa em que a posição está (as faixas vêm do núcleo). */
 function zona(posicao: number, c: ClassificacaoDto): string | undefined {
@@ -16,7 +25,7 @@ function zona(posicao: number, c: ClassificacaoDto): string | undefined {
   return z ? `zona-${z.tipo}` : undefined
 }
 
-export function Classificacao({ divisoes, selecionada, aoSelecionar, classificacao, meuClubeId }: Props) {
+export function Classificacao({ divisoes, selecionada, aoSelecionar, classificacao, copa, temCopa, meuClubeId }: Props) {
   const t = textos.classificacao
 
   return (
@@ -36,123 +45,141 @@ export function Classificacao({ divisoes, selecionada, aoSelecionar, classificac
               {d.nome}
             </button>
           ))}
+          {temCopa && (
+            <button
+              type="button"
+              role="tab"
+              aria-selected={selecionada === ABA_COPA}
+              className={`pilula ${selecionada === ABA_COPA ? 'pilula-ativa' : ''}`}
+              onClick={() => aoSelecionar(ABA_COPA)}
+            >
+              {textos.copa.aba}
+            </button>
+          )}
         </div>
       </header>
 
-      <div className="grade-classificacao">
-        <section className="cartao rolagem">
-          <table className="tabela tabela-classificacao">
-            <thead>
-              <tr>
-                <th scope="col" className="numero">#</th>
-                <th scope="col">{t.clube}</th>
-                <th scope="col" className="numero">{t.pontos}</th>
-                <th scope="col" className="numero">{t.jogos}</th>
-                <th scope="col" className="numero">{t.vitorias}</th>
-                <th scope="col" className="numero">{t.empates}</th>
-                <th scope="col" className="numero">{t.derrotas}</th>
-                <th scope="col" className="numero ocultar-celular">{t.golsPro}</th>
-                <th scope="col" className="numero ocultar-celular">{t.golsContra}</th>
-                <th scope="col" className="numero">{t.saldo}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {classificacao.linhas.map((l) => (
-                <tr
-                  key={l.clubeId}
-                  className={[zona(l.posicao, classificacao), l.clubeId === meuClubeId ? 'meu-clube' : '']
-                    .filter(Boolean)
-                    .join(' ')}
-                >
-                  <td className="numero">{l.posicao}</td>
-                  <td>
-                    <Escudo corPrimaria={l.corPrimaria} corSecundaria={l.corSecundaria} />
-                    <span className="nome-completo">{l.nome}</span>
-                    <span className="nome-curto">{l.sigla}</span>
-                  </td>
-                  <td className="numero">
-                    <strong>{l.pontos}</strong>
-                  </td>
-                  <td className="numero">{l.jogos}</td>
-                  <td className="numero">{l.vitorias}</td>
-                  <td className="numero">{l.empates}</td>
-                  <td className="numero">{l.derrotas}</td>
-                  <td className="numero ocultar-celular">{l.golsPro}</td>
-                  <td className="numero ocultar-celular">{l.golsContra}</td>
-                  <td className="numero">{l.saldo > 0 ? `+${l.saldo}` : l.saldo}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-
-        <section className="cartao regras-legenda" aria-label={t.regrasELegenda}>
-          <h2>{t.regrasELegenda}</h2>
-          <ul className="legenda-lista">
-            {classificacao.zonas.map((z) => (
-              <li key={z.tipo} className={`legenda-zona zona-${z.tipo}`}>
-                {t.zonas[z.tipo] ?? z.tipo} <span className="secundario">({t.faixa(z.de, z.ate)})</span>
-              </li>
-            ))}
-          </ul>
-          {classificacao.zonas.some((z) => z.tipo.startsWith('Libertadores') || z.tipo === 'SulAmericana') && (
-            <p className="secundario dica">{t.continentaisEmBreve}</p>
-          )}
-          <p>{t.desempate}</p>
-          <ol className="criterios">
-            {classificacao.criteriosDeDesempate.map((c) => (
-              <li key={c}>{t.criterios[c] ?? c}</li>
-            ))}
-          </ol>
-        </section>
-
-        {classificacao.vagasDiretas < classificacao.vagasAcesso && (
-          <section className="cartao" aria-label={t.playoff}>
-            <h2>{t.playoff}</h2>
-            <p className="secundario dica">
-              {t.regraPlayoff(
-                classificacao.vagasDiretas,
-                classificacao.vagasDiretas + 1,
-                classificacao.vagasDiretas + 2 * (classificacao.vagasAcesso - classificacao.vagasDiretas),
-              )}
-            </p>
-            {classificacao.playoff.length === 0 ? (
-              <p className="secundario">{t.aguardando}</p>
-            ) : (
-              <ul className="lista-simples playoff">
-                {classificacao.playoff.map((c) => (
-                  <li key={c.melhorSigla}>
-                    <strong>
-                      {c.melhorPosicao}º {c.melhorNome} × {c.piorPosicao}º {c.piorNome}
-                    </strong>
-                    <span className="secundario">
-                      {t.ida}: {c.idaGolsPior ?? '–'} × {c.idaGolsMelhor ?? '–'} ({c.piorSigla} em casa) · {t.volta}: {c.voltaGolsMelhor ?? '–'} ×{' '}
-                      {c.voltaGolsPior ?? '–'} ({c.melhorSigla} em casa)
-                    </span>
-                    {c.vencedorNome && <span className="positivo">{t.classificado(c.vencedorNome)}</span>}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-        )}
-
-        <section className="cartao">
-          <h2>{t.artilharia}</h2>
-          <ol className="artilharia">
-            {classificacao.artilharia.map((a) => (
-              <li key={`${a.jogador}-${a.clubeSigla}`}>
-                <span className="artilheiro-linha">
-                  <span>
-                    {a.jogador} <span className="secundario">{a.clubeSigla}</span>
-                  </span>
-                  <strong>{a.gols}</strong>
-                </span>
-              </li>
-            ))}
-          </ol>
-        </section>
-      </div>
+      {copa ? <ChaveamentoCopa copa={copa} /> : classificacao && <TabelaDivisao classificacao={classificacao} meuClubeId={meuClubeId} />}
     </>
+  )
+}
+
+function TabelaDivisao({ classificacao, meuClubeId }: { classificacao: ClassificacaoDto; meuClubeId: string }) {
+  const t = textos.classificacao
+  return (
+    <div className="grade-classificacao">
+      <section className="cartao rolagem">
+        <table className="tabela tabela-classificacao">
+          <thead>
+            <tr>
+              <th scope="col" className="numero">#</th>
+              <th scope="col">{t.clube}</th>
+              <th scope="col" className="numero">{t.pontos}</th>
+              <th scope="col" className="numero">{t.jogos}</th>
+              <th scope="col" className="numero">{t.vitorias}</th>
+              <th scope="col" className="numero">{t.empates}</th>
+              <th scope="col" className="numero">{t.derrotas}</th>
+              <th scope="col" className="numero ocultar-celular">{t.golsPro}</th>
+              <th scope="col" className="numero ocultar-celular">{t.golsContra}</th>
+              <th scope="col" className="numero">{t.saldo}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {classificacao.linhas.map((l) => (
+              <tr
+                key={l.clubeId}
+                className={[zona(l.posicao, classificacao), l.clubeId === meuClubeId ? 'meu-clube' : '']
+                  .filter(Boolean)
+                  .join(' ')}
+              >
+                <td className="numero">{l.posicao}</td>
+                <td>
+                  <Escudo corPrimaria={l.corPrimaria} corSecundaria={l.corSecundaria} />
+                  <span className="nome-completo">{l.nome}</span>
+                  <span className="nome-curto">{l.sigla}</span>
+                </td>
+                <td className="numero">
+                  <strong>{l.pontos}</strong>
+                </td>
+                <td className="numero">{l.jogos}</td>
+                <td className="numero">{l.vitorias}</td>
+                <td className="numero">{l.empates}</td>
+                <td className="numero">{l.derrotas}</td>
+                <td className="numero ocultar-celular">{l.golsPro}</td>
+                <td className="numero ocultar-celular">{l.golsContra}</td>
+                <td className="numero">{l.saldo > 0 ? `+${l.saldo}` : l.saldo}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+
+      <section className="cartao regras-legenda" aria-label={t.regrasELegenda}>
+        <h2>{t.regrasELegenda}</h2>
+        <ul className="legenda-lista">
+          {classificacao.zonas.map((z) => (
+            <li key={z.tipo} className={`legenda-zona zona-${z.tipo}`}>
+              {t.zonas[z.tipo] ?? z.tipo} <span className="secundario">({t.faixa(z.de, z.ate)})</span>
+            </li>
+          ))}
+        </ul>
+        {classificacao.zonas.some((z) => z.tipo.startsWith('Libertadores') || z.tipo === 'SulAmericana') && (
+          <p className="secundario dica">{t.continentaisEmBreve}</p>
+        )}
+        <p>{t.desempate}</p>
+        <ol className="criterios">
+          {classificacao.criteriosDeDesempate.map((c) => (
+            <li key={c}>{t.criterios[c] ?? c}</li>
+          ))}
+        </ol>
+      </section>
+
+      {classificacao.vagasDiretas < classificacao.vagasAcesso && (
+        <section className="cartao" aria-label={t.playoff}>
+          <h2>{t.playoff}</h2>
+          <p className="secundario dica">
+            {t.regraPlayoff(
+              classificacao.vagasDiretas,
+              classificacao.vagasDiretas + 1,
+              classificacao.vagasDiretas + 2 * (classificacao.vagasAcesso - classificacao.vagasDiretas),
+            )}
+          </p>
+          {classificacao.playoff.length === 0 ? (
+            <p className="secundario">{t.aguardando}</p>
+          ) : (
+            <ul className="lista-simples playoff">
+              {classificacao.playoff.map((c) => (
+                <li key={c.melhorSigla}>
+                  <strong>
+                    {c.melhorPosicao}º {c.melhorNome} × {c.piorPosicao}º {c.piorNome}
+                  </strong>
+                  <span className="secundario">
+                    {t.ida}: {c.idaGolsPior ?? '–'} × {c.idaGolsMelhor ?? '–'} ({c.piorSigla} em casa) · {t.volta}: {c.voltaGolsMelhor ?? '–'} ×{' '}
+                    {c.voltaGolsPior ?? '–'} ({c.melhorSigla} em casa)
+                  </span>
+                  {c.vencedorNome && <span className="positivo">{t.classificado(c.vencedorNome)}</span>}
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
+
+      <section className="cartao">
+        <h2>{t.artilharia}</h2>
+        <ol className="artilharia">
+          {classificacao.artilharia.map((a) => (
+            <li key={`${a.jogador}-${a.clubeSigla}`}>
+              <span className="artilheiro-linha">
+                <span>
+                  {a.jogador} <span className="secundario">{a.clubeSigla}</span>
+                </span>
+                <strong>{a.gols}</strong>
+              </span>
+            </li>
+          ))}
+        </ol>
+      </section>
+    </div>
   )
 }

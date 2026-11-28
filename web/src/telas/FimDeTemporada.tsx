@@ -54,6 +54,7 @@ export function FimDeTemporada({ fim, aoContinuar }: Props) {
         ))}
       </div>
 
+      {fim.campeaoCopa && fim.viceCopa && <p>{textos.copa.fimCampeao(fim.campeaoCopa, fim.viceCopa)}</p>}
       <p className="secundario">{t.resultadoFinanceiro(formatoDinheiro.format(fim.meuResultadoFinanceiro))}</p>
       <p className="secundario">{t.viradaDeAno(fim.aposentados, fim.revelacoes)}</p>
       <button type="button" className="botao botao-grande" onClick={aoContinuar}>

@@ -43,7 +43,7 @@ npm run lint && npm test && npm run build        # o que o CI roda
 ```
 src/Jogo.Dominio     Entidades e regras puras. Sem dependências.
 src/Jogo.Motor       Motor de partida. Puro, determinístico com seed. → Dominio
-src/Jogo.Simulacao   Rodadas, calendário, IA, mercado, fim de temporada, geração do mundo. → Dominio, Motor
+src/Jogo.Simulacao   Rodadas, calendário, IA, mercado, Copa do Brasil (Copas/), fim de temporada, geração do mundo. → Dominio, Motor
 src/Jogo.Dados       Leitura/gravação das definições JSON (de pasta ou da memória). → Dominio
 src/Jogo.Aplicacao   Casos de uso + DTOs + ApiJson (texto JSON entra e sai). → Dominio, Motor, Simulacao, Dados
 src/Jogo.Wasm        Casca WebAssembly: [JSExport] que repassa para ApiJson. → Aplicacao

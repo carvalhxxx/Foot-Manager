@@ -13,13 +13,14 @@ _(nada)_
 
 ## Backlog (MVP · Fase 1)
 
-- **Competições continentais e Copa do Brasil** (aguardando aprovação do desenho): Libertadores, Sul-Americana e Copa do Brasil disputadas, usando `VagasContinentais` (D-037) para classificar os brasileiros a cada ano.
+- **Competições continentais:** Libertadores e Sul-Americana disputadas, usando `VagasContinentais` (D-037) com o campeão e o vice da Copa do Brasil para classificar os brasileiros a cada ano.
+- **Copa do Brasil ao vivo:** jogar o jogo da Copa na tela ao vivo, com decisões e pênaltis lance a lance.
 
 ## Fase 2 (depois do lançamento do MVP)
 - **2.0 Calendário real:** datas, meses, jogos no meio de semana (pré-requisito do resto).
 - **2A Carreira:** diretoria (metas, confiança, demissão, propostas), notícias/jornal, prêmios da temporada, categorias de base.
 - **2B Editor** de ligas, clubes e jogadores + importação/exportação de patches.
-- **2C Competições:** Copa do Brasil (prorrogação e pênaltis), Séries C e D, estaduais.
+- **2C Competições:** Série D, estaduais.
 - **2D Estádio e economia:** ampliação, melhorias, estado do gramado, empréstimo bancário, treino simples.
 - **2E Refinos do motor:** modelo de zonas (corredores central/lados), estilos de jogo, mando decomposto (torcida, tipo de gramado, adaptação), clima (chuva/calor por região e mês), cansaço de viagem, torneio de calibração de táticas.
 - **2F Continental:** Libertadores, Sul-Americana, altitude.
@@ -28,6 +29,9 @@ _(nada)_
 Mobile, saves na nuvem, ligas online entre amigos, modelo freemium/assinatura.
 
 ## Feito
+
+### Copa do Brasil · M
+- Mata-mata com os 60 clubes: 4 cabeças na 2ª fase, 1ª fase em jogo único na casa do clube de divisão mais baixa, ida e volta até a final, pênaltis no empate do agregado. Jogos no meio de semana depois de 11 rodadas do Brasileirão, simulados (sem ao vivo), com prêmio por fase. Aba Copa do Brasil na Classificação, situação na coluna da partida, cartão do jogo na tela da Partida e campeão no fim de temporada (D-040).
 
 ### Série C · P
 - 20 clubes reais da Série C 2026 com elencos do ogol (4 gerados por falta de fonte), turno e returno, 4 sobem para a B; a B passa a rebaixar 4 (D-039).

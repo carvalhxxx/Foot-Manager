@@ -52,6 +52,9 @@ public static partial class NucleoJs
     internal static string EncerrarTemporada() => Api.EncerrarTemporada();
 
     [JSExport]
+    internal static string Copa() => Api.Copa();
+
+    [JSExport]
     internal static string IniciarAoVivo() => Api.IniciarAoVivo();
 
     [JSExport]
